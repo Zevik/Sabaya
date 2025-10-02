@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - נווה מדבר של טעמים ורוגע</title>
+    <meta name="description" content="ברוכים הבאים לסבאיה - בית קפה במשתלה המציע חוויה רומנטית של טבע, קפה איכותי, מאכלים טעימים ומוצרי עבודת יד ייחודיים.">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Define custom Tailwind colors */
+        :root {
+            --color-sabaya-light-cream: #F7F3E9;
+            --color-sabaya-light-beige: #E0D9C1;
+            --color-sabaya-muted-brown: #B5A695;
+            --color-sabaya-dusty-green: #7A876B;
+            --color-sabaya-dark-coffee: #4A3728;
+            --color-sabaya-dusty-rose: #A14A5A;
+        }
+
+        /* Extend Tailwind's default theme and apply custom fonts */
+        body {
+            font-family: 'Heebo', sans-serif; /* Default body font */
+            color: var(--color-sabaya-dark-coffee);
+            line-height: 1.7;
+            background-color: var(--color-sabaya-light-cream);
+            scroll-behavior: smooth;
+            overflow-x: hidden; /* Prevent horizontal scroll from artistic elements */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Frank Ruhl Libre', serif; /* Headings font */
+            color: var(--color-sabaya-dark-coffee);
+            line-height: 1.2;
+        }
+
+        /* Custom color classes for Tailwind */
+        .text-sabaya-light-cream { color: var(--color-sabaya-light-cream); }
+        .bg-sabaya-light-cream { background-color: var(--color-sabaya-light-cream); }
+        .text-sabaya-light-beige { color: var(--color-sabaya-light-beige); }
+        .bg-sabaya-light-beige { background-color: var(--color-sabaya-light-beige); }
+        .text-sabaya-muted-brown { color: var(--color-sabaya-muted-brown); }
+        .bg-sabaya-muted-brown { background-color: var(--color-sabaya-muted-brown); }
+        .text-sabaya-dusty-green { color: var(--color-sabaya-dusty-green); }
+        .bg-sabaya-dusty-green { background-color: var(--color-sabaya-dusty-green); }
+        .text-sabaya-dark-coffee { color: var(--color-sabaya-dark-coffee); }
+        .bg-sabaya-dark-coffee { background-color: var(--color-sabaya-dark-coffee); }
+        .text-sabaya-dusty-rose { color: var(--color-sabaya-dusty-rose); }
+        .bg-sabaya-dusty-rose { background-color: var(--color-sabaya-dusty-rose); }
+
+        /* Custom Cursor */
+        #custom-cursor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            transition: transform 0.1s ease-out;
+            transform: translate(-50%, -50%);
+            /* High-Contrast Cursor Styling - REQUIRED TECHNIQUE */
+            border: 2px solid #FFFFFF; /* Visible on dark backgrounds */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Visible on light backgrounds */
+            background-color: rgba(255, 255, 255, 0.1); /* Subtle internal fill */
+        }
+        /* Cursor interaction states */
+        .cursor-hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: var(--color-sabaya-dusty-rose);
+            border-color: var(--color-sabaya-light-cream);
+        }
+
+        /* General artistic layout adjustments */
+        section {
+            padding: 8rem 0;
+            position: relative;
+            z-index: 10;
+        }
+        .container {
+            max-width: 1200px;
+        }
+
+        /* Fixed Backgrounds for Parallax Effect (managed by JS) */
+        .fixed-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            will-change: transform; /* Optimize for animation */
+        }
+
+        /* Navigation specifics */
+        .nav-link-effect::after {
+            content: '';
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            background-color: var(--color-sabaya-dusty-rose);
+            bottom: -5px;
+            right: 0; /* RTL specific: underline expands from right */
+            transition: width 0.3s ease-out;
+        }
+        .nav-link-effect:hover::after {
+            width: 100%;
+        }
+        
+        /* Scroll indicator */
+        #scroll-indicator {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--color-sabaya-dusty-rose);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        #scroll-indicator:hover {
+            opacity: 1;
+        }
+        #scroll-indicator svg {
+            fill: var(--color-sabaya-light-cream);
+        }
+
+        /* Fade-in effect for content sections using Intersection Observer */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Specific header gradient to make text more readable on potential image backgrounds */
+        .header-bg-gradient {
+            background: linear-gradient(to bottom, rgba(247,243,233,1) 0%, rgba(247,243,233,0.8) 70%, rgba(247,243,233,0) 100%);
+        }
+        
+        /* Ensure content blocks have sufficient background for contrast */
+        .content-block {
+            background-color: rgba(247,243,233,0.95); /* Semi-transparent cream */
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        /* For dark sections, inverse colors */
+        .content-block.dark {
+            background-color: rgba(74,55,40,0.95); /* Semi-transparent dark coffee */
+            color: var(--color-sabaya-light-cream);
+        }
+        .content-block.dark h2, .content-block.dark h3 {
+             color: var(--color-sabaya-light-cream);
+        }
+
+        /* Product image placeholders with thematic SVG patterns (no Base64 images) */
+        .product-image-placeholder {
+            width: 100%;
+            padding-bottom: 100%; /* Aspect ratio 1:1 */
+            border-radius: 0.75rem; /* rounded-lg */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--color-sabaya-muted-brown);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .product-image-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-sabaya-light-beige);
+            background-size: cover;
+            background-position: center;
+            opacity: 0.7;
+            transition: opacity 0.3s ease-out;
+        }
+        .product-image-placeholder:hover::before {
+            opacity: 1;
+        }
+
+        .thematic-bg-plant::before {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%237A876B" fill-opacity="0.1" d="M50 0L65 30L100 35L70 60L75 100L50 80L25 100L30 60L0 35L35 30L50 0Z"/></svg>');
+        }
+        .thematic-bg-coffee::before {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="25" cy="25" r="10" fill="%234A3728" fill-opacity="0.08"/><circle cx="75" cy="75" r="12" fill="%23B5A695" fill-opacity="0.08"/></svg>');
+        }
+        .thematic-bg-wood::before {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="%23B5A695" fill-opacity="0.05"/><path d="M0 0h10v100H0V0zm20 0h10v100H20V0zm20 0h10v100H40V0zm20 0h10v100H60V0zm20 0h10v100H80V0z" fill="%234A3728" fill-opacity="0.03"/></svg>');
+        }
+        .thematic-bg-ceramic::before {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M50 0 C25 0 0 25 0 50 C0 75 25 100 50 100 C75 100 100 75 100 50 C100 25 75 0 50 0 Z M50 10 C68 10 82 25 82 50 C82 75 68 90 50 90 C32 90 18 75 18 50 C18 25 32 10 50 10 Z" fill="%23A14A5A" fill-opacity="0.05"/></svg>');
+        }
+
+        /* Custom Keyframe Animations */
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fade-in-up 1s ease-out forwards;
+            animation-delay: 0.5s; /* Delay for better feel */
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.01); opacity: 0.98; }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 3s infinite ease-in-out;
+        }
+        @keyframes bounce-subtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        /* Applied to an element that already has rotate/skew transforms from Tailwind.
+           The keyframe animates translateY, which will combine with the static transform. */
+        .animate-bounce-subtle {
+            animation: bounce-subtle 4s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor" class="hidden md:block"></div>
+
+    <!-- Parallax Background Layers -->
+    <div class="fixed-bg bg-sabaya-light-cream z-[-4] opacity-80" data-parallax-speed="0.05"></div>
+    <div class="fixed-bg z-[-3] opacity-70 thematic-bg-plant" data-parallax-speed="0.1"></div>
+    <div class="fixed-bg z-[-2] opacity-60 thematic-bg-coffee" data-parallax-speed="0.15"></div>
+    <div class="fixed-bg z-[-1] opacity-50 thematic-bg-wood" data-parallax-speed="0.2"></div>
+
+
+    <!-- Main Content Wrapper -->
+    <div class="relative z-10">
+
+        <!-- Header Navigation -->
+        <header class="fixed top-0 left-0 w-full header-bg-gradient py-4 shadow-md z-50">
+            <nav class="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
+                <a href="#home" class="text-3xl font-bold text-sabaya-dark-coffee tracking-wide font-frank-ruhl-libre transition-colors duration-300 hover:text-sabaya-dusty-rose cursor-pointer">סבאיה</a>
+                <div class="flex space-x-reverse space-x-6 sm:space-x-reverse sm:space-x-8 text-lg font-heebo">
+                    <a href="#home" class="relative text-sabaya-dark-coffee transition-colors duration-300 hover:text-sabaya-dusty-rose nav-link-effect cursor-pointer">בית</a>
+                    <a href="#menu" class="relative text-sabaya-dark-coffee transition-colors duration-300 hover:text-sabaya-dusty-rose nav-link-effect cursor-pointer">תפריט</a>
+                    <a href="#wood-spoons" class="relative text-sabaya-dark-coffee transition-colors duration-300 hover:text-sabaya-dusty-rose nav-link-effect cursor-pointer">כפית עץ</a>
+                    <a href="#ceramics" class="relative text-sabaya-dark-coffee transition-colors duration-300 hover:text-sabaya-dusty-rose nav-link-effect cursor-pointer">מוצרי קרמיקה</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Home Section -->
+        <section id="home" class="min-h-screen flex items-center justify-center pt-24 pb-12 text-center relative overflow-hidden fade-in">
+            <div class="relative content-block dark mx-auto p-8 lg:p-12 max-w-4xl bg-sabaya-dark-coffee text-sabaya-light-cream shadow-xl rounded-2xl border-2 border-sabaya-muted-brown z-20 transform -rotate-1 skew-x-1 hover:rotate-0 hover:skew-x-0 transition-all duration-500">
+                <h1 class="text-5xl lg:text-7xl font-bold mb-6 text-sabaya-light-cream font-frank-ruhl-libre drop-shadow-lg leading-tight animate-fade-in-up">
+                    <span class="block animate-pulse-subtle">ברוכים הבאים לסבאיה</span>
+                    <span class="block text-3xl lg:text-5xl mt-4 font-heebo font-light">נווה מדבר של טעמים ורוגע</span>
+                </h1>
+                <p class="text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto mb-8 font-heebo font-light">
+                    כאן, בין עלי ירק ללחישות הרוח, סבאיה פותחת את שעריה. מקלט קטן של חלומות מתוקים וארומה עשירה, היכן שהטבע מחבק את הנפש והקפה לוחש סיפורים. בואו להתמסר לרגע של קסם יומיומי, לגלות פינה של שלווה בממלכת הירוק.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                    <div class="p-6 bg-sabaya-muted-brown bg-opacity-30 rounded-lg shadow-inner border border-sabaya-dusty-green transform hover:scale-105 transition-transform duration-300">
+                        <h3 class="text-3xl font-frank-ruhl-libre text-sabaya-light-cream mb-3">קפה איכותי</h3>
+                        <p class="text-sabaya-light-beige font-heebo">
+                            כל לגימה-מסע: פולים מובחרים, שנקלו באהבה ובדיוק, ממתינים להתגלות בכוסכם. סיפור של אדמה ושמש, מוגש עם נשמה.
+                        </p>
+                    </div>
+                    <div class="p-6 bg-sabaya-muted-brown bg-opacity-30 rounded-lg shadow-inner border border-sabaya-dusty-green transform hover:scale-105 transition-transform duration-300">
+                        <h3 class="text-3xl font-frank-ruhl-libre text-sabaya-light-cream mb-3">אווירה טבעית</h3>
+                        <p class="text-sabaya-light-beige font-heebo">
+                            כורסאות נוחות מוקפות פריחה עדינה, אור רך חודר מבעד לעצים. נשמו עמוק, הרגישו את הפעימה המרגיעה של המשתלה סביבכם.
+                        </p>
+                    </div>
+                    <div class="p-6 bg-sabaya-muted-brown bg-opacity-30 rounded-lg shadow-inner border border-sabaya-dusty-green transform hover:scale-105 transition-transform duration-300">
+                        <h3 class="text-3xl font-frank-ruhl-libre text-sabaya-light-cream mb-3">מוצרים ייחודיים</h3>
+                        <p class="text-sabaya-light-beige font-heebo">
+                            מעץ גולמי עד לחימר עדין- כל יצירה נושאת בתוכה סיפור. פריטים בעבודת יד, שנוצרו להביא יופי וחום אל ביתכם.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="py-20 bg-sabaya-light-cream relative overflow-hidden fade-in">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-6xl text-center font-bold mb-16 text-sabaya-dark-coffee font-frank-ruhl-libre transform -rotate-2 skew-y-1 drop-shadow-lg animate-bounce-subtle">
+                    <span class="block">התפריט שלנו</span>
+                    <span class="block text-2xl mt-4 text-sabaya-muted-brown font-heebo font-light">מטעמים מהלב ומהאדמה</span>
+                </h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                    <!-- מאכלים ומתוקים (Food & Sweets) -->
+                    <div class="content-block bg-sabaya-light-beige shadow-lg rounded-2xl p-8 border border-sabaya-muted-brown transform rotate-1 skew-x-1 hover:rotate-0 hover:skew-x-0 transition-all duration-500">
+                        <h3 class="text-4xl font-frank-ruhl-libre text-sabaya-dusty-rose mb-8 text-center border-b-2 pb-4 border-sabaya-dusty-rose">מאכלים ומתוקים</h3>
+                        
+                        <!-- אוכל (Food) -->
+                        <div class="mb-12">
+                            <h4 class="text-3xl font-frank-ruhl-libre text-sabaya-dark-coffee mb-6 border-r-4 border-sabaya-dusty-green pr-4 inline-block">אוכל</h4>
+                            <ul class="space-y-6">
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">כריך סבביח</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">מסע טעמים ים תיכוני- ביצה קשה, טונה, חציל, מטבוחה, מלפפון חמוץ ולימון כבוש, מוגש עם זיתים וסלט אישי.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪36</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">כריך פנסיבאיה</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">חוויה יער קסומה- פטריות מוקפצות עם כמהין, גבינות שמנת וגראנה פדאנו, רוקט ובלסמי, מוגש עם זיתים וסלט אישי.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪45</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">כריך טבעוני</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">חיבור לאדמה- ממרח חציל שחור, גבינת סויה, עגבניות מיובשות ורוקט, מוגש עם זיתים וסלט אישי.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪45</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">פלטת גבינות ולחמים עם מטבלים</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">חגיגה כפרית- חמאה מוקצפת מתובלת, טחינה יוגורט, ריבה.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪68</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">סלט במבי</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">ריקוד טעמים מרענן- חסות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪36</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">סלט חלבון</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">כוח מהטבע- עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪32</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">מוזלי מור</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">בוקר בהשראת המזרח- יוגורט פרו, חצילים קלויים, ביצה קשה, טחינה, וגרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש, מוגש עם פיתה קראנץ'.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪42</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">קערת אסאי</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">פרץ רעננות טרופי- עם גרנולה, שבבי קוקוס ופרי העונה.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪39</span>
+                                </li>
+                                <li class="flex justify-between items-start">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">קיש ברוקולי/פטריות/בצל ויין לבן</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">מגע צרפתי- מוגש עם סלט אישי ושמנת חמוצה.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪37</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- מתוקים (Sweets) -->
+                        <div>
+                            <h4 class="text-3xl font-frank-ruhl-libre text-sabaya-dark-coffee mb-6 border-r-4 border-sabaya-dusty-green pr-4 inline-block">מתוקים</h4>
+                            <ul class="space-y-6">
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">קוראסון שוקולד גדול</p>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪19</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">קוראסון שקדים/פיסטוק גדול</p>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪22</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">עוגה בחושה בננה ושוקולד</p>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪15</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">פאי תפוחים קרמבל</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">נחמה חמה- מוגש עם כדור גלידה.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪44</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">פאי מרנג לימון</p>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪31</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">אוראו צ'יז קייק</p>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪38</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">קראנץ' סניקרס</p>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪23</span>
+                                </li>
+                                <li class="flex justify-between items-start">
+                                    <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">עוגת שילה</p>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪44</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- שתיה (Drinks) -->
+                    <div class="content-block bg-sabaya-light-beige shadow-lg rounded-2xl p-8 border border-sabaya-muted-brown transform -rotate-1 skew-x-1 hover:rotate-0 hover:skew-x-0 transition-all duration-500">
+                        <h3 class="text-4xl font-frank-ruhl-libre text-sabaya-dusty-rose mb-8 text-center border-b-2 pb-4 border-sabaya-dusty-rose">שתיה</h3>
+                        <div class="mb-12">
+                            <h4 class="text-3xl font-frank-ruhl-libre text-sabaya-dark-coffee mb-6 border-r-4 border-sabaya-dusty-green pr-4 inline-block">קפה קר וחם</h4>
+                            <ul class="space-y-6">
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">אספרסו</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">מנת אנרגיה מרוכזת, בטעם עשיר.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪10/12</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">קפוצ'ינו / לאטה</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">קלאסיקה חמה עם קצף חלב עשיר.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪14/16</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">אמריקנו</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">קפה שחור ארומטי, עדין ומעורר.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪13</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">קפה קר</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">פינוק מרענן לימים חמים.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪18</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mb-12">
+                            <h4 class="text-3xl font-frank-ruhl-libre text-sabaya-dark-coffee mb-6 border-r-4 border-sabaya-dusty-green pr-4 inline-block">משקאות טבעיים</h4>
+                            <ul class="space-y-6">
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">לימונדה סחוטה</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">חמוץ-מתוק, מרענן וממריץ.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪15</span>
+                                </li>
+                                <li class="flex justify-between items-start border-b border-sabaya-muted-brown pb-4 last:border-b-0">
+                                    <div>
+                                        <p class="text-xl font-heebo font-medium text-sabaya-dark-coffee">מיץ תפוזים טבעי</p>
+                                        <p class="text-sabaya-muted-brown text-sm mt-1">ויטמינים וטעם שמש בכל לגימה.</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-sabaya-dusty-rose mr-4">₪16</span>
+                                </li>
+                            </ul>
+                        </div>
+                         <p class="text-center text-sabaya-muted-brown text-sm mt-10">
+                            לשאלות והזמנות, אנא פנו אלינו בבית הקפה
+                        </p>
+                        <p class="text-center text-sabaya-muted-brown text-xs mt-2">
+                            כל המחירים בשקלים חדשים ועשויים להשתנות
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wood Spoons Section -->
+        <section id="wood-spoons" class="py-20 bg-sabaya-dark-coffee text-sabaya-light-cream relative overflow-hidden fade-in">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-6xl text-center font-bold mb-16 text-sabaya-light-cream font-frank-ruhl-libre transform rotate-2 skew-y-1 drop-shadow-lg animate-bounce-subtle">
+                    <span class="block">כפית עץ - מגע של טבע</span>
+                    <span class="block text-2xl mt-4 text-sabaya-muted-brown font-heebo font-light">אומנות העץ במיטבה</span>
+                </h2>
+                <p class="text-center text-lg lg:text-xl leading-relaxed max-w-3xl mx-auto mb-16 text-sabaya-light-beige font-heebo font-light">
+                    מגע של טבע בידכם. כפיות עץ ומוצרים נוספים, מפוסלים בסבלנות, מספרים סיפור עתיק של אומנות וחיבור לאדמה. כל אחת-פיסה ייחודית, חמה וטבעית, עשויה מחומרים ידידותיים לסביבה ומתאימה לשימוש יומיומי או למתנה מיוחדת.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="content-block bg-sabaya-muted-brown dark p-6 rounded-lg shadow-lg border-2 border-sabaya-dusty-green transform -rotate-1 hover:rotate-0 transition-all duration-500">
+                        <div class="product-image-placeholder thematic-bg-wood mb-4 relative overflow-hidden group">
+                            <span class="relative z-10 text-xl text-sabaya-dark-coffee font-frank-ruhl-libre">בקבוקי שתיה</span>
+                        </div>
+                        <h3 class="text-3xl font-frank-ruhl-libre text-sabaya-light-cream mb-2">בקבוקי שתיה</h3>
+                        <p class="text-sabaya-light-beige mb-4">בקבוקים מרהיבים מעץ טבעי, לשמירה על טריות המשקה והנשמה.</p>
+                        <div class="flex justify-between items-center text-xl font-bold text-sabaya-dusty-rose">
+                            <span>₪89</span>
+                            <button class="bg-sabaya-dusty-rose text-sabaya-light-cream px-6 py-2 rounded-full hover:bg-sabaya-light-cream hover:text-sabaya-dusty-rose transition-colors duration-300 cursor-pointer">פרטים</button>
+                        </div>
+                    </div>
+                    <div class="content-block bg-sabaya-muted-brown dark p-6 rounded-lg shadow-lg border-2 border-sabaya-dusty-green transform rotate-1 hover:rotate-0 transition-all duration-500">
+                        <div class="product-image-placeholder thematic-bg-wood mb-4 relative overflow-hidden group">
+                            <span class="relative z-10 text-xl text-sabaya-dark-coffee font-frank-ruhl-libre">צנצנות קטנות</span>
+                        </div>
+                        <h3 class="text-3xl font-frank-ruhl-libre text-sabaya-light-cream mb-2">צנצנות קטנות</h3>
+                        <p class="text-sabaya-light-beige mb-4">צנצנות עץ חמודות, לאחסון תבלינים, סוכר או סודות קטנים.</p>
+                        <div class="flex justify-between items-center text-xl font-bold text-sabaya-dusty-rose">
+                            <span>₪45</span>
+                            <button class="bg-sabaya-dusty-rose text-sabaya-light-cream px-6 py-2 rounded-full hover:bg-sabaya-light-cream hover:text-sabaya-dusty-rose transition-colors duration-300 cursor-pointer">פרטים</button>
+                        </div>
+                    </div>
+                    <div class="content-block bg-sabaya-muted-brown dark p-6 rounded-lg shadow-lg border-2 border-sabaya-dusty-green transform -rotate-1 hover:rotate-0 transition-all duration-500">
+                        <div class="product-image-placeholder thematic-bg-wood mb-4 relative overflow-hidden group">
+                            <span class="relative z-10 text-xl text-sabaya-dark-coffee font-frank-ruhl-libre">צנצנות גדולות</span>
+                        </div>
+                        <h3 class="text-3xl font-frank-ruhl-libre text-sabaya-light-cream mb-2">צנצנות גדולות</h3>
+                        <p class="text-sabaya-light-beige mb-4">אביזר אחסון מעוצב, המשלים כל פינה בבית עם חום טבעי.</p>
+                        <div class="flex justify-between items-center text-xl font-bold text-sabaya-dusty-rose">
+                            <span>₪75</span>
+                            <button class="bg-sabaya-dusty-rose text-sabaya-light-cream px-6 py-2 rounded-full hover:bg-sabaya-light-cream hover:text-sabaya-dusty-rose transition-colors duration-300 cursor-pointer">פרטים</button>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-center text-sabaya-muted-brown text-sm mt-12">
+                    לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.
+                </p>
+            </div>
+        </section>
+
+        <!-- Ceramics Section -->
+        <section id="ceramics" class="py-20 bg-sabaya-light-cream relative overflow-hidden fade-in">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-6xl text-center font-bold mb-16 text-sabaya-dark-coffee font-frank-ruhl-libre transform -rotate-2 skew-y-1 drop-shadow-lg animate-bounce-subtle">
+                    <span class="block">מוצרי קרמיקה - יופי נוצר מאדמה</span>
+                    <span class="block text-2xl mt-4 text-sabaya-muted-brown font-heebo font-light">כלים עם נשמה</span>
+                </h2>
+                <p class="text-center text-lg lg:text-xl leading-relaxed max-w-3xl mx-auto mb-16 text-sabaya-muted-brown font-heebo font-light">
+                    מוצרי קרמיקה בעבודת יד איכותית, עם ציפוי טבעי בגוני אדמה חמים. כל כלי נוצר במחשבה ואהבה, כדי להביא אל ביתכם חום, שלווה וטאץ' אמנותי ייחודי. מתאימים לשימוש יומיומי ומוסיפים אווירה ביתית לכל פינה.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="content-block bg-sabaya-light-beige p-6 rounded-lg shadow-lg border-2 border-sabaya-muted-brown transform rotate-1 hover:rotate-0 transition-all duration-500">
+                        <div class="product-image-placeholder thematic-bg-ceramic mb-4 relative overflow-hidden group">
+                            <span class="relative z-10 text-xl text-sabaya-dark-coffee font-frank-ruhl-libre">כוס גדולה</span>
+                        </div>
+                        <h3 class="text-3xl font-frank-ruhl-libre text-sabaya-dark-coffee mb-2">כוס גדולה</h3>
+                        <p class="text-sabaya-muted-brown mb-4">כוס קרמיקה גדולה, ללגימות ארוכות של קפה או תה חם.</p>
+                        <div class="flex justify-between items-center text-xl font-bold text-sabaya-dusty-rose">
+                            <span>₪65</span>
+                            <button class="bg-sabaya-dusty-rose text-sabaya-light-cream px-6 py-2 rounded-full hover:bg-sabaya-light-cream hover:text-sabaya-dusty-rose transition-colors duration-300 cursor-pointer">פרטים</button>
+                        </div>
+                    </div>
+                    <div class="content-block bg-sabaya-light-beige p-6 rounded-lg shadow-lg border-2 border-sabaya-muted-brown transform -rotate-1 hover:rotate-0 transition-all duration-500">
+                        <div class="product-image-placeholder thematic-bg-ceramic mb-4 relative overflow-hidden group">
+                            <span class="relative z-10 text-xl text-sabaya-dark-coffee font-frank-ruhl-libre">כוס קטנה</span>
+                        </div>
+                        <h3 class="text-3xl font-frank-ruhl-libre text-sabaya-dark-coffee mb-2">כוס קטנה</h3>
+                        <p class="text-sabaya-muted-brown mb-4">כוס קטנה ואלגנטית, לאספרסו, מים או פינוק מתוק.</p>
+                        <div class="flex justify-between items-center text-xl font-bold text-sabaya-dusty-rose">
+                            <span>₪45</span>
+                            <button class="bg-sabaya-dusty-rose text-sabaya-light-cream px-6 py-2 rounded-full hover:bg-sabaya-light-cream hover:text-sabaya-dusty-rose transition-colors duration-300 cursor-pointer">פרטים</button>
+                        </div>
+                    </div>
+                    <div class="content-block bg-sabaya-light-beige p-6 rounded-lg shadow-lg border-2 border-sabaya-muted-brown transform rotate-1 hover:rotate-0 transition-all duration-500">
+                        <div class="product-image-placeholder thematic-bg-ceramic mb-4 relative overflow-hidden group">
+                            <span class="relative z-10 text-xl text-sabaya-dark-coffee font-frank-ruhl-libre">קנקן</span>
+                        </div>
+                        <h3 class="text-3xl font-frank-ruhl-libre text-sabaya-dark-coffee mb-2">קנקן</h3>
+                        <p class="text-sabaya-muted-brown mb-4">קנקן קרמיקה אמנותי, להגשה מרשימה של כל משקה.</p>
+                        <div class="flex justify-between items-center text-xl font-bold text-sabaya-dusty-rose">
+                            <span>₪120</span>
+                            <button class="bg-sabaya-dusty-rose text-sabaya-light-cream px-6 py-2 rounded-full hover:bg-sabaya-light-cream hover:text-sabaya-dusty-rose transition-colors duration-300 cursor-pointer">פרטים</button>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-center text-sabaya-muted-brown text-sm mt-12">
+                    לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-sabaya-dark-coffee text-sabaya-light-cream py-10 text-center relative z-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="mb-4 text-sabaya-light-beige font-heebo">© 2023 סבאיה. כל הזכויות שמורות.</p>
+                <div class="flex justify-center space-x-reverse space-x-6 text-xl">
+                    <a href="#" class="text-sabaya-light-cream hover:text-sabaya-dusty-rose transition-colors duration-300 cursor-pointer" aria-label="אינסטגרם">
+                        <svg class="w-6 h-6 inline-block" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.772 1.69 4.912 4.912.058 1.265.07 1.645.07 4.85s-.012 3.584-.07 4.85c-.148 3.252-1.69 4.772-4.912 4.912-1.265.058-1.645.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.772-1.69-4.912-4.912-.058-1.265-.07-1.645-.07-4.85s.012-3.584.07-4.85c.148 3.252 1.69-4.772 4.912-4.912 1.265-.058 1.645-.07 4.85-.07zm0 2.163c-3.216 0-3.584.012-4.85.07-2.738.125-3.83 1.217-3.955 3.955-.058 1.265-.07 1.638-.07 4.85s.012 3.584.07 4.85c.125 2.738 1.217 3.83 3.955 3.955 1.265.058 1.638.07 4.85.07s3.584-.012 4.85-.07c2.738-.125 3.83-1.217 3.955-3.955.058-1.265.07-1.638.07-4.85s-.012-3.584-.07-4.85c-.125-2.738-1.217-3.83-3.955-3.955-1.265-.058-1.638-.07-4.85-.07zm0 3.627a4.111 4.111 0 100 8.222 4.111 4.111 0 000-8.222zm0 2.163a1.948 1.948 0 110 3.896 1.948 1.948 0 010-3.896z"/></svg>
+                        <span class="sr-only">אינסטגרם</span>
+                    </a>
+                    <a href="#" class="text-sabaya-light-cream hover:text-sabaya-dusty-rose transition-colors duration-300 cursor-pointer" aria-label="פייסבוק">
+                        <svg class="w-6 h-6 inline-block" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12c6.627 0 12-5.373 12-12s-5.373-12-12-12zm3 8h-1.6c-.667 0-.4 1-.4 1v2h2l-.333 2h-1.667v7h-3v-7h-2v-2h2v-2.161c0-1.452 1.181-2.639 2.639-2.639h2.361v3z"/></svg>
+                        <span class="sr-only">פייסבוק</span>
+                    </a>
+                </div>
+            </div>
+        </footer>
+
+    </div> <!-- End Main Content Wrapper -->
+
+    <!-- Scroll-to-Top Indicator -->
+    <div id="scroll-indicator" class="hidden cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z"/></svg>
+    </div>
+
+    <script>
+        // Custom Cursor Logic (visible only on non-mobile devices for better UX)
+        const customCursor = document.getElementById('custom-cursor');
+        const interactiveElements = 'a, button, .cursor-pointer'; // Elements to trigger cursor hover effect
+
+        if (customCursor && window.innerWidth >= 768) { 
+            customCursor.classList.remove('hidden'); // Show cursor on desktop
+            document.addEventListener('mousemove', (e) => {
+                customCursor.style.left = `${e.clientX}px`;
+                customCursor.style.top = `${e.clientY}px`;
+            });
+
+            document.querySelectorAll(interactiveElements).forEach(el => {
+                el.addEventListener('mouseenter', () => customCursor.classList.add('cursor-hover'));
+                el.addEventListener('mouseleave', () => customCursor.classList.remove('cursor-hover'));
+            });
+        }
+
+        // Smooth Scroll for Navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    // Get the fixed header's height dynamically
+                    const headerHeight = document.querySelector('header').offsetHeight;
+                    const offsetTop = targetElement.offsetTop;
+                    window.scrollTo({
+                        top: offsetTop - headerHeight - 20, // Adjust for fixed header height and some padding
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Parallax Effect for Fixed Backgrounds
+        const parallaxBgs = document.querySelectorAll('.fixed-bg');
+        if (parallaxBgs.length > 0) {
+            let lastScrollY = window.scrollY;
+            let ticking = false;
+
+            function updateParallax() {
+                const scrollY = window.scrollY;
+                parallaxBgs.forEach(bg => {
+                    const speed = parseFloat(bg.dataset.parallaxSpeed);
+                    // Use CSS transform for better performance
+                    bg.style.transform = `translateY(${scrollY * speed}px)`;
+                });
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', () => {
+                lastScrollY = window.scrollY;
+                if (!ticking) {
+                    window.requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            });
+            updateParallax(); // Initial call to set positions
+        }
+
+        // Fade-in Sections on Scroll (Intersection Observer)
+        const faders = document.querySelectorAll('.fade-in');
+        const appearOptions = {
+            threshold: 0.3, // When 30% of the item is visible
+            rootMargin: "0px 0px -50px 0px" // Start animating 50px before it hits the bottom
+        };
+        const appearOnScroll = new IntersectionObserver(function (entries, appearOnScroll) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    return;
+                } else {
+                    entry.target.classList.add('is-visible');
+                    appearOnScroll.unobserve(entry.target);
+                }
+            });
+        }, appearOptions);
+
+        faders.forEach(fader => {
+            appearOnScroll.observe(fader);
+        });
+
+        // Scroll-to-top Indicator Logic
+        const scrollIndicator = document.getElementById('scroll-indicator');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) { // Show after scrolling 300px
+                scrollIndicator.classList.remove('hidden');
+            } else {
+                scrollIndicator.classList.add('hidden');
+            }
+        });
+
+        scrollIndicator.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - אמנות מושגית</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-light: #f5f5dc; /* Creamy off-white */
+            --primary-dark: #3b2f2f;  /* Deep earthy brown */
+            --accent-green: #6b8e23;  /* Olive green */
+            --accent-clay: #b87333;   /* Terracotta/clay */
+            --bg-neutral: #d4c2ae;    /* Muted sand */
+        }
+
+        body {
+            font-family: 'Assistant', sans-serif;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            overflow-x: hidden; /* Prevent horizontal scroll from effects */
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            transition: width 0.3s ease, height 0.3s ease, transform 0.1s ease;
+            z-index: 9999; /* Always on top */
+            border: 2px solid #FFFFFF; /* Light border */
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.8); /* Dark, high-opacity shadow */
+            transform: translate(-50%, -50%); /* Center cursor correctly */
+        }
+        .custom-cursor-grow {
+            width: 40px;
+            height: 40px;
+        }
+
+        /* Scroll-based opacity for main content sections to create layers */
+        .scroll-effect {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .scroll-effect.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Parallax/layered backgrounds */
+        .parallax-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            will-change: transform;
+            opacity: 0.3; /* Subtle background */
+        }
+        .layer-1 { background-color: var(--bg-neutral); }
+        .layer-2 { background-image: radial-gradient(circle at center, rgba(107, 142, 35, 0.1) 0%, transparent 70%); } /* Subtle green halo */
+        .layer-3 { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><circle cx="50" cy="50" r="40" fill="none" stroke="%23b87333" stroke-width="1"/><path d="M50 10 L60 20 L50 30 L40 20 Z" fill="%23b87333"/></svg>'); background-size: 150px; opacity: 0.1;} /* Abstract pottery/earth pattern */
+
+        /* Generative background element - an animating 'coffee swirl' */
+        .coffee-swirl {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 100vh; /* Scaled relative to viewport height */
+            height: 100vh;
+            transform: translate(-50%, -50%) rotate(0deg);
+            background: radial-gradient(circle at 70% 30%, rgba(59, 47, 47, 0.1) 0%, transparent 40%),
+                        radial-gradient(circle at 30% 70%, rgba(184, 115, 51, 0.1) 0%, transparent 40%);
+            border-radius: 50%;
+            animation: swirl 120s linear infinite;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        @keyframes swirl {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Custom styling for the navigation */
+        .nav-link-conceptual {
+            position: relative;
+            font-weight: 300; /* Light weight for conceptual feel */
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            margin-bottom: 0.5rem;
+            transition-property: all;
+            transition-duration: 300ms;
+            transition-timing-function: ease;
+            overflow: hidden;
+        }
+        .nav-link-conceptual::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0; /* Starts from right for RTL */
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-green);
+            transition-property: all;
+            transition-duration: 300ms;
+            transition-timing-function: ease;
+        }
+        .nav-link-conceptual:hover::before {
+            width: 100%;
+            left: 0; /* Expands to left in RTL */
+            right: auto; /* Ensure it moves left */
+        }
+        .nav-link-conceptual:hover {
+             color: var(--accent-green);
+        }
+
+        /* Keyframe for initial fade-in animation */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 1.5s ease-out forwards; }
+        .animate-fade-in-delay-1 { animation: fadeIn 2s ease-out 0.5s forwards; }
+
+        /* Custom card styling for sections */
+        .conceptual-card {
+            border-width: 1px;
+            border-style: solid;
+            transition-property: all;
+            transition-duration: 500ms;
+            transition-timing-function: ease-in-out;
+        }
+        .conceptual-card:hover {
+            transform: scale(1.03); /* Slightly less pronounced hover */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            background-color: rgba(245, 245, 220, 0.85); /* Slightly darker on hover */
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden text-primary-dark" style="background-color: var(--primary-light);">
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+
+    <!-- Generative Background Elements -->
+    <div class="coffee-swirl"></div>
+    <div class="parallax-layer layer-1" style="transform: translateZ(0) scale(1.02); opacity: 0.2;"></div>
+    <div class="parallax-layer layer-2" style="transform: translateZ(0) scale(1.05); opacity: 0.15;"></div>
+    <div class="parallax-layer layer-3" style="transform: translateZ(0) scale(1.08); opacity: 0.1;"></div>
+
+    <!-- Main Content Wrapper with positive z-index -->
+    <div class="relative z-10 min-h-screen flex flex-col items-center">
+
+        <!-- Conceptual Navigation (Floating/Layered) -->
+        <nav class="fixed top-0 right-0 w-full md:w-auto p-4 md:p-8 z-50">
+            <ul class="flex flex-col md:flex-row gap-4 md:gap-8 justify-end" style="color: var(--primary-dark);">
+                <li><a href="#home" class="text-xl md:text-2xl nav-link-conceptual">בית</a></li>
+                <li><a href="#menu" class="text-xl md:text-2xl nav-link-conceptual">תפריט</a></li>
+                <li><a href="#wood-crafts" class="text-xl md:text-2xl nav-link-conceptual">כפית עץ</a></li>
+                <li><a href="#ceramic-crafts" class="text-xl md:text-2xl nav-link-conceptual">מוצרי קרמיקה</a></li>
+            </ul>
+        </nav>
+
+        <!-- Section: Home (בית) -->
+        <section id="home" class="scroll-effect min-h-screen w-full flex flex-col justify-center items-center p-8 md:p-16 text-center" style="background-color: rgba(245, 245, 220, 0.7);">
+            <h1 class="text-5xl md:text-7xl font-light mb-8 leading-tight animate-fade-in" style="color: var(--primary-dark);">
+                <span class="block">סבאיה</span>
+                <span class="block text-2xl md:text-3xl mt-4 font-normal" style="color: var(--accent-green);">למקום שבו הטבע נושם, והקפה לוחש סיפורים</span>
+            </h1>
+            <p class="text-lg md:text-xl max-w-2xl font-light mb-12 animate-fade-in-delay-1" style="color: var(--primary-dark);">
+                במרחבי סבאיה, אנו טווים את סיפור המפגש הנצחי: הארומה העמוקה של האדמה בכוסך, השקט הירוק המלטף את נשמתך.
+                זהו מקום שבו הזמן נמס, והנפש מוצאת מנוח בין לגימה ללגימה, בין עץ לקרמיקה.
+            </p>
+            <a href="#menu" class="px-8 py-4 text-xl md:text-2xl font-normal border-2 rounded-full transition-all duration-300 hover:scale-105"
+               style="border-color: var(--accent-green); color: var(--accent-green); background-color: transparent;">
+                חקור את הסיפור
+            </a>
+        </section>
+
+        <!-- Section: Essence of Sabaya (המוצרים שלנו - חוויה ייחודית) -->
+        <section id="essence" class="scroll-effect min-h-screen w-full flex flex-col justify-center items-center p-8 md:p-16 text-center" style="background-color: rgba(212, 194, 174, 0.7);">
+            <h2 class="text-4xl md:text-6xl font-light mb-8" style="color: var(--primary-dark);">פעימות הלב של סבאיה</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mt-8">
+                <div class="p-6 md:p-8 border border-primary-dark flex flex-col items-center conceptual-card" style="background-color: var(--primary-light);">
+                    <div class="text-6xl mb-4" style="color: var(--accent-green);">☕</div>
+                    <h3 class="text-2xl font-medium mb-2" style="color: var(--primary-dark);">קפה איכותי - נשמה בכל טיפה</h3>
+                    <p class="text-lg font-light" style="color: var(--primary-dark);">
+                        גרגירים נבחרים בקפידה, נקלים באהבה ובדיוק, למשקה המעורר חושים ומחמם לב.
+                        כל כוס היא מסע אל עולמות של ארומה וטעם עשיר.
+                    </p>
+                </div>
+                <div class="p-6 md:p-8 border border-primary-dark flex flex-col items-center conceptual-card" style="background-color: var(--primary-light);">
+                    <div class="text-6xl mb-4" style="color: var(--accent-green);">🌿</div>
+                    <h3 class="text-2xl font-medium mb-2" style="color: var(--primary-dark);">אווירה טבעית - נשימה במשתלה</h3>
+                    <p class="text-lg font-light" style="color: var(--primary-dark);">
+                        התמזגו עם הירוק העוטף, עם ציוץ הציפורים ורחש העלים.
+                        פינה שקטה שבה הטבע הוא חלק בלתי נפרד מחווייתכם.
+                    </p>
+                </div>
+                <div class="p-6 md:p-8 border border-primary-dark flex flex-col items-center conceptual-card" style="background-color: var(--primary-light);">
+                    <div class="text-6xl mb-4" style="color: var(--accent-clay);">🏺</div>
+                    <h3 class="text-2xl font-medium mb-2" style="color: var(--primary-dark);">מוצרים ייחודיים - יצירה בעבודת יד</h3>
+                    <p class="text-lg font-light" style="color: var(--primary-dark);">
+                        פריטים מעץ וקרמיקה, שנולדו מידי אמן.
+                        כל אחד מהם נושא בתוכו סיפור, חום ונגיעה אישית לביתכם או למתנה.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Menu (תפריט) -->
+        <section id="menu" class="scroll-effect min-h-screen w-full flex flex-col items-center p-8 md:p-16 text-center relative" style="background-color: rgba(245, 245, 220, 0.7);">
+            <div class="w-full flex justify-center mb-12 z-20">
+                <div class="bg-primary-dark text-primary-light px-6 py-3 rounded-full shadow-lg text-lg md:text-xl font-medium conceptual-menu-tab">
+                    התפריט שלנו - קשת של טעמים
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 max-w-6xl relative z-10">
+
+                <!-- Item: כריך סבביח -->
+                <div class="bg-primary-light p-6 rounded-lg shadow-md conceptual-card relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-accent-green opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <h3 class="text-2xl font-medium mb-2 group-hover:text-accent-green transition-colors duration-300" style="color: var(--primary-dark);">כריך סבביח - מסע למזרח התיכון</h3>
+                    <p class="text-md font-light mb-4" style="color: var(--primary-dark);">
+                        שכבות של ביצה קשה, חציל עשיר, טונה עדינה ומטבוחה חריפה.
+                        חמוציות ולימון כבוש מוסיפים ניחוח של ים תיכון.
+                    </p>
+                    <div class="flex justify-between items-baseline pt-2 border-t border-gray-300">
+                        <span class="text-xl font-semibold" style="color: var(--accent-green);">₪36</span>
+                        <span class="text-sm text-gray-600">סלט וזיתים בצד</span>
+                    </div>
+                </div>
+
+                <!-- Item: כריך פנסיבאיה -->
+                <div class="bg-primary-light p-6 rounded-lg shadow-md conceptual-card relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-accent-green opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <h3 class="text-2xl font-medium mb-2 group-hover:text-accent-green transition-colors duration-300" style="color: var(--primary-dark);">כריך פנסיבאיה - יער קסום</h3>
+                    <p class="text-md font-light mb-4" style="color: var(--primary-dark);">
+                        פטריות מוקפצות ברוטב כמהין עשיר, על גבינות שמנת וגראנה פדאנו.
+                        רוקט פריך ובלסמי מתוק עוטפים חוויה של טעמים.
+                    </p>
+                    <div class="flex justify-between items-baseline pt-2 border-t border-gray-300">
+                        <span class="text-xl font-semibold" style="color: var(--accent-green);">₪45</span>
+                        <span class="text-sm text-gray-600">עם סלט וזיתים</span>
+                    </div>
+                </div>
+
+                <!-- Item: קערת אסאי -->
+                <div class="bg-primary-light p-6 rounded-lg shadow-md conceptual-card relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-accent-green opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <h3 class="text-2xl font-medium mb-2 group-hover:text-accent-green transition-colors duration-300" style="color: var(--primary-dark);">קערת אסאי - זריחה קפואה</h3>
+                    <p class="text-md font-light mb-4" style="color: var(--primary-dark);">
+                        מרעננת ועשירה בנוגדי חמצון, עם גרנולה פריכה, שבבי קוקוס
+                        ופירות העונה - חגיגה של צבע וטעם.
+                    </p>
+                    <div class="flex justify-between items-baseline pt-2 border-t border-gray-300">
+                        <span class="text-xl font-semibold" style="color: var(--accent-green);">₪39</span>
+                        <span class="text-sm text-gray-600">אנרגיה טהורה</span>
+                    </div>
+                </div>
+
+                <!-- Item: פאי תפוחים קרמבל -->
+                <div class="bg-primary-light p-6 rounded-lg shadow-md conceptual-card relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-accent-clay opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <h3 class="text-2xl font-medium mb-2 group-hover:text-accent-clay transition-colors duration-300" style="color: var(--primary-dark);">פאי תפוחים קרמבל - חלום מתוק</h3>
+                    <p class="text-md font-light mb-4" style="color: var(--primary-dark);">
+                        תפוחים אפויים בנדיבות עם שכבת קרמבל פריכה מעל,
+                        מוגש חם עם כדור גלידה קרירה - ניגוד מושלם.
+                    </p>
+                    <div class="flex justify-between items-baseline pt-2 border-t border-gray-300">
+                        <span class="text-xl font-semibold" style="color: var(--accent-clay);">₪44</span>
+                        <span class="text-sm text-gray-600">חם-קר, מתוק-חמוץ</span>
+                    </div>
+                </div>
+
+                <!-- Item: עוגת שילה -->
+                <div class="bg-primary-light p-6 rounded-lg shadow-md conceptual-card relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-accent-clay opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <h3 class="text-2xl font-medium mb-2 group-hover:text-accent-clay transition-colors duration-300" style="color: var(--primary-dark);">עוגת שילה - סודות מן המדבר</h3>
+                    <p class="text-md font-light mb-4" style="color: var(--primary-dark);">
+                        עוגה עשירה ונסתרת, מתוקה במידה ומלאת אופי.
+                        כל ביס חושף שכבות של טעם וזיכרון, מרקם וקסם.
+                    </p>
+                    <div class="flex justify-between items-baseline pt-2 border-t border-gray-300">
+                        <span class="text-xl font-semibold" style="color: var(--accent-clay);">₪44</span>
+                        <span class="text-sm text-gray-600">חוויה שלמה</span>
+                    </div>
+                </div>
+
+                <!-- Call to action/disclaimer -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center mt-8 text-lg font-light" style="color: var(--primary-dark);">
+                    <p>
+                        לשאלות נוספות והזמנות, פנו אלינו ישירות בבית הקפה - חוויה אישית היא חלק מהאמנות.
+                    </p>
+                    <p class="text-sm mt-2 text-gray-700">כל המחירים בשקלים חדשים ועשויים להשתנות.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Wood Crafts (כפית עץ) -->
+        <section id="wood-crafts" class="scroll-effect min-h-screen w-full flex flex-col justify-center items-center p-8 md:p-16 text-center" style="background-color: rgba(184, 115, 51, 0.2);">
+            <h2 class="text-4xl md:text-6xl font-light mb-8" style="color: var(--primary-dark);">כפית עץ - לחישת הטבע בידך</h2>
+            <p class="text-lg md:text-xl max-w-2xl font-light mb-12" style="color: var(--primary-dark);">
+                כל יצירה מעץ מספרת סיפור של צמיחה, כוח ויופי טבעי.
+                מוצרים בעבודת יד, הנושאים את חותם העץ והאומן, לבית שנושם חיים.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mt-8">
+                <div class="p-6 border border-primary-dark conceptual-card group">
+                    <div class="w-full h-48 mb-4">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='10' width='80' height='80' rx='10' ry='10' fill='%23d4c2ae' stroke='%233b2f2f' stroke-width='2'/%3E%3Cpath d='M30 30 C20 40 20 60 30 70 L70 70 C80 60 80 40 70 30 Z' fill='%236b8e23' opacity='0.5'/%3E%3Crect x='45' y='20' width='10' height='20' fill='%23b87333'/%3E%3Ctext x='50' y='60' font-family='Assistant' font-size='10' text-anchor='middle' fill='%233b2f2f'%3Eבקבוקי שתיה%3C/text%3E%3C/svg%3E" alt="בקבוקי שתיה - עיצוב אבסטרקטי של בקבוק עץ" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="text-2xl font-medium mb-2" style="color: var(--primary-dark);">בקבוקי שתיה - ירוק ובר קיימא</h3>
+                    <p class="text-lg font-light" style="color: var(--primary-dark);">
+                        פתרון אקולוגי, יפהפה ועמיד לשתייה בסטייל.
+                        מלווה אותך ביום יום, ברוח הטבע.
+                    </p>
+                    <p class="text-xl font-semibold mt-4" style="color: var(--accent-green);">₪89</p>
+                </div>
+                <div class="p-6 border border-primary-dark conceptual-card group">
+                    <div class="w-full h-48 mb-4">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23d4c2ae' stroke='%233b2f2f' stroke-width='2'/%3E%3Crect x='40' y='20' width='20' height='10' fill='%23b87333'/%3E%3Cpath d='M40 35 C30 45 30 55 40 65 L60 65 C70 55 70 45 60 35 Z' fill='%236b8e23' opacity='0.5'/%3E%3Ctext x='50' y='70' font-family='Assistant' font-size='10' text-anchor='middle' fill='%233b2f2f'%3Eצנצנות קטנות%3C/text%3E%3C/svg%3E" alt="צנצנות קטנות - עיצוב אבסטרקטי של צנצנת עץ" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="text-2xl font-medium mb-2" style="color: var(--primary-dark);">צנצנות קטנות - אוצרות זעירים</h3>
+                    <p class="text-lg font-light" style="color: var(--primary-dark);">
+                        לאחסון תבלינים, סוכריות או סודות קטנים.
+                        מוסיפות חן וסדר לכל פינה בבית.
+                    </p>
+                    <p class="text-xl font-semibold mt-4" style="color: var(--accent-green);">₪45</p>
+                </div>
+                <div class="p-6 border border-primary-dark conceptual-card group">
+                    <div class="w-full h-48 mb-4">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='20' y='10' width='60' height='80' rx='5' ry='5' fill='%23d4c2ae' stroke='%233b2f2f' stroke-width='2'/%3E%3Crect x='30' y='20' width='40' height='60' fill='%236b8e23' opacity='0.5'/%3E%3Crect x='35' y='15' width='30' height='10' fill='%23b87333'/%3E%3Ctext x='50' y='60' font-family='Assistant' font-size='10' text-anchor='middle' fill='%233b2f2f'%3Eצנצנות גדולות%3C/text%3E%3C/svg%3E" alt="צנצנות גדולות - עיצוב אבסטרקטי של צנצנת עץ גדולה" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="text-2xl font-medium mb-2" style="color: var(--primary-dark);">צנצנות גדולות - לאוצרות הבית</h3>
+                    <p class="text-lg font-light" style="color: var(--primary-dark);">
+                        מעוצבות לאחסון קפה, עוגיות או כל דבר יקר.
+                        מוסיפות מגע טבעי וחם למטבח או לפינת העבודה.
+                    </p>
+                    <p class="text-xl font-semibold mt-4" style="color: var(--accent-green);">₪75</p>
+                </div>
+            </div>
+            <p class="text-lg mt-12 text-gray-700">
+                לרכישה ופרטים נוספים על פריטי העץ, פנו אלינו בבית הקפה או בטלפון - כל פריט הוא יחיד ומיוחד.
+            </p>
+        </section>
+
+        <!-- Section: Ceramic Crafts (מוצרי קרמיקה) -->
+        <section id="ceramic-crafts" class="scroll-effect min-h-screen w-full flex flex-col justify-center items-center p-8 md:p-16 text-center" style="background-color: rgba(59, 47, 47, 0.2);">
+            <h2 class="text-4xl md:text-6xl font-light mb-8" style="color: var(--primary-dark);">מוצרי קרמיקה - חום האדמה בידך</h2>
+            <p class="text-lg md:text-xl max-w-2xl font-light mb-12" style="color: var(--primary-dark);">
+                חוויה של מגע, צבע וצורה. יצירות קרמיקה בעבודת יד,
+                בגווני אדמה חמים, המעניקות לכל בית אווירה של אותנטיות ושלווה.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mt-8">
+                <div class="p-6 border border-primary-dark conceptual-card group">
+                    <div class="w-full h-48 mb-4">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20 80 Q25 30 50 25 Q75 30 80 80 Z' fill='%23d4c2ae' stroke='%233b2f2f' stroke-width='2'/%3E%3Ccircle cx='50' cy='25' r='5' fill='%23b87333'/%3E%3Cpath d='M30 70 C35 60 65 60 70 70 Z' fill='%236b8e23' opacity='0.5'/%3E%3Ctext x='50' y='50' font-family='Assistant' font-size='10' text-anchor='middle' fill='%233b2f2f'%3Eכוס גדולה%3C/text%3E%3C/svg%3E" alt="כוס גדולה - עיצוב אבסטרקטי של כוס קרמיקה גדולה" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="text-2xl font-medium mb-2" style="color: var(--primary-dark);">כוס גדולה - לרגעים ארוכים</h3>
+                    <p class="text-lg font-light" style="color: var(--primary-dark);">
+                        מושלמת לקפה של בוקר או תה מרגיע.
+                        עיצוב ארגונומי המשתלב באופן טבעי ביד.
+                    </p>
+                    <p class="text-xl font-semibold mt-4" style="color: var(--accent-clay);">₪65</p>
+                </div>
+                <div class="p-6 border border-primary-dark conceptual-card group">
+                    <div class="w-full h-48 mb-4">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M25 75 Q30 35 50 30 Q70 35 75 75 Z' fill='%23d4c2ae' stroke='%233b2f2f' stroke-width='2'/%3E%3Ccircle cx='50' cy='30' r='4' fill='%23b87333'/%3E%3Cpath d='M35 65 C40 55 60 55 65 65 Z' fill='%236b8e23' opacity='0.5'/%3E%3Ctext x='50' y='50' font-family='Assistant' font-size='10' text-anchor='middle' fill='%233b2f2f'%3Eכוס קטנה%3C/text%3E%3C/svg%3E" alt="כוס קטנה - עיצוב אבסטרקטי של כוס קרמיקה קטנה" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="text-2xl font-medium mb-2" style="color: var(--primary-dark);">כוס קטנה - לאספרסו ולמגע עדין</h3>
+                    <p class="text-lg font-light" style="color: var(--primary-dark);">
+                        קטנה אך מלאת אופי, לשתיה מרוכזת או סתם כתוספת עיצובית.
+                        מרקם חלק, המשתלב בנוחות בכף היד.
+                    </p>
+                    <p class="text-xl font-semibold mt-4" style="color: var(--accent-clay);">₪45</p>
+                </div>
+                <div class="p-6 border border-primary-dark conceptual-card group">
+                    <div class="w-full h-48 mb-4">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M30 80 Q25 20 50 15 Q75 20 70 80 Z' fill='%23d4c2ae' stroke='%233b2f2f' stroke-width='2'/%3E%3Crect x='40' y='10' width='20' height='10' rx='5' ry='5' fill='%23b87333'/%3E%3Cpath d='M20 40 C10 45 10 55 20 60 L20 40 Z' fill='%236b8e23' opacity='0.5'/%3E%3Ctext x='50' y='50' font-family='Assistant' font-size='10' text-anchor='middle' fill='%233b2f2f'%3Eקנקן%3C/text%3E%3C/svg%3E" alt="קנקן - עיצוב אבסטרקטי של קנקן קרמיקה" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="text-2xl font-medium mb-2" style="color: var(--primary-dark);">קנקן - מרכז השולחן</h3>
+                    <p class="text-lg font-light" style="color: var(--primary-dark);">
+                        לשתיה חמה או קרה, לפריחה או כפריט דקורטיבי.
+                        משרה אווירה של יופי פשוט, חם וביתי.
+                    </p>
+                    <p class="text-xl font-semibold mt-4" style="color: var(--accent-clay);">₪120</p>
+                </div>
+            </div>
+            <p class="text-lg mt-12 text-gray-700">
+                לרכישה ופרטים נוספים על פריטי הקרמיקה, פנו אלינו בבית הקפה או בטלפון - כל יצירה מחכה לסיפורה החדש.
+            </p>
+        </section>
+
+        <footer class="w-full py-8 text-center text-sm md:text-base font-light" style="background-color: var(--primary-dark); color: var(--primary-light);">
+            <p>
+                &copy; 2023 סבאיה - אמנות במרחב. כל הזכויות שמורות.
+            </p>
+            <p class="mt-2 text-xs opacity-70">
+                יצירה דיגיטלית בהשראת טבע, קפה וידי אמן.
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Extend Tailwind config for custom colors and keyframes
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-light': 'var(--primary-light)',
+                        'primary-dark': 'var(--primary-dark)',
+                        'accent-green': 'var(--accent-green)',
+                        'accent-clay': 'var(--accent-clay)',
+                        'bg-neutral': 'var(--bg-neutral)',
+                    }
+                }
+            }
+        };
+
+        const cursor = document.querySelector('.custom-cursor');
+        const interactiveElements = document.querySelectorAll('a, button, .conceptual-card');
+
+        // Cursor movement
+        document.addEventListener('mousemove', e => {
+            cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+        });
+
+        // Cursor grow on hover
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('custom-cursor-grow');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('custom-cursor-grow');
+            });
+        });
+
+        // Scroll-based visibility for sections
+        const sections = document.querySelectorAll('.scroll-effect');
+        const observerOptions = {
+            root: null, // viewport
+            rootMargin: '0px',
+            threshold: 0.3 // 30% of section visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                } else {
+                    // entry.target.classList.remove('visible'); // Optional: hide when not in view
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Parallax effect for fixed backgrounds
+        const parallaxLayers = document.querySelectorAll('.parallax-layer');
+        document.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            parallaxLayers.forEach((layer, index) => {
+                const depth = (index + 1) * 0.05; // Different depths for each layer
+                const transformY = -scrollY * depth;
+                layer.style.transform = `translateY(${transformY}px) translateZ(0)`;
+            });
+        });
+
+        // Initialize parallax on load
+        document.dispatchEvent(new Event('scroll'));
+    </script>
+</body>
+</html>

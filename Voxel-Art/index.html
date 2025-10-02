@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - אמנות הקפה והטבע בפיקסלים</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&family=Rubik+Glitch&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles & Voxel Art inspiration */
+        :root {
+            --primary-bg: #1a202c; /* Dark charcoal */
+            --secondary-bg: #2d3748; /* Darker gray */
+            --accent-green: #38a169; /* Medium green */
+            --accent-brown: #7b341e; /* Deep coffee brown */
+            --text-light: #edf2f7; /* Off-white */
+            --text-dark: #2d3748; /* Dark gray for contrast on light */
+            --block-shadow-light: rgba(0, 0, 0, 0.4);
+            --block-shadow-dark: rgba(0, 0, 0, 0.8);
+            --border-color: #4a5568; /* Slate gray */
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+            cursor: none; /* Hide default cursor */
+            overflow-x: hidden; /* Prevent horizontal scroll from parallax */
+            line-height: 1.8;
+            letter-spacing: 0.5px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Rubik Glitch', system-ui, sans-serif;
+            color: var(--accent-green);
+            text-shadow: 2px 2px var(--accent-brown); /* Voxel-like shadow for titles */
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        /* Custom Cursor Styling */
+        #custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #FFFFFF; /* Light border */
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.8); /* Dark, high-opacity shadow */
+            background-color: transparent;
+            border-radius: 4px; /* Slightly rounded block */
+            pointer-events: none; /* Allows interaction with elements beneath */
+            z-index: 9999;
+            transform: translate(-50%, -50%); /* Center cursor */
+            transition: transform 0.1s ease-out; /* Smooth movement */
+        }
+
+        /* Voxel-like block styling */
+        .voxel-block {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 
+                -4px -4px 0 0 var(--block-shadow-light),
+                -8px -8px 0 0 var(--block-shadow-dark);
+            transform: translateZ(0); /* Ensure hardware acceleration */
+            padding: 1.5rem;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .voxel-block:hover {
+            box-shadow: 
+                -2px -2px 0 0 var(--block-shadow-light),
+                -4px -4px 0 0 var(--block-shadow-dark),
+                0 0 15px rgba(56, 161, 105, 0.5); /* Subtle glow on hover */
+            transform: translateY(-5px);
+        }
+
+        .voxel-button {
+            display: inline-block;
+            background-color: var(--accent-green);
+            color: var(--primary-bg);
+            font-family: 'Heebo', sans-serif;
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--accent-green);
+            box-shadow: 
+                -3px -3px 0 0 rgba(0,0,0,0.3),
+                -6px -6px 0 0 rgba(0,0,0,0.6);
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .voxel-button:hover {
+            background-color: var(--accent-brown);
+            color: var(--text-light);
+            border-color: var(--accent-brown);
+            box-shadow: 
+                -2px -2px 0 0 rgba(0,0,0,0.2),
+                -4px -4px 0 0 rgba(0,0,0,0.4);
+            transform: translateY(-3px);
+        }
+
+        /* Parallax background elements - simple example */
+        .parallax-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2; /* Below main content */
+            background-size: cover;
+            background-repeat: no-repeat;
+            opacity: 0.1;
+            transition: transform 0.1s linear; /* Smooth parallax */
+        }
+        
+        /* Using data URI for simple SVG patterns instead of external images */
+        .parallax-layer-1 { 
+            background-image: url('data:image/svg+xml,%3Csvg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"%3E%3Crect x="0" y="0" width="50" height="50" fill="%23252a34"/%3E%3Crect x="50" y="50" width="50" height="50" fill="%23252a34"/%3E%3C/svg%3E'); 
+            background-size: 200px; opacity: 0.05; 
+        }
+        .parallax-layer-2 { 
+            background-image: url('data:image/svg+xml,%3Csvg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"%3E%3Ccircle cx="50" cy="50" r="40" fill="%233a414e"/%3E%3C/svg%3E'); 
+            background-size: 300px; opacity: 0.03; 
+        }
+        
+        /* Main content wrapper to sit on top of parallax layers */
+        #content-wrapper {
+            position: relative;
+            z-index: 1;
+            padding-top: 5rem; /* Space for fixed header */
+        }
+
+        /* Navbar specific styling */
+        .navbar {
+            background-color: var(--secondary-bg);
+            border-bottom: 2px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2), 0 1px 3px rgba(0,0,0,0.1); /* Subtle voxel-like shadow */
+        }
+        .navbar a {
+            color: var(--text-light);
+            transition: color 0.2s ease, text-shadow 0.2s ease;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            display: block;
+        }
+        .navbar a:hover {
+            color: var(--accent-green);
+            text-shadow: 1px 1px 2px var(--accent-brown);
+        }
+
+        /* Product/Menu Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .product-card {
+            background-color: var(--primary-bg); /* Darker background for cards */
+            border: 1px solid var(--border-color);
+            box-shadow: 
+                -3px -3px 0 0 rgba(0,0,0,0.3),
+                -6px -6px 0 0 rgba(0,0,0,0.6);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-card:hover {
+            box-shadow: 
+                -1px -1px 0 0 rgba(0,0,0,0.2),
+                -2px -2px 0 0 rgba(0,0,0,0.4),
+                0 0 10px rgba(56, 161, 105, 0.3);
+            transform: translateY(-5px);
+        }
+        .product-card .img-placeholder {
+            display: block;
+            width: 100%;
+            height: 200px; /* Standard height for product image area */
+            background-color: var(--secondary-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            line-height: 200px; /* Vertically center text */
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .product-card .price {
+            background-color: var(--accent-brown);
+            color: var(--text-light);
+            padding: 0.5rem 1rem;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            box-shadow: 
+                -2px 2px 0 0 rgba(0,0,0,0.3);
+            font-family: 'Heebo', sans-serif;
+            font-weight: 700;
+        }
+        .product-card .price::before {
+            content: "₪";
+        }
+
+        /* Specific menu item styling */
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-item .item-title {
+            font-family: 'Heebo', sans-serif; /* Keep titles readable */
+            font-weight: 700;
+            color: var(--accent-green);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: none; /* No voxel shadow for menu item titles for clarity */
+        }
+        .menu-item .item-description {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            flex-grow: 1; /* Make description take available space */
+            margin-bottom: 1rem;
+        }
+        .menu-item .item-price {
+            font-family: 'Heebo', sans-serif;
+            font-weight: 700;
+            color: var(--accent-brown);
+            font-size: 1.3rem;
+            text-align: left; /* Prices usually align left in RTL */
+        }
+        .menu-item .item-price::before {
+            content: "₪";
+        }
+        
+        /* Basic responsive adjustments */
+        @media (max-width: 768px) {
+            .navbar-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                right: 0; /* Adjust for RTL */
+                width: 100%;
+                background-color: var(--secondary-bg);
+                border-top: 1px solid var(--border-color);
+            }
+            .navbar-menu.active {
+                display: flex;
+            }
+            .navbar-toggle {
+                display: block;
+            }
+        }
+        @media (min-width: 769px) {
+            .navbar-menu {
+                display: flex !important; /* Override display: none when active */
+            }
+            .navbar-toggle {
+                display: none;
+            }
+        }
+
+        /* Animation class for sections */
+        .animate-in {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+    </style>
+</head>
+<body class="bg-primary-bg text-text-light">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+
+    <!-- Parallax Background Layers -->
+    <div class="parallax-layer parallax-layer-1" id="parallax-1"></div>
+    <div class="parallax-layer parallax-layer-2" id="parallax-2"></div>
+
+    <!-- Main Content Wrapper -->
+    <div id="content-wrapper">
+
+        <!-- Header / Navigation Bar -->
+        <header class="navbar fixed top-0 right-0 w-full p-4 z-50">
+            <nav class="container mx-auto flex justify-between items-center flex-wrap">
+                <a href="#hero" class="text-2xl font-bold font-['Rubik_Glitch'] text-accent-green hover:text-accent-brown transition-colors">
+                    סבאיה
+                </a>
+                <button class="navbar-toggle text-text-light text-2xl" id="navbar-toggle">☰</button>
+                <div class="navbar-menu w-full md:w-auto md:flex" id="navbar-menu">
+                    <a href="#hero" class="mx-2 hover:text-accent-green">בית</a>
+                    <a href="#about" class="mx-2 hover:text-accent-green">המסע שלנו</a>
+                    <a href="#menu" class="mx-2 hover:text-accent-green">תפריט</a>
+                    <a href="#wood-products" class="mx-2 hover:text-accent-green">כפית עץ - מוצרים</a>
+                    <a href="#ceramic-products" class="mx-2 hover:text-accent-green">מוצרי קרמיקה</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen flex items-center justify-center text-center p-8 bg-gradient-to-t from-transparent to-black/20">
+            <div class="max-w-4xl voxel-block mx-auto p-8 bg-secondary-bg/80 text-center">
+                <h1 class="text-6xl md:text-8xl mb-6 leading-tight">
+                    סבאיה
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 leading-relaxed">
+                    מקום שבו כל פיקסל מספר סיפור - קפה, טבע ואמנות נפגשים בחוויה ייחודית
+                </p>
+                <a href="#about" class="voxel-button text-lg md:text-xl">גלו את העולם שלנו</a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-16 md:py-24 p-8 container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="voxel-block">
+                    <h2 class="text-4xl md:text-5xl mb-6">המסע של סבאיה</h2>
+                    <p class="text-lg mb-4">
+                        בליבה של משתלה ירוקה, בין צמחים הפורחים בצבעים עזים, ניצב בית הקפה "סבאיה".
+                        כאן, כל כוס קפה היא יצירה, כל פינה היא השראה, וכל רגע הוא הזמנה להתחבר לטבע הפראי והשקט שסביבנו.
+                        אנו מאמינים בשילוב הרמוני בין חושי הטעם, הריח והראייה, כדי להעניק לכם חוויה שמעוררת את הנפש.
+                    </p>
+                    <p class="text-lg">
+                        האווירה אצלנו מורכבת מפיקסלים של נעימות - ישיבה מפנקת בין עלים ירוקים, ריח פרחים עדין,
+                        ומצלול קל של שיחות חמות. זהו מקום מפלט עירוני, נווה מדבר דיגיטלי, בו תוכלו להאט, לנשום,
+                        ולהתענג על קפה איכותי ומוצרים בעבודת יד שנוצרו באהבה.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 gap-8">
+                    <div class="voxel-block">
+                        <h3 class="text-3xl font-bold mb-4 text-accent-green">קפה איכותי</h3>
+                        <p>
+                            כל פולי הקפה שלנו נבחרים בקפידה ומגיעים ממקורות אתיים ברחבי העולם. תהליך הקלייה המדויק שלנו,
+                            שבו כל גרגר זוכה לטיפול מסור, מבטיח לכם כוס קפה בעלת ארומה עשירה וטעם בלתי נשכח, ממש כמו יצירת אמנות פיקסלית.
+                        </p>
+                    </div>
+                    <div class="voxel-block">
+                        <h3 class="text-3xl font-bold mb-4 text-accent-green">אווירה טבעית</h3>
+                        <p>
+                            שקעו בלב משתלה פורחת, מוקפים בחיים ירוקים. כל פינה מציעה חוויה ויזואלית ייחודית,
+                            שבה צבעי הטבע מתמזגים עם קווים גאומטריים ליצירת מרחב שקט ומעורר השראה, הרחק מהמולת היום-יום.
+                        </p>
+                    </div>
+                    <div class="voxel-block">
+                        <h3 class="text-3xl font-bold mb-4 text-accent-green">מוצרים ייחודיים</h3>
+                        <p>
+                            מעבר לקפה, אנו גאים להציג אוסף בלעדי של מוצרי עץ וקרמיקה, כולם עוצבו ונוצרו בעבודת יד.
+                            פריטים אלה, המשלבים פשטות טבעית עם אומנות מדויקת, מוסיפים נגיעה חמה של יופי ואותנטיות לכל בית.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="py-16 md:py-24 p-8 container mx-auto">
+            <h2 class="text-4xl md:text-5xl text-center mb-12">התפריט הפיקסלי שלנו</h2>
+
+            <div class="mb-12">
+                <h3 class="text-3xl font-bold mb-6 text-accent-green">אוכל ומתוקים - קומפוזיציות טעימות</h3>
+                <div class="product-grid">
+                    <!-- Food items -->
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">כריך סבביח</h4>
+                        <p class="item-description">ביצה קשה, טונה, חציל, מטבוחה, מלפפון חמוץ ולימון כבוש - סימפוניה של טעמים ישראליים, מוגש עם זיתים וסלט אישי.</p>
+                        <span class="item-price">36</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">כריך פנסיבאיה</h4>
+                        <p class="item-description">פטריות מוקפצות עם כמהין, גבינות שמנת וגראנה פדאנו, רוקט ובלסמי - קלאסיקה מודרנית בניחוח יוקרתי, מוגש עם זיתים וסלט אישי.</p>
+                        <span class="item-price">45</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">כריך טבעוני</h4>
+                        <p class="item-description">ממרח חציל שחור, גבינת סויה, עגבניות מיובשות ורוקט - הרמוניה של טעמים ארציים ורעננים, מוגש עם זיתים וסלט אישי.</p>
+                        <span class="item-price">45</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">פלטת גבינות ולחמים</h4>
+                        <p class="item-description">מגוון גבינות משובחות מלוות בלחמים טריים, חמאה מוקצפת מתובלת, טחינה יוגורט וריבה ביתית - חוויה קולינרית עשירה.</p>
+                        <span class="item-price">68</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">סלט במבי</h4>
+                        <p class="item-description">חסות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר - פיצוץ של טעמים ומרקמים, רענן ומפתיע.</p>
+                        <span class="item-price">36</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">סלט חלבון</h4>
+                        <p class="item-description">עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון - ארוחה מזינה ומלאה באנרגיה.</p>
+                        <span class="item-price">32</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">מוזלי מור</h4>
+                        <p class="item-description">יוגורט פרו, חצילים קלויים, ביצה קשה, טחינה, וגרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש, מוגש עם פיתה קראנץ' - שילוב נועז ומרתק.</p>
+                        <span class="item-price">42</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">קערת אסאי</h4>
+                        <p class="item-description">עם גרנולה פריכה, שבבי קוקוס טרופיים ופירות העונה - רענון מתוק ובריא, צבעוני ומרגש.</p>
+                        <span class="item-price">39</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">קיש ברוקולי/פטריות/בצל ויין לבן</h4>
+                        <p class="item-description">קיש ביתי עשיר בטעמים, מוגש עם סלט אישי ושמנת חמוצה - ארוחה חמה ומנחמת.</p>
+                        <span class="item-price">37</span>
+                    </div>
+
+                    <!-- Sweet items -->
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">קוראסון שוקולד גדול</h4>
+                        <p class="item-description">פריך מבחוץ, נימוח מבפנים, עם מילוי שוקולד עשיר - הנאה קלאסית.</p>
+                        <span class="item-price">19</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">קוראסון שקדים/פיסטוק גדול</h4>
+                        <p class="item-description">קוראסון עשיר עם מילוי קרמי של שקדים או פיסטוק - פינוק אלגנטי.</p>
+                        <span class="item-price">22</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">עוגה בחושה בננה ושוקולד</h4>
+                        <p class="item-description">ניחוחות של בננה בשלה ושבבי שוקולד מריר - מתוקה וביתית.</p>
+                        <span class="item-price">15</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">פאי תפוחים קרמבל</h4>
+                        <p class="item-description">תפוחים טריים ברוטב קרמלי עם שכבת קרמבל פריכה, מוגש עם כדור גלידה - חם ומנחם.</p>
+                        <span class="item-price">44</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">פאי מרנג לימון</h4>
+                        <p class="item-description">בסיס פריך, מילוי לימון חמצמץ ומרנג אוורירי - חגיגה לחיך.</p>
+                        <span class="item-price">31</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">אוראו צ'יז קייק</h4>
+                        <p class="item-description">גבינה עשירה עם עוגיות אוראו כתושות - שילוב מנצח ומרקם קרמי.</p>
+                        <span class="item-price">38</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">קראנץ' סניקרס</h4>
+                        <p class="item-description">שכבות של שוקולד, בוטנים וקרמל - ממתק ממכר במיוחד.</p>
+                        <span class="item-price">23</span>
+                    </div>
+                    <div class="product-card p-6 menu-item">
+                        <h4 class="item-title">עוגת שילה</h4>
+                        <p class="item-description">עוגה מיוחדת וביתית, מתכון סודי של סבאיה - הפתעה מתוקה.</p>
+                        <span class="item-price">44</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center text-lg mt-12 text-gray-400">
+                לשאלות והזמנות, אנא פנו אלינו בבית הקפה. כל המחירים בשקלים חדשים ועשויים להשתנות.
+            </p>
+        </section>
+
+        <!-- Wood Products Section -->
+        <section id="wood-products" class="py-16 md:py-24 p-8 container mx-auto">
+            <h2 class="text-4xl md:text-5xl text-center mb-12">כפית עץ - אמנות הטבע בידכם</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-12">
+                מוצרי העץ שלנו הם מחווה לחומר הגלם הטבעי. כל פריט מגולף בעבודת יד,
+                מתוך כבוד לעץ ולסיפור שהוא נושא. הם אינם רק כלים, אלא פסלים קטנים
+                שנועדו להכניס חום וטבע לפינות חייכם, שימושיים ומרגשים כאחד.
+            </p>
+
+            <div class="product-grid">
+                <div class="product-card p-6 text-center">
+                    <div class="img-placeholder">
+                        בקבוק שתיה
+                        <img src="" alt="בקבוק שתיה מעץ בעבודת יד" class="hidden">
+                    </div>
+                    <h4 class="font-bold text-xl my-4 text-accent-green">בקבוקי שתיה</h4>
+                    <p class="text-base text-gray-300 mb-4">בקבוקי עץ טבעיים לשמירה על טמפרטורה, עם מגע טבעי וייחודי.</p>
+                    <span class="price">89</span>
+                </div>
+                <div class="product-card p-6 text-center">
+                    <div class="img-placeholder">
+                        צנצנות קטנות
+                        <img src="" alt="צנצנות עץ קטנות בעבודת יד" class="hidden">
+                    </div>
+                    <h4 class="font-bold text-xl my-4 text-accent-green">צנצנות קטנות</h4>
+                    <p class="text-base text-gray-300 mb-4">צנצנות עץ קומפקטיות לאחסון תבלינים או פריטים קטנים, אלמנט עיצובי.</p>
+                    <span class="price">45</span>
+                </div>
+                <div class="product-card p-6 text-center">
+                    <div class="img-placeholder">
+                        צנצנות גדולות
+                        <img src="" alt="צנצנות עץ גדולות בעבודת יד" class="hidden">
+                    </div>
+                    <h4 class="font-bold text-xl my-4 text-accent-green">צנצנות גדולות</h4>
+                    <p class="text-base text-gray-300 mb-4">צנצנות עץ מרשימות לאחסון או כפריט דקורטיבי מרכזי.</p>
+                    <span class="price">75</span>
+                </div>
+            </div>
+            <p class="text-center text-lg mt-12 text-gray-400">
+                לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.
+            </p>
+        </section>
+
+        <!-- Ceramic Products Section -->
+        <section id="ceramic-products" class="py-16 md:py-24 p-8 container mx-auto">
+            <h2 class="text-4xl md:text-5xl text-center mb-12">מוצרי קרמיקה - אדמה שהופכת לאמנות</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-12">
+                מוצרי הקרמיקה שלנו נולדים מחיבור עמוק לאדמה. כל כלי מעוצב ביד אמן,
+                עם ציפוי טבעי בגוני אדמה חמים, המשקפים את חום הבית ואת עומק הטבע.
+                כל פריט הוא יצירה ייחודית, המשלבת פונקציונליות עם יופי גולמי ומרגש.
+            </p>
+
+            <div class="product-grid">
+                <div class="product-card p-6 text-center">
+                    <div class="img-placeholder">
+                        כוס גדולה
+                        <img src="" alt="כוס קרמיקה גדולה בעבודת יד" class="hidden">
+                    </div>
+                    <h4 class="font-bold text-xl my-4 text-accent-green">כוס גדולה</h4>
+                    <p class="text-base text-gray-300 mb-4">כוס קרמיקה גדולה, מושלמת לקפה או תה, עם אחיזה נוחה ומראה חמים.</p>
+                    <span class="price">65</span>
+                </div>
+                <div class="product-card p-6 text-center">
+                    <div class="img-placeholder">
+                        כוס קטנה
+                        <img src="" alt="כוס קרמיקה קטנה בעבודת יד" class="hidden">
+                    </div>
+                    <h4 class="font-bold text-xl my-4 text-accent-green">כוס קטנה</h4>
+                    <p class="text-base text-gray-300 mb-4">כוס אספרסו או קפה קטן, משלבת עדינות וחוזק בחומר הטבעי.</p>
+                    <span class="price">45</span>
+                </div>
+                <div class="product-card p-6 text-center">
+                    <div class="img-placeholder">
+                        קנקן
+                        <img src="" alt="קנקן קרמיקה בעבודת יד" class="hidden">
+                    </div>
+                    <h4 class="font-bold text-xl my-4 text-accent-green">קנקן</h4>
+                    <p class="text-base text-gray-300 mb-4">קנקן קרמיקה אלגנטי, מתאים למים, מיץ או כפריט נוי מרשים.</p>
+                    <span class="price">120</span>
+                </div>
+            </div>
+            <p class="text-center text-lg mt-12 text-gray-400">
+                לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-secondary-bg py-8 text-center border-t-2 border-border-color mt-16">
+            <p class="text-lg mb-4">&copy; 2024 סבאיה - כל הזכויות שמורות. אמנות בחיבור לטבע.</p>
+            <p class="text-md text-gray-400">
+                טלפון: <a href="tel:050-1234567" class="hover:text-accent-green">050-1234567</a> |
+                כתובת: המשתלה הירוקה, רחוב האמנים 1, עיר הדעת
+            </p>
+        </footer>
+
+    </div> <!-- End Content Wrapper -->
+
+    <script>
+        // Custom Cursor Logic
+        const customCursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            customCursor.style.left = `${e.clientX}px`;
+            customCursor.style.top = `${e.clientY}px`;
+        });
+
+        // Parallax Effect Logic
+        const parallax1 = document.getElementById('parallax-1');
+        const parallax2 = document.getElementById('parallax-2');
+        
+        window.addEventListener('scroll', () => {
+            let offset = window.pageYOffset;
+            parallax1.style.transform = `translateY(${offset * 0.1}px)`;
+            parallax2.style.transform = `translateY(${offset * 0.05}px)`;
+        });
+
+        // Smooth Scroll for Navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                // Close mobile menu after clicking a link
+                const navbarMenu = document.getElementById('navbar-menu');
+                if (navbarMenu.classList.contains('active')) {
+                    navbarMenu.classList.remove('active');
+                }
+            });
+        });
+
+        // Mobile Navbar Toggle
+        const navbarToggle = document.getElementById('navbar-toggle');
+        const navbarMenu = document.getElementById('navbar-menu');
+
+        navbarToggle.addEventListener('click', () => {
+            navbarMenu.classList.toggle('active');
+        });
+
+        // Intersection Observer for section animations
+        const sections = document.querySelectorAll('section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in'); 
+                } else {
+                    entry.target.classList.remove('animate-in'); 
+                }
+            });
+        }, { threshold: 0.2 }); // Trigger when 20% of section is visible
+
+        sections.forEach(section => {
+            observer.observe(section);
+            // Add initial styles for the animation
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+        });
+    </script>
+</body>
+</html>

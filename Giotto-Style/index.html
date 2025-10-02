@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - אמנות הקפה והטבע</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&family=Noto+Serif+Hebrew:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Tailwind CSS Configuration for Giotto Style */
+        :root {
+            --color-giotto-primary: #8B4513; /* Saddle Brown - earthy base */
+            --color-giotto-secondary: #D2B48C; /* Tan - warm highlight */
+            --color-giotto-accent: #6B8E23; /* Olive Drab - natural green */
+            --color-giotto-terra: #A0522D; /* Sienna - rich red-brown */
+            --color-giotto-text-dark: #4A4A4A; /* Dark Grey for text */
+            --color-giotto-bg-light: #F5DEB3; /* Wheat - light background */
+            --color-giotto-deep-accent: #2F4F4F; /* Dark Slate Gray - deep accent */
+        }
+        
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            color: var(--color-giotto-text-dark);
+            background-color: var(--color-giotto-bg-light);
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            cursor: none; /* Hide default cursor */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Noto Serif Hebrew', serif;
+            color: var(--color-giotto-terra);
+        }
+
+        /* Custom cursor */
+        #custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+            z-index: 9999;
+            /* High-contrast visibility technique */
+            border: 2px solid #FFFFFF; /* Light border */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Dark shadow for contrast */
+        }
+
+        .section-background {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* For parallax effect */
+            filter: grayscale(30%) sepia(20%); /* Giotto-esque filter */
+        }
+
+        .header-bg-image {
+            background-image: linear-gradient(to bottom, rgba(245, 222, 179, 0.7), rgba(245, 222, 179, 0.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="%238B4513" stop-opacity="0.1"/><stop offset="100%" stop-color="%23D2B48C" stop-opacity="0.1"/></linearGradient><pattern id="p" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="5" height="5" fill="%238B4513" opacity="0.1"/><rect x="5" y="5" width="5" height="5" fill="%23D2B48C" opacity="0.1"/></pattern></defs><rect x="0" y="0" width="100" height="100" fill="url(%23p)"/></svg>');
+        }
+
+        .menu-item-bg {
+            background-image: linear-gradient(to top right, rgba(160, 82, 45, 0.1), rgba(160, 82, 45, 0.2)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><pattern id="dotted-bg" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="%23D2B48C" opacity="0.3"/></pattern></defs><rect x="0" y="0" width="100" height="100" fill="url(%23dotted-bg)"/></svg>');
+        }
+        
+        .product-card-bg {
+             background-image: linear-gradient(to bottom, rgba(107, 142, 35, 0.1), rgba(107, 142, 35, 0.2)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><pattern id="line-bg" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="10" y2="10" stroke="%23D2B48C" stroke-width="0.5" opacity="0.3"/><line x1="10" y1="0" x2="0" y2="10" stroke="%23D2B48C" stroke-width="0.5" opacity="0.3"/></pattern></defs><rect x="0" y="0" width="100" height="100" fill="url(%23line-bg)"/></svg>');
+        }
+        
+        /* Simulating Giotto's texture with CSS background on a container */
+        .giotto-canvas {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><filter id="f" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" result="t"/><feDiffuseLighting in="t" lightingColor="%23F5DEB3" surfaceScale="5" result="dl"><feDistantLight azimuth="225" elevation="45"/></feDiffuseLighting><feComposite in="dl" in2="SourceGraphic" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/></filter></defs><rect x="0" y="0" width="100" height="100" fill="%23F5DEB3" filter="url(%23f)"/></svg>');
+            background-size: cover;
+            background-blend-mode: multiply;
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .scroll-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="giotto-canvas">
+    <div id="custom-cursor"></div>
+
+    <!-- Main Content Wrapper with a positive z-index -->
+    <div class="relative z-[1] min-h-screen">
+        <!-- Fixed Background Element - Visual texture or subtle pattern -->
+        <div class="fixed top-0 left-0 w-full h-full bg-giotto-terra opacity-10 giotto-canvas z-[-1]"></div>
+        
+        <!-- Header & Navigation -->
+        <header class="text-giotto-text-dark p-6 header-bg-image border-b-2 border-giotto-primary shadow-lg sticky top-0 z-50">
+            <nav class="container mx-auto flex flex-col md:flex-row items-center justify-between">
+                <a href="#home" class="text-4xl font-bold text-giotto-terra mb-4 md:mb-0 hover:text-giotto-primary transition duration-300">סבאיה</a>
+                <ul class="flex flex-wrap justify-center md:space-x-8 space-x-0 md:space-x-reverse text-lg">
+                    <li><a href="#home" class="block py-2 px-4 hover:text-giotto-accent transition duration-300">בית</a></li>
+                    <li><a href="#menu" class="block py-2 px-4 hover:text-giotto-accent transition duration-300">תפריט</a></li>
+                    <li><a href="#wooden-spoons" class="block py-2 px-4 hover:text-giotto-accent transition duration-300">כפית עץ</a></li>
+                    <li><a href="#ceramics" class="block py-2 px-4 hover:text-giotto-accent transition duration-300">מוצרי קרמיקה</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Home Section -->
+        <section id="home" class="min-h-screen flex items-center justify-center p-8 bg-giotto-bg-light relative overflow-hidden">
+            <div class="absolute inset-0 bg-giotto-accent opacity-5 -z-[1] transform -skew-y-3 scale-110"></div>
+            <div class="container mx-auto text-center relative z-[1] scroll-reveal">
+                <h1 class="text-6xl md:text-8xl font-bold mb-8 text-giotto-terra leading-tight [text-shadow:_4px_4px_8px_rgb(0_0_0_/_30%)]">
+                    סבאיה - אמנות הקפה והטבע
+                </h1>
+                <p class="text-xl md:text-2xl mb-12 text-giotto-text-dark max-w-3xl mx-auto leading-relaxed">
+                    במרחבי המשתלה הפורחת, בין לחישות העלים וניחוחות האדמה, נרקם עולם של טעמים ורוגע. סבאיה אינה רק בית קפה; היא מפגש בין חוכמת האדמה לאמנות היד, מזמינה אתכם לעצור לרגע ולחוות יופי בפשטותו.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 text-giotto-text-dark">
+                    <div class="p-6 rounded-lg shadow-xl border-2 border-giotto-terra bg-giotto-secondary bg-opacity-70 transform hover:-translate-y-2 transition-all duration-300">
+                        <h3 class="text-3xl font-bold mb-4 text-giotto-primary">קפה איכותי</h3>
+                        <p class="leading-relaxed">
+                            פולי קפה נבחרים ממרחקים, נישאים במסע ארוך עד לקלייה מדויקת כאן, בלב הסבאיה. כל לגימה מספרת סיפור של מסורת ותשוקה, טעם עשיר ועמוק כמו האדמה עצמה.
+                        </p>
+                    </div>
+                    <div class="p-6 rounded-lg shadow-xl border-2 border-giotto-terra bg-giotto-secondary bg-opacity-70 transform hover:-translate-y-2 transition-all duration-300">
+                        <h3 class="text-3xl font-bold mb-4 text-giotto-primary">אווירה טבעית</h3>
+                        <p class="leading-relaxed">
+                            שבו בין גווני הירוק המתחלפים, מוקפים בפריחה עדינה וצמחים עתיקים. כאן, הזמן מאט, הנשמה נרגעת, והשיחה מקבלת עומק חדש, בהשראת יופי הבריאה.
+                        </p>
+                    </div>
+                    <div class="p-6 rounded-lg shadow-xl border-2 border-giotto-terra bg-giotto-secondary bg-opacity-70 transform hover:-translate-y-2 transition-all duration-300">
+                        <h3 class="text-3xl font-bold mb-4 text-giotto-primary">מוצרים ייחודיים</h3>
+                        <p class="leading-relaxed">
+                            מידי אומן, נולדים חפצים בעלי נשמה. כפות עץ מחומר גלם טבעי ומוצרי קרמיקה בגווני אדמה, שנוצרו באהבה ובסבלנות, להביא פיסה מהשקט והיופי של סבאיה אל ביתכם.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="p-8 py-20 bg-giotto-primary bg-opacity-80 relative overflow-hidden">
+            <div class="absolute inset-0 bg-giotto-deep-accent opacity-10 z-[-1] transform skew-y-2 scale-105"></div>
+            <div class="container mx-auto text-center relative z-[1] scroll-reveal">
+                <h2 class="text-5xl md:text-7xl font-bold mb-16 text-giotto-bg-light [text-shadow:_3px_3px_6px_rgb(0_0_0_/_40%)]">
+                    התפריט שלנו - מטעמי האדמה והיצירה
+                </h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Food & Sweets -->
+                    <div>
+                        <h3 class="text-4xl font-bold mb-8 text-giotto-accent [text-shadow:_2px_2px_4px_rgb(0_0_0_/_20%)]">אוכל ומתוקים</h3>
+                        <div class="space-y-8">
+                            <!-- Food items -->
+                            <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">כריך סבביח <span class="float-left text-giotto-primary">₪36</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                    מסע טעמים ים-תיכוני בביס אחד – ביצה קשה, חציל שחום, טונה, מטבוחה עשירה, מלפפון חמוץ ולימון כבוש. מוגש עם זיתים וסלט ירוק רענן, כמו ציור מרהיב בצלחת.
+                                </p>
+                            </div>
+                            <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">כריך פנסיבאיה <span class="float-left text-giotto-primary">₪45</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                    חגיגה לפריזמה הקולינרית – פטריות מוקפצות עם נגיעות כמהין, גבינות שמנת וגראנה פדאנו, רוקט רענן ובלסמי מיושן. מוגש עם זיתים וסלט אישי, כשהטבע והאומנות נפגשים.
+                                </p>
+                            </div>
+                            <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">כריך טבעוני <span class="float-left text-giotto-primary">₪45</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                    ממרח חציל שחור עשיר, גבינת סויה, עגבניות מיובשות עסיסיות ורוקט פריך. מוגש עם זיתים וסלט אישי, לחוויה טבעונית מרוממת נפש.
+                                </p>
+                            </div>
+                            <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">פלטת גבינות ולחמים עם מטבלים <span class="float-left text-giotto-primary">₪68</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                    שפע של גבינות בוטיק, פרוסות לחם כפרי, מלווים בחמאה מוקצפת מתובלת, טחינה יוגורט וריבת פירות העונה. חגיגה לעין ולחך, ברוח האירוח העתיק.
+                                </p>
+                            </div>
+                            <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">סלט במבי <span class="float-left text-giotto-primary">₪36</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                    קומפוזיציה של טעמים וצבעים: חסות פריכות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר. סלט קליל ומרענן, כמו נשימת האביב.
+                                </p>
+                            </div>
+                             <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">מוזלי מור <span class="float-left text-giotto-primary">₪42</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                   יוגורט פרו, חצילים קלויים באש גלויה, ביצה קשה, טחינה עשירה, וגרעיני דלעת פריכים, מתובל באריסה מתוקה ולימון כבוש, מוגש עם פיתה קראנץ'. מנה מפתיעה ומזינה, במלאותה וטעמיה.
+                                </p>
+                            </div>
+
+                            <!-- Sweets -->
+                            <h3 class="text-4xl font-bold mb-8 mt-12 text-giotto-accent [text-shadow:_2px_2px_4px_rgb(0_0_0_/_20%)]">מתוקים</h3>
+                             <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">פאי תפוחים קרמבל <span class="float-left text-giotto-primary">₪44</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                    פאי תפוחים קלאסי עם שכבת קרמבל פריכה, מוגש חם עם כדור גלידה משובח. מתוק, חמוץ, ומרקמים מתנגשים, חוויה לכל החושים.
+                                </p>
+                            </div>
+                             <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">עוגת שילה <span class="float-left text-giotto-primary">₪44</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                    מסתורין של טעמים בעוגה ייחודית – כל ביס הוא הפתעה, שילוב של מרקמים וניחוחות עמוקים.
+                                </p>
+                            </div>
+                             <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">קוראסון שוקולד גדול <span class="float-left text-giotto-primary">₪19</span></h4>
+                            </div>
+                             <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">קוראסון שקדים/פיסטוק גדול <span class="float-left text-giotto-primary">₪22</span></h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Drinks (Placeholder - user provided no content) -->
+                    <div>
+                        <h3 class="text-4xl font-bold mb-8 text-giotto-accent [text-shadow:_2px_2px_4px_rgb(0_0_0_/_20%)]">שתיה</h3>
+                        <div class="space-y-8">
+                            <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">קפה הפוך <span class="float-left text-giotto-primary">₪16</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                    אמנות החלב והקפה נפגשת בספל – קפה הפוך קלאסי, בועות קטיפה וטעם עשיר.
+                                </p>
+                            </div>
+                            <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">קפה שחור <span class="float-left text-giotto-primary">₪12</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                    הטוהר שבפשטות – קפה שחור עז טעם, ללא תוספות, לאוהבי האספרסו המודגש.
+                                </p>
+                            </div>
+                            <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">תה צמחים <span class="float-left text-giotto-primary">₪14</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                    חליטת צמחים מרעננת, נבחרת מגינות הטבע, מרגיעה ומחייה.
+                                </p>
+                            </div>
+                            <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">מיץ טבעי <span class="float-left text-giotto-primary">₪18</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                    מיץ פירות טרי סחוט במקום, מוגש קר ומרענן, מחווה לשפע הטבע.
+                                </p>
+                            </div>
+                            <div class="menu-item-bg p-6 rounded-xl shadow-lg border-2 border-giotto-secondary text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                                <h4 class="text-2xl font-bold mb-2 text-giotto-terra">יין בוטיק <span class="float-left text-giotto-primary">₪28</span></h4>
+                                <p class="text-lg leading-relaxed">
+                                    כוס יין בוטיק אדום או לבן, מלווה אידאלי לרגעים של השראה ורוגע.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-16 text-xl text-giotto-bg-light leading-loose">
+                    לשאלות והזמנות, אנא פנו אלינו בבית הקפה. כל המחירים בשקלים חדשים ועשויים להשתנות.
+                    <br>
+                    אנו מקווים לראותכם ושתהנו ממטעמי האדמה בלב הטבע.
+                </p>
+            </div>
+        </section>
+
+        <!-- Wooden Spoons Section -->
+        <section id="wooden-spoons" class="p-8 py-20 bg-giotto-bg-light relative overflow-hidden">
+             <div class="absolute inset-0 bg-giotto-terra opacity-5 z-[-1] transform -skew-y-1 scale-105"></div>
+            <div class="container mx-auto text-center relative z-[1] scroll-reveal">
+                <h2 class="text-5xl md:text-7xl font-bold mb-12 text-giotto-primary [text-shadow:_3px_3px_6px_rgb(0_0_0_/_20%)]">
+                    כפיות עץ - מגע היער בידכם
+                </h2>
+                <p class="text-xl md:text-2xl mb-16 text-giotto-text-dark max-w-3xl mx-auto leading-relaxed">
+                    כל כפית עץ היא יצירת אמנות קטנה, מפוסלת בסבלנות מעצים שנבחרו בקפידה. חמות למגע, עמידות ובעלות סיפור משלהן, הן מזמינות אתכם להכניס חום וטבע לשגרת יומכם. כל מוצר עשוי מחומרים טבעיים וידידותיים לסביבה, ונוצר מתוך כבוד לאדמה וליצירה.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                    <div class="product-card-bg p-6 rounded-xl shadow-xl border-2 border-giotto-accent text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:-translate-y-2">
+                        <div class="w-full h-48 bg-giotto-primary bg-opacity-30 flex items-center justify-center text-giotto-bg-light text-5xl font-bold mb-6 rounded-lg border-2 border-giotto-terra">
+                            כפית
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2 text-giotto-terra">כפיות שף</h3>
+                        <p class="text-lg mb-4 leading-relaxed">
+                            כפיות עץ ארוכות ומעוצבות, אידיאליות לבישול וערבוב. מחומר גלם טבעי ואיכותי.
+                        </p>
+                        <span class="text-2xl font-bold text-giotto-primary float-left">₪49</span>
+                    </div>
+                     <div class="product-card-bg p-6 rounded-xl shadow-xl border-2 border-giotto-accent text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:-translate-y-2">
+                        <div class="w-full h-48 bg-giotto-primary bg-opacity-30 flex items-center justify-center text-giotto-bg-light text-5xl font-bold mb-6 rounded-lg border-2 border-giotto-terra">
+                            בקבוק
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2 text-giotto-terra">בקבוקי שתיה</h3>
+                        <p class="text-lg mb-4 leading-relaxed">
+                            בקבוקי שתיה מעץ בעבודת יד, שומרים על טמפרטורה ומעניקים מגע טבעי לכל לגימה.
+                        </p>
+                        <span class="text-2xl font-bold text-giotto-primary float-left">₪89</span>
+                    </div>
+                    <div class="product-card-bg p-6 rounded-xl shadow-xl border-2 border-giotto-accent text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:-translate-y-2">
+                         <div class="w-full h-48 bg-giotto-primary bg-opacity-30 flex items-center justify-center text-giotto-bg-light text-5xl font-bold mb-6 rounded-lg border-2 border-giotto-terra">
+                            צנצנת
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2 text-giotto-terra">צנצנות קטנות</h3>
+                        <p class="text-lg mb-4 leading-relaxed">
+                            צנצנות עץ קטנות לאחסון תבלינים או פריטים קטנים, עם מכסה הדוק.
+                        </p>
+                        <span class="text-2xl font-bold text-giotto-primary float-left">₪45</span>
+                    </div>
+                    <div class="product-card-bg p-6 rounded-xl shadow-xl border-2 border-giotto-accent text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:-translate-y-2">
+                         <div class="w-full h-48 bg-giotto-primary bg-opacity-30 flex items-center justify-center text-giotto-bg-light text-5xl font-bold mb-6 rounded-lg border-2 border-giotto-terra">
+                            צנצנת
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2 text-giotto-terra">צנצנות גדולות</h3>
+                        <p class="text-lg mb-4 leading-relaxed">
+                            צנצנות עץ גדולות לאחסון מזון יבש או פריטי נוי, מוסיפות חמימות לכל מטבח.
+                        </p>
+                        <span class="text-2xl font-bold text-giotto-primary float-left">₪75</span>
+                    </div>
+                     <div class="product-card-bg p-6 rounded-xl shadow-xl border-2 border-giotto-accent text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:-translate-y-2">
+                        <div class="w-full h-48 bg-giotto-primary bg-opacity-30 flex items-center justify-center text-giotto-bg-light text-5xl font-bold mb-6 rounded-lg border-2 border-giotto-terra">
+                            קערה
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2 text-giotto-terra">קערות הגשה</h3>
+                        <p class="text-lg mb-4 leading-relaxed">
+                            קערות עץ מפוסלות להגשת סלטים או פירות, עם גימור טבעי המדגיש את יופיו של העץ.
+                        </p>
+                        <span class="text-2xl font-bold text-giotto-primary float-left">₪95</span>
+                    </div>
+                    <div class="product-card-bg p-6 rounded-xl shadow-xl border-2 border-giotto-accent text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:-translate-y-2">
+                        <div class="w-full h-48 bg-giotto-primary bg-opacity-30 flex items-center justify-center text-giotto-bg-light text-5xl font-bold mb-6 rounded-lg border-2 border-giotto-terra">
+                            מגש
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2 text-giotto-terra">מגשי עץ</h3>
+                        <p class="text-lg mb-4 leading-relaxed">
+                            מגשים דקורטיביים ופרקטיים מעץ מלא, אידיאלים לאירוח או כפריט נוי.
+                        </p>
+                        <span class="text-2xl font-bold text-giotto-primary float-left">₪110</span>
+                    </div>
+                </div>
+                <p class="mt-16 text-xl text-giotto-text-dark leading-loose">
+                    לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון. נשמח לעזור לכם לבחור את המתנה המושלמת או את הפריט שיעשיר את ביתכם.
+                </p>
+            </div>
+        </section>
+
+        <!-- Ceramic Products Section -->
+        <section id="ceramics" class="p-8 py-20 bg-giotto-primary bg-opacity-90 relative overflow-hidden">
+             <div class="absolute inset-0 bg-giotto-terra opacity-10 z-[-1] transform skew-y-1 scale-105"></div>
+            <div class="container mx-auto text-center relative z-[1] scroll-reveal">
+                <h2 class="text-5xl md:text-7xl font-bold mb-12 text-giotto-bg-light [text-shadow:_3px_3px_6px_rgb(0_0_0_/_40%)]">
+                    מוצרי קרמיקה - אדמה קמה לחיים
+                </h2>
+                <p class="text-xl md:text-2xl mb-16 text-giotto-secondary max-w-3xl mx-auto leading-relaxed">
+                    מגלגלי הקדר, בקפידה ובאהבה, נוצרים כלים המספרים את סיפור האדמה. גווניה הטבעיים, המרקם העשיר, והצורה הייחודית של כל פריט, הופכים כל רגע בבית לחוויה אמנותית. מוצרי קרמיקה בעבודת יד איכותית, עם ציפוי טבעי בגוני אדמה חמים, מוסיפים אווירה חמה לכל בית.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                     <div class="product-card-bg p-6 rounded-xl shadow-xl border-2 border-giotto-deep-accent text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 bg-giotto-secondary">
+                        <div class="w-full h-48 bg-giotto-terra bg-opacity-30 flex items-center justify-center text-giotto-bg-light text-5xl font-bold mb-6 rounded-lg border-2 border-giotto-primary">
+                            כוס
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2 text-giotto-terra">כוס גדולה</h3>
+                        <p class="text-lg mb-4 leading-relaxed">
+                            כוס קרמיקה גדולה, מושלמת לקפה של בוקר או לתה מרגיע, עם אחיזה נוחה ומרקם טבעי.
+                        </p>
+                        <span class="text-2xl font-bold text-giotto-primary float-left">₪65</span>
+                    </div>
+                    <div class="product-card-bg p-6 rounded-xl shadow-xl border-2 border-giotto-deep-accent text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 bg-giotto-secondary">
+                        <div class="w-full h-48 bg-giotto-terra bg-opacity-30 flex items-center justify-center text-giotto-bg-light text-5xl font-bold mb-6 rounded-lg border-2 border-giotto-primary">
+                            כוס
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2 text-giotto-terra">כוס קטנה</h3>
+                        <p class="text-lg mb-4 leading-relaxed">
+                            כוס קרמיקה קטנה ואלגנטית, אידיאלית לאספרסו או למנות אחרונות אישיות.
+                        </p>
+                        <span class="text-2xl font-bold text-giotto-primary float-left">₪45</span>
+                    </div>
+                    <div class="product-card-bg p-6 rounded-xl shadow-xl border-2 border-giotto-deep-accent text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 bg-giotto-secondary">
+                        <div class="w-full h-48 bg-giotto-terra bg-opacity-30 flex items-center justify-center text-giotto-bg-light text-5xl font-bold mb-6 rounded-lg border-2 border-giotto-primary">
+                            קנקן
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2 text-giotto-terra">קנקן</h3>
+                        <p class="text-lg mb-4 leading-relaxed">
+                            קנקן קרמיקה יפהפה להגשת מים, תה או יין, מוקפד בעיצובו ונוח למזיגה.
+                        </p>
+                        <span class="text-2xl font-bold text-giotto-primary float-left">₪120</span>
+                    </div>
+                    <div class="product-card-bg p-6 rounded-xl shadow-xl border-2 border-giotto-deep-accent text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 bg-giotto-secondary">
+                        <div class="w-full h-48 bg-giotto-terra bg-opacity-30 flex items-center justify-center text-giotto-bg-light text-5xl font-bold mb-6 rounded-lg border-2 border-giotto-primary">
+                            צלחת
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2 text-giotto-terra">צלחות הגשה</h3>
+                        <p class="text-lg mb-4 leading-relaxed">
+                            צלחות קרמיקה בעבודת יד, אידיאליות להגשת מנות עיקריות או סלטים, כל אחת ייחודית.
+                        </p>
+                        <span class="text-2xl font-bold text-giotto-primary float-left">₪70</span>
+                    </div>
+                    <div class="product-card-bg p-6 rounded-xl shadow-xl border-2 border-giotto-deep-accent text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 bg-giotto-secondary">
+                        <div class="w-full h-48 bg-giotto-terra bg-opacity-30 flex items-center justify-center text-giotto-bg-light text-5xl font-bold mb-6 rounded-lg border-2 border-giotto-primary">
+                            קערה
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2 text-giotto-terra">קערות מרק</h3>
+                        <p class="text-lg mb-4 leading-relaxed">
+                            קערות קרמיקה עמוקות, לשמר את חום המרק או התבשיל, בעיצוב כפרי-מודרני.
+                        </p>
+                        <span class="text-2xl font-bold text-giotto-primary float-left">₪80</span>
+                    </div>
+                    <div class="product-card-bg p-6 rounded-xl shadow-xl border-2 border-giotto-deep-accent text-giotto-text-dark hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 bg-giotto-secondary">
+                        <div class="w-full h-48 bg-giotto-terra bg-opacity-30 flex items-center justify-center text-giotto-bg-light text-5xl font-bold mb-6 rounded-lg border-2 border-giotto-primary">
+                            אגרטל
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2 text-giotto-terra">אגרטלי נוי</h3>
+                        <p class="text-lg mb-4 leading-relaxed">
+                            אגרטלי קרמיקה אמנותיים, להשלמת מראה הבית ולקבלת פרחים טריים מהמשתלה.
+                        </p>
+                        <span class="text-2xl font-bold text-giotto-primary float-left">₪130</span>
+                    </div>
+                </div>
+                 <p class="mt-16 text-xl text-giotto-secondary leading-loose">
+                    לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון. כל כלי קרמיקה מספר סיפור משלו, ומחכה למצוא בית חם שיעריך את יופיו.
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="p-8 bg-giotto-deep-accent text-giotto-bg-light text-center border-t-2 border-giotto-primary">
+            <p class="text-lg mb-4">
+                © 2023 סבאיה - כל הזכויות שמורות. אמנות, קפה וטבע בלב המשתלה.
+            </p>
+            <p class="text-md">
+                עיצוב ויצירה ברוח סגנון ג'וטו
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Custom Cursor JavaScript
+        const customCursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            customCursor.style.left = `${e.clientX}px`;
+            customCursor.style.top = `${e.clientY}px`;
+        });
+
+        // Scroll Reveal Animation
+        const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Stop observing once visible
+                }
+            });
+        }, {
+            threshold: 0.1 // Trigger when 10% of the element is visible
+        });
+
+        scrollRevealElements.forEach(element => {
+            observer.observe(element);
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

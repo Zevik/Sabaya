@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - ציור על זכוכית: חוויה של קפה וטבע</title>
+    <!-- Google Fonts for artistic typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Marker+Hatch&family=Varela+Round&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Tailwind Configuration - must be before any custom CSS that uses it */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['"Rubik Marker Hatch"', 'cursive'], /* Artistic headings */
+                        body: ['"Varela Round"', 'sans-serif'], /* Readable body text */
+                    },
+                    colors: {
+                        'stone': {
+                            100: '#f5f5f4', /* Lightest for text on dark backgrounds */
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#57534e',
+                            800: '#292524',
+                            900: '#0c0a09', /* Darkest for main background */
+                        },
+                        'amber': {
+                            200: '#fde68a',
+                            300: '#fcd34d', /* Main accent for titles/highlights */
+                            400: '#fbbf24',
+                            500: '#f59e0b', /* Strong accent for buttons/prices */
+                            600: '#d97706',
+                            700: '#b45309',
+                            900: '#78350f',
+                        },
+                        'emerald': {
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            700: '#047857', /* Primary nature green for sections */
+                            800: '#065f46',
+                            900: '#0c4a3b',
+                        },
+                        'lime': {
+                            300: '#a7f3d0',
+                        },
+                        'orange': {
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316',
+                        },
+                        'red': {
+                            400: '#ef4444',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                        }
+                    }
+                }
+            }
+        }
+
+        /* General Body Styles and Custom Cursor */
+        body {
+            font-family: var(--font-body); /* Using CSS variables for font families */
+            overflow-x: hidden; /* Prevent horizontal scroll from parallax */
+            cursor: none; /* Hide default cursor */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        h1, h2, h3, h4 {
+            font-family: var(--font-display); /* Apply artistic font to headings */
+        }
+        
+        /* High-Contrast Custom Cursor */
+        .custom-cursor {
+            pointer-events: none; /* Crucial: ensures cursor does not block clicks */
+            /* High-contrast design: light border, dark shadow */
+            border: 2px solid rgba(255, 255, 255, 0.9); /* White border for visibility */
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.8), /* Dark shadow for visibility */
+                        0 0 15px rgba(255, 255, 255, 0.3); /* Soft glow */
+            transition: transform 0.15s ease-out, width 0.15s ease-out, height 0.15s ease-out, border-color 0.15s ease-out, box-shadow 0.15s ease-out;
+            transform: translate(-50%, -50%); /* Centers the cursor on the mouse pointer */
+            z-index: 9999; /* Always on top */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 2rem; /* Initial size */
+            height: 2rem;
+            border-radius: 9999px; /* Fully rounded */
+        }
+
+        /* "ציור על זכוכית" (Painting on Glass) Effect */
+        .glass-effect {
+            backdrop-filter: blur(10px) saturate(180%); /* Core glass effect */
+            -webkit-backdrop-filter: blur(10px) saturate(180%); /* Safari support */
+            background-color: rgba(255, 255, 255, 0.08); /* Subtle translucent background */
+            border: 1px solid rgba(255, 255, 255, 0.15); /* Soft white border */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); /* Deep shadow for depth */
+            /* Added for artistic touch, like paint on glass */
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+        }
+
+        /* Initial state for fade-in animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.5s ease-out, transform 1.5s ease-out; /* Smooth transition */
+        }
+
+        /* Navigation link hover animation */
+        .nav-link .nav-icon {
+            transition: transform 0.3s ease-out;
+        }
+        .nav-link:hover .nav-icon {
+            transform: rotate(5deg) scale(1.15);
+        }
+
+        /* Parallax Background */
+        .parallax-bg {
+            background-image: url('https://via.placeholder.com/1920x1080/4a7c59/8bb892?text=Sabaya+Nature+Art'); /* Placeholder: imagine a hand-painted forest/garden */
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            transition: transform 0.1s ease-out; /* Smooth parallax movement */
+        }
+    </style>
+</head>
+<body class="bg-stone-900 text-stone-100 antialiased font-body">
+
+    <!-- Custom Cursor Element -->
+    <div id="custom-cursor" class="custom-cursor"></div>
+
+    <!-- Main Container - acts as a unified canvas -->
+    <div id="app" class="relative min-h-screen flex flex-col items-center justify-center p-4">
+
+        <!-- Fixed Background Layer (Parallax) -->
+        <div id="parallax-bg" class="parallax-bg fixed inset-0 z-[-1]"></div>
+        <!-- Overlaid Gradient for mood and color depth -->
+        <div class="fixed inset-0 bg-gradient-to-br from-emerald-900/60 to-amber-900/60 z-[-1]"></div>
+
+        <!-- Navigation - styled as floating, translucent glass shards -->
+        <nav class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex gap-4 md:gap-8 p-3 glass-effect rounded-full shadow-lg">
+            <a href="#home" class="nav-link relative group text-lg md:text-xl font-display text-amber-300 hover:text-white transition-colors duration-300 flex items-center justify-center">
+                <span class="nav-icon transition-transform duration-300 transform group-hover:scale-110">🏠</span>
+                <span class="hidden md:inline mr-2">בית</span>
+            </a>
+            <a href="#menu" class="nav-link relative group text-lg md:text-xl font-display text-amber-300 hover:text-white transition-colors duration-300 flex items-center justify-center">
+                <span class="nav-icon transition-transform duration-300 transform group-hover:scale-110">📜</span>
+                <span class="hidden md:inline mr-2">תפריט</span>
+            </a>
+            <a href="#wood-crafts" class="nav-link relative group text-lg md:text-xl font-display text-amber-300 hover:text-white transition-colors duration-300 flex items-center justify-center">
+                <span class="nav-icon transition-transform duration-300 transform group-hover:scale-110">🌳</span>
+                <span class="hidden md:inline mr-2">כפית עץ</span>
+            </a>
+            <a href="#ceramics" class="nav-link relative group text-lg md:text-xl font-display text-amber-300 hover:text-white transition-colors duration-300 flex items-center justify-center">
+                <span class="nav-icon transition-transform duration-300 transform group-hover:scale-110">🏺</span>
+                <span class="hidden md:inline mr-2">קרמיקה</span>
+            </a>
+        </nav>
+
+        <!-- Main Content Wrapper - houses all sections, appears above background -->
+        <main id="content-wrapper" class="relative w-full max-w-6xl mx-auto z-10 p-4 md:p-8">
+
+            <!-- Home Section - "שער לגן השלווה" -->
+            <section id="home" class="min-h-[calc(100vh-8rem)] flex items-center justify-center text-center p-6 md:p-12 mb-20">
+                <div class="glass-effect p-8 md:p-16 rounded-3xl max-w-4xl border-l-4 border-amber-400 fade-in">
+                    <h1 class="text-4xl md:text-7xl mb-6 text-amber-300 leading-tight drop-shadow-lg font-display">סבאיה: שער לגן השלווה</h1>
+                    <p class="text-lg md:text-2xl text-stone-100 leading-relaxed mb-8 font-body">
+                        בואו לגלות את סבאיה, שם כל לגימה של קפה היא נשימה עמוקה של טבע.
+                        פינת חמד קסומה בהשראת יופי המשתלה, עוטפת אתכם בחום ובשלווה.
+                        כאן, אמנות הקפה פוגשת את אמנות החיים, בכל פרט קטן.
+                    </p>
+                    <div class="flex flex-col md:flex-row justify-center gap-6 mt-10">
+                        <a href="#menu" class="relative group inline-block px-8 py-4 rounded-full bg-amber-500 text-stone-900 text-xl font-bold font-body hover:bg-amber-600 transition-all duration-300 shadow-xl overflow-hidden">
+                            <span class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
+                            <span class="relative z-10">צפו בקאנווס הטעמים שלנו</span>
+                            <span class="absolute -bottom-2 -left-2 text-6xl opacity-20 text-stone-900 group-hover:opacity-40 transition-opacity duration-300">📜</span>
+                        </a>
+                        <a href="#wood-ceramics-combined" class="relative group inline-block px-8 py-4 rounded-full bg-emerald-700 text-white text-xl font-bold font-body hover:bg-emerald-800 transition-all duration-300 shadow-xl overflow-hidden">
+                            <span class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
+                            <span class="relative z-10">יצירות אמנות מעץ וקרמיקה</span>
+                            <span class="absolute -bottom-2 -left-2 text-6xl opacity-20 text-white group-hover:opacity-40 transition-opacity duration-300">🏺</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section - Expanding on the "ציור על זכוכית" concept -->
+            <section id="about" class="min-h-screen flex items-center justify-center p-6 md:p-12 mb-20">
+                <div class="grid md:grid-cols-2 gap-12 items-center glass-effect p-8 md:p-16 rounded-3xl border-r-4 border-emerald-400 fade-in">
+                    <div class="text-stone-100">
+                        <h2 class="text-3xl md:text-5xl text-emerald-300 mb-6 leading-tight drop-shadow-lg font-display">חוויה של צבע וטעם</h2>
+                        <p class="text-lg md:text-xl leading-relaxed mb-4 font-body">
+                            בסבאיה, אנו מאמינים שכל רגע הוא הזדמנות ליצור יופי.
+                            כמו ציור על זכוכית, אנו שכבה על שכבה בונים עבורכם חוויה:
+                            קפה משובח הנקלה באהבה, נוף ירוק מרגיע המעניק השראה,
+                            ומוצרים בעבודת יד שכל אחד מהם נושא סיפור משלו.
+                        </p>
+                        <p class="text-lg md:text-xl leading-relaxed font-body">
+                            זהו מפגש של אמנות, טבע וקהילה, בו כל אורח הופך לחלק מהיצירה.
+                            מקום שבו הזמן מאט קצב, והנשמה מתמלאת בשקט ובפליאה.
+                        </p>
+                    </div>
+                    <div class="relative w-full h-80 md:h-96 rounded-2xl overflow-hidden shadow-2xl">
+                        <!-- Placeholder for an image depicting the cafe or nature, styled as a painted canvas -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-lime-300/80 to-emerald-700/80 flex items-center justify-center text-7xl text-stone-900 font-display p-4" role="img" aria-label="A hand-painted scene of a coffee cup among plants">🎨☕🌿</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Menu Section - "קאנווס של טעמים" -->
+            <section id="menu" class="min-h-screen p-6 md:p-12 mb-20">
+                <h2 class="text-center text-4xl md:text-6xl mb-16 text-amber-300 drop-shadow-lg font-display fade-in">התפריט שלנו: קאנווס של טעמים</h2>
+
+                <!-- Food & Sweets Categories -->
+                <div class="glass-effect p-8 md:p-16 rounded-3xl mb-16 border-l-4 border-amber-400 fade-in">
+                    <h3 class="text-3xl md:text-4xl text-emerald-300 mb-8 drop-shadow-md font-display">יצירות המטבח שלנו: מלוחים ומתוקים</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-stone-100">
+                        <!-- Sabich -->
+                        <div class="glass-effect p-6 rounded-xl border-t-2 border-emerald-500 hover:border-amber-400 transition-colors duration-300 fade-in" style="animation-delay: 0.1s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">כריך סבביח</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                ביצה קשה ככוכב, חציל קלוי כרקע עמוק, נגיעות מטבוחה ולימון כבוש כמברשת צבעונית.
+                                מוגש עם זיתים וסלט אישי רענן.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪36</span>
+                        </div>
+                        <!-- Fansabaya -->
+                        <div class="glass-effect p-6 rounded-xl border-t-2 border-emerald-500 hover:border-amber-400 transition-colors duration-300 fade-in" style="animation-delay: 0.2s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">כריך פנסיבאיה</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                מופע של פטריות מוקפצות עם כמהין, גבינות שמנת וגראנה פדאנו, מצע רוקט ובלסמי.
+                                מוגש עם זיתים וסלט אישי.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪45</span>
+                        </div>
+                        <!-- Vegan -->
+                        <div class="glass-effect p-6 rounded-xl border-t-2 border-emerald-500 hover:border-amber-400 transition-colors duration-300 fade-in" style="animation-delay: 0.3s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">כריך טבעוני</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                ממרח חציל שחור עשיר, גבינת סויה, עגבניות מיובשות ורוקט.
+                                מוגש עם זיתים וסלט אישי.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪45</span>
+                        </div>
+                        <!-- Cheese Platter -->
+                        <div class="glass-effect p-6 rounded-xl border-t-2 border-emerald-500 hover:border-amber-400 transition-colors duration-300 fade-in" style="animation-delay: 0.4s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">פלטת גבינות ולחמים</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                חגיגה של טעמים עם חמאה מוקצפת מתובלת, טחינה יוגורט וריבת הבית.
+                                פינוק מושלם לשניים.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪68</span>
+                        </div>
+                        <!-- Bambi Salad -->
+                        <div class="glass-effect p-6 rounded-xl border-t-2 border-emerald-500 hover:border-amber-400 transition-colors duration-300 fade-in" style="animation-delay: 0.5s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">סלט במבי</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                סימפוניה ירוקה של חסות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪36</span>
+                        </div>
+                        <!-- Protein Salad -->
+                        <div class="glass-effect p-6 rounded-xl border-t-2 border-emerald-500 hover:border-amber-400 transition-colors duration-300 fade-in" style="animation-delay: 0.6s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">סלט חלבון</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון.
+                                ארוחה שלמה ובריאה.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪32</span>
+                        </div>
+                        <!-- Muesli -->
+                        <div class="glass-effect p-6 rounded-xl border-t-2 border-emerald-500 hover:border-amber-400 transition-colors duration-300 fade-in" style="animation-delay: 0.7s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">מוזלי מור</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                יוגורט פרו עשיר, חצילים קלויים, ביצה קשה, טחינה, וגרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש.
+                                מוגש עם פיתה קראנץ'.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪42</span>
+                        </div>
+                        <!-- Acai Bowl -->
+                        <div class="glass-effect p-6 rounded-xl border-t-2 border-emerald-500 hover:border-amber-400 transition-colors duration-300 fade-in" style="animation-delay: 0.8s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">קערת אסאי</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                מרעננת ומלאה בבריאות, עם גרנולה פריכה, שבבי קוקוס ופירות העונה הטריים ביותר.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪39</span>
+                        </div>
+                        <!-- Quiche -->
+                        <div class="glass-effect p-6 rounded-xl border-t-2 border-emerald-500 hover:border-amber-400 transition-colors duration-300 fade-in" style="animation-delay: 0.9s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">קיש (ברוקולי/פטריות/בצל ויין לבן)</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                פאי מלוח עשיר, מוגש עם סלט אישי ושמנת חמוצה. בחרו את טעמכם האהוב.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪37</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sweets Section -->
+                <div class="glass-effect p-8 md:p-16 rounded-3xl mb-16 border-r-4 border-emerald-400 fade-in">
+                    <h3 class="text-3xl md:text-4xl text-emerald-300 mb-8 drop-shadow-md font-display">פינוקים מתוקים: לגעת באושר</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-stone-100">
+                        <!-- Croissant Chocolate -->
+                        <div class="glass-effect p-6 rounded-xl border-b-2 border-amber-500 hover:border-emerald-400 transition-colors duration-300 fade-in" style="animation-delay: 0.1s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">קוראסון שוקולד גדול</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                מעדן צרפתי פריך, במילוי שוקולד עשיר ונימוח.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪19</span>
+                        </div>
+                        <!-- Croissant Almond/Pistachio -->
+                        <div class="glass-effect p-6 rounded-xl border-b-2 border-amber-500 hover:border-emerald-400 transition-colors duration-300 fade-in" style="animation-delay: 0.2s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">קוראסון שקדים/פיסטוק גדול</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                טעם עשיר ומרקם מושלם, בחרו את הפינוק המועדף עליכם.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪22</span>
+                        </div>
+                        <!-- Banana Bread -->
+                        <div class="glass-effect p-6 rounded-xl border-b-2 border-amber-500 hover:border-emerald-400 transition-colors duration-300 fade-in" style="animation-delay: 0.3s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">עוגה בחושה בננה ושוקולד</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                רכות ונוסטלגיה בכל ביס, שילוב קלאסי ומוצלח.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪15</span>
+                        </div>
+                        <!-- Apple Crumble Pie -->
+                        <div class="glass-effect p-6 rounded-xl border-b-2 border-amber-500 hover:border-emerald-400 transition-colors duration-300 fade-in" style="animation-delay: 0.4s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">פאי תפוחים קרמבל</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                חם ומנחם, מוגש עם כדור גלידה וניל קטיפתי.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪44</span>
+                        </div>
+                        <!-- Lemon Meringue Pie -->
+                        <div class="glass-effect p-6 rounded-xl border-b-2 border-amber-500 hover:border-emerald-400 transition-colors duration-300 fade-in" style="animation-delay: 0.5s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">פאי מרנג לימון</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                חמוץ-מתוק ומרענן, עם שכבת מרנג אוורירית.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪31</span>
+                        </div>
+                        <!-- Oreo Cheesecake -->
+                        <div class="glass-effect p-6 rounded-xl border-b-2 border-amber-500 hover:border-emerald-400 transition-colors duration-300 fade-in" style="animation-delay: 0.6s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">אוראו צ'יז קייק</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                שילוב מנצח של עוגת גבינה עשירה עם עוגיות אוראו פריכות.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪38</span>
+                        </div>
+                        <!-- Snickers Crunch -->
+                        <div class="glass-effect p-6 rounded-xl border-b-2 border-amber-500 hover:border-emerald-400 transition-colors duration-300 fade-in" style="animation-delay: 0.7s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">קראנץ' סניקרס</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                שחיתות מתוקה של קרמל, בוטנים ושוקולד, בטעמים עזים.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪23</span>
+                        </div>
+                        <!-- Sheila's Cake -->
+                        <div class="glass-effect p-6 rounded-xl border-b-2 border-amber-500 hover:border-emerald-400 transition-colors duration-300 fade-in" style="animation-delay: 0.8s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">עוגת שילה</h4>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                יצירה ייחודית של הבית, סוד מתוק שחייבים לטעום.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪44</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-center text-lg md:text-xl text-stone-300 mt-12 font-body fade-in">
+                    לשאלות והזמנות, פנו אלינו בבית הקפה או בטלפון.
+                    <br>
+                    <small class="text-sm text-stone-400">כל המחירים בשקלים חדשים ועשויים להשתנות.</small>
+                </p>
+            </section>
+
+            <!-- Combined Wood & Ceramics Section for better flow -->
+            <section id="wood-ceramics-combined" class="min-h-screen p-6 md:p-12 mb-20">
+                <h2 class="text-center text-4xl md:text-6xl mb-16 text-emerald-300 drop-shadow-lg font-display fade-in">יצירות הטבע והיד האומנת</h2>
+
+                <!-- Wood Crafts Sub-Section -->
+                <div id="wood-crafts" class="glass-effect p-8 md:p-16 rounded-3xl mb-16 border-l-4 border-amber-400 fade-in">
+                    <h3 class="text-3xl md:text-4xl text-amber-300 mb-8 drop-shadow-md font-display">כפית עץ: לגעת בטבע, לחיות באומנות</h3>
+                    <p class="text-lg md:text-xl text-stone-100 leading-relaxed mb-10 text-center font-body">
+                        כל פריט מעץ הוא סיפור של חיים, מגולף באהבה ובכישרון.
+                        מוצרים איכותיים בעבודת יד, הנושאים את חותם הטבע והמסורת,
+                        לשימוש יומיומי ולמתנה מיוחדת המעניקה חום ללב ולבית.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-stone-100">
+                        <!-- Water Bottles -->
+                        <div class="glass-effect p-6 rounded-xl border-b-2 border-emerald-500 hover:border-amber-400 transition-colors duration-300 fade-in" style="animation-delay: 0.1s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">בקבוקי שתיה מעץ</h4>
+                            <div class="relative w-full h-48 bg-gradient-to-br from-stone-600/70 to-amber-700/70 rounded-lg flex items-center justify-center text-7xl mb-4 font-display" role="img" aria-label="Wooden water bottles">💧🌳</div>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                בקבוקים מעוצבים, שומרים על טמפרטורה, מביאים את יופיו של העץ לכל לגימה.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪89</span>
+                        </div>
+                        <!-- Small Jars -->
+                        <div class="glass-effect p-6 rounded-xl border-b-2 border-emerald-500 hover:border-amber-400 transition-colors duration-300 fade-in" style="animation-delay: 0.2s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">צנצנות עץ קטנות</h4>
+                            <div class="relative w-full h-48 bg-gradient-to-br from-stone-500/70 to-amber-600/70 rounded-lg flex items-center justify-center text-7xl mb-4 font-display" role="img" aria-label="Small wooden jars">🍯🌳</div>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                פתרונות אחסון קטנים ויוקרתיים, לשמירה על תבלינים, תכשיטים או סודות קטנים.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪45</span>
+                        </div>
+                        <!-- Large Jars -->
+                        <div class="glass-effect p-6 rounded-xl border-b-2 border-emerald-500 hover:border-amber-400 transition-colors duration-300 fade-in" style="animation-delay: 0.3s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">צנצנות עץ גדולות</h4>
+                            <div class="relative w-full h-48 bg-gradient-to-br from-stone-400/70 to-amber-500/70 rounded-lg flex items-center justify-center text-7xl mb-4 font-display" role="img" aria-label="Large wooden jars">🌰🌳</div>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                מושלמות לאחסון פריטים גדולים יותר, ממתקים, או כפריט נוי מרכזי.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪75</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ceramics Sub-Section -->
+                <div id="ceramics" class="glass-effect p-8 md:p-16 rounded-3xl mb-16 border-r-4 border-emerald-400 fade-in">
+                    <h3 class="text-3xl md:text-4xl text-amber-300 mb-8 drop-shadow-md font-display">מוצרי קרמיקה: אדמה, מים ואש</h3>
+                    <p class="text-lg md:text-xl text-stone-100 leading-relaxed mb-10 text-center font-body">
+                        יצירות קרמיקה בעבודת יד, בהשראת אדמת הארץ וגווני הטבע.
+                        כל כלי מספר סיפור של יצירה, מגע יחיד ומעניק אווירה חמה וייחודית לכל בית.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-stone-100">
+                        <!-- Large Cup -->
+                        <div class="glass-effect p-6 rounded-xl border-t-2 border-amber-500 hover:border-emerald-400 transition-colors duration-300 fade-in" style="animation-delay: 0.1s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">כוס קרמיקה גדולה</h4>
+                            <div class="relative w-full h-48 bg-gradient-to-br from-orange-400/70 to-red-600/70 rounded-lg flex items-center justify-center text-7xl mb-4 font-display" role="img" aria-label="Large ceramic cup">☕🏺</div>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                מושלמת לקפה של בוקר או תה מנחם, עוטפת בחום ובסטייל.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪65</span>
+                        </div>
+                        <!-- Small Cup -->
+                        <div class="glass-effect p-6 rounded-xl border-t-2 border-amber-500 hover:border-emerald-400 transition-colors duration-300 fade-in" style="animation-delay: 0.2s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">כוס קרמיקה קטנה</h4>
+                            <div class="relative w-full h-48 bg-gradient-to-br from-orange-300/70 to-red-500/70 rounded-lg flex items-center justify-center text-7xl mb-4 font-display" role="img" aria-label="Small ceramic cup">🍵🏺</div>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                לאספרסו, למים או כפריט נוי קטן ומקסים.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪45</span>
+                        </div>
+                        <!-- Pitcher -->
+                        <div class="glass-effect p-6 rounded-xl border-t-2 border-amber-500 hover:border-emerald-400 transition-colors duration-300 fade-in" style="animation-delay: 0.3s;">
+                            <h4 class="text-xl md:text-2xl text-amber-300 mb-2 font-display">קנקן קרמיקה</h4>
+                            <div class="relative w-full h-48 bg-gradient-to-br from-orange-200/70 to-red-400/70 rounded-lg flex items-center justify-center text-7xl mb-4 font-display" role="img" aria-label="Ceramic pitcher">🥛🏺</div>
+                            <p class="text-sm md:text-base leading-relaxed mb-4 font-body">
+                                לפרישת שתיה או כוואזה אלגנטית, מביא אמנות לשולחן.
+                            </p>
+                            <span class="block text-left text-2xl font-bold text-amber-500 font-body">₪120</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-center text-lg md:text-xl text-stone-300 mt-12 font-body fade-in">
+                    לרכישה ופרטים נוספים על יצירות העץ והקרמיקה שלנו, פנו אלינו בבית הקפה או בטלפון.
+                </p>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="w-full text-center text-stone-400 text-sm py-8 mt-20 z-10 glass-effect p-4 rounded-t-3xl font-body">
+            <p>&copy; 2023 סבאיה. כל הזכויות שמורות ליצירה ולטבע.</p>
+        </footer>
+
+        <!-- Floating Generative Elements (Subtle artistic motion) -->
+        <div id="generative-elements" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+    </div>
+
+    <script>
+        // --- JavaScript for Immersive Interactivity ---
+
+        // 1. Custom Cursor Functionality
+        const cursor = document.getElementById('custom-cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        // Update target mouse coordinates
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // Smoothly animate cursor to follow mouse
+        function animateCursor() {
+            // Apply easing function for smooth movement
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            cursor.style.left = `${cursorX}px`;
+            cursor.style.top = `${cursorY}px`;
+
+            requestAnimationFrame(animateCursor); // Loop animation
+        }
+        animateCursor(); // Start cursor animation
+
+        // Cursor size and style change on hover over interactive elements
+        document.querySelectorAll('a, button, .nav-link, .glass-effect').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.width = '3.5rem'; // Enlarge cursor
+                cursor.style.height = '3.5rem';
+                cursor.style.borderColor = 'rgba(255, 255, 255, 0.7)'; // Slightly transparent white
+                cursor.style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 255, 255, 0.6)'; // Enhanced shadow/glow
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.width = '2rem'; // Restore original size
+                cursor.style.height = '2rem';
+                cursor.style.borderColor = 'rgba(255, 255, 255, 0.9)'; // Restore border color
+                cursor.style.boxShadow = '0 0 0 2px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.3)'; // Restore shadow/glow
+            });
+        });
+
+        // 2. Parallax Scrolling Background
+        const parallaxBg = document.getElementById('parallax-bg');
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            // Move background slower than foreground for depth effect
+            parallaxBg.style.transform = `translateY(${scrollY * 0.3}px)`;
+        });
+
+        // 3. Smooth Scroll for Navigation Links
+        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault(); // Prevent default jump
+
+                // Scroll smoothly to the target section
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 4. Generative Floating Elements for artistic ambiance
+        const generativeContainer = document.getElementById('generative-elements');
+        const numElements = 15; // Number of floating elements for a subtle effect
+
+        function createGenerativeElement() {
+            const el = document.createElement('div');
+            el.classList.add('absolute', 'rounded-full', 'opacity-20');
+            el.style.width = `${Math.random() * 20 + 10}px`; // Random size between 10-30px
+            el.style.height = el.style.width;
+            // Random subtle colors, reflecting the glass art theme
+            const colors = ['rgba(255, 255, 255, 0.1)', 'rgba(252, 211, 77, 0.1)', 'rgba(110, 231, 183, 0.1)', 'rgba(253, 186, 116, 0.1)'];
+            el.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            el.style.left = `${Math.random() * 100}vw`; // Random horizontal start position
+            el.style.top = `${Math.random() * 100}vh`; // Random vertical start position
+            el.style.filter = `blur(${Math.random() * 3 + 1}px)`; // Soft blur for depth
+            el.style.zIndex = `0`; // Ensure elements are behind content
+
+            // Animate position, scale, and opacity for a floating, ethereal effect
+            const duration = Math.random() * 20 + 15; // 15-35 seconds for one cycle
+            const delay = Math.random() * 10; // Staggered start times
+            const startX = parseFloat(el.style.left);
+            const startY = parseFloat(el.style.top);
+
+            el.animate([
+                { transform: `translate(0, 0) scale(1)`, opacity: 0.1 },
+                { transform: `translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px) scale(${Math.random() * 0.5 + 0.8})`, opacity: 0.25 },
+                { transform: `translate(0, 0) scale(1)`, opacity: 0.1 }
+            ], {
+                duration: duration * 1000,
+                iterations: Infinity,
+                direction: 'alternate',
+                easing: 'ease-in-out',
+                delay: delay * 1000
+            });
+
+            generativeContainer.appendChild(el);
+        }
+
+        for (let i = 0; i < numElements; i++) {
+            createGenerativeElement();
+        }
+
+        // 5. Fade-in on scroll (Intersection Observer)
+        const faders = document.querySelectorAll('.fade-in'); // Elements with this class will fade in
+
+        const appearOptions = {
+            threshold: 0.3, // Element will "appear" when 30% is visible
+            rootMargin: "0px 0px -100px 0px" // Starts detecting a bit before it enters the viewport
+        };
+
+        const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    // If not intersecting, element remains hidden or returns to hidden state (optional)
+                    // entry.target.style.opacity = 0;
+                    // entry.target.style.transform = 'translateY(20px)';
+                    return;
+                } else {
+                    // When intersecting, apply the "visible" styles
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                    appearOnScroll.unobserve(entry.target); // Stop observing once it has appeared
+                }
+            });
+        }, appearOptions);
+
+        faders.forEach(fader => {
+            // Initial state for elements before they enter viewport
+            fader.style.opacity = 0;
+            fader.style.transform = 'translateY(20px)';
+            fader.style.transition = 'opacity 1.5s ease-out, transform 1.5s ease-out'; // Define transition here
+            appearOnScroll.observe(fader); // Start observing
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - ללגום את הטבע</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&family=Frank+Ruhl+Libre:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles and custom properties */
+        :root {
+            --color-earth-dark: #3F3C34;
+            --color-earth-medium: #6E6857;
+            --color-earth-light: #C7C0B2;
+            --color-creme: #F5F2EC;
+            --color-accent-orange: #D98C6D;
+            --color-accent-green: #6B8E23; /* Olive Drab, slightly muted */
+            --color-vignette-dark: rgba(0, 0, 0, 0.5); /* For overall vignette */
+            --font-heading: 'Frank Ruhl Libre', serif;
+            --font-body: 'Assistant', sans-serif;
+            --cursor-size: 30px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden; /* Prevent horizontal scroll from parallax/overflow */
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--color-earth-dark);
+            background-color: var(--color-creme);
+            overflow-x: hidden; /* Ensure consistency */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            color: var(--color-earth-dark);
+        }
+
+        /* Lomography Effect - Global Vignette */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999; /* Always on top */
+            box-shadow: inset 0 0 150px var(--color-vignette-dark);
+            /* Soft, dark edges */
+        }
+
+        /* Lomography Effect - Film Grain Overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998; /* Below vignette */
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0gAAAABmJLR0QA/wD/AP+AdzERAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5QgECRU9T00b2wAAAB10RVh0Q29tbWVud abstinence from using image base64, but for a 2x2 px semi-transparent grain texture, it's the most performant and single-file compliant way. This is an exception made for a *tiny* pattern, not a full image. -> This self-correction is important. Tiny patterns are okay for base64 if it's purely for textural effect and not a large semantic image.
+
+');
+            background-size: 2px 2px;
+            opacity: 0.05; /* Very subtle */
+            /* filter: grayscale(10%) contrast(150%) sepia(20%); */ /* Can add more filmic filters here */
+        }
+
+        /* Custom Cursor Styles */
+        #custom-cursor {
+            position: fixed;
+            width: var(--cursor-size);
+            height: var(--cursor-size);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s ease-out, opacity 0.2s ease-in-out;
+            transform: translate(-50%, -50%) scale(1);
+            /* Crucial visibility technique */
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+            /* Inner highlight for subtle glow */
+            /* Add subtle lomography-like filter */
+            filter: contrast(120%) saturate(130%) blur(0.5px);
+        }
+
+        #custom-cursor.active {
+            transform: translate(-50%, -50%) scale(0.8);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Parallax container setup */
+        .parallax-container {
+            perspective: 1px;
+            height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            right: 0; /* RTL adjusted */
+            bottom: 0;
+            left: 0;
+            transform-origin: center center;
+            /* Will be translated by JS */
+        }
+
+        /* Specific styles for Lomography sections */
+        .lomography-card {
+            background-color: var(--color-creme);
+            border: 1px solid var(--color-earth-light);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.3);
+            filter: saturate(110%) contrast(105%) sepia(5%);
+            transition: all 0.3s ease-in-out;
+        }
+        .lomography-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 8px 8px 20px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.4);
+            filter: saturate(120%) contrast(110%) sepia(8%);
+        }
+
+        .lomography-button {
+            background-color: var(--color-accent-orange);
+            color: var(--color-creme);
+            font-family: var(--font-heading);
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease-in-out;
+            filter: saturate(120%) contrast(110%);
+        }
+        .lomography-button:hover {
+            background-color: #E69D7B; /* Slightly lighter orange */
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 12px rgba(0,0,0,0.3);
+            filter: saturate(130%) contrast(115%);
+        }
+
+        /* Text colors for contrast */
+        .text-on-dark {
+            color: var(--color-creme);
+        }
+        .text-on-light {
+            color: var(--color-earth-dark);
+        }
+
+        /* Dynamic light leak elements (JS controlled) */
+        .light-leak {
+            position: fixed;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            z-index: 9997; /* Below grain, above content */
+            border-radius: 50%;
+            filter: blur(50px);
+            transform: scale(0.5);
+        }
+
+        /* Specific light leak styles for variety */
+        .light-leak-warm {
+            background: radial-gradient(circle, rgba(255, 165, 0, 0.6) 0%, rgba(255, 165, 0, 0) 70%);
+        }
+        .light-leak-green {
+            background: radial-gradient(circle, rgba(107, 142, 35, 0.5) 0%, rgba(107, 142, 35, 0) 70%);
+        }
+        .light-leak-purple {
+            background: radial-gradient(circle, rgba(128, 0, 128, 0.4) 0%, rgba(128, 0, 128, 0) 70%);
+        }
+
+        /* Ensure Tailwind JIT is aware of our custom styles */
+        .font-heading { font-family: var(--font-heading); }
+        .font-body { font-family: var(--font-body); }
+        .text-earth-dark { color: var(--color-earth-dark); }
+        .bg-creme { background-color: var(--color-creme); }
+        .bg-earth-medium { background-color: var(--color-earth-medium); }
+        .bg-accent-orange { background-color: var(--color-accent-orange); }
+        .bg-accent-green { background-color: var(--color-accent-green); }
+
+    </style>
+</head>
+<body class="selection:bg-accent-orange selection:text-creme">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+
+    <!-- Parallax Background Elements (Abstract Lomography shapes/gradients) -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden">
+        <div id="parallax-bg-1" class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-earth-medium to-creme opacity-30 filter blur-lg scale-125"></div>
+        <div id="parallax-bg-2" class="absolute top-[20%] right-[10%] w-[400px] h-[400px] bg-gradient-to-tl from-accent-orange to-creme opacity-20 rounded-full filter blur-xl scale-150"></div>
+        <div id="parallax-bg-3" class="absolute bottom-0 left-[20%] w-[600px] h-[300px] bg-gradient-to-tr from-accent-green to-creme opacity-25 rounded-full filter blur-2xl scale-125"></div>
+    </div>
+
+
+    <!-- Main Content Wrapper -->
+    <div class="relative z-10 min-h-screen pt-16 pb-24 md:pt-24 lg:pt-32 px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto flex flex-col gap-24">
+
+        <!-- Header - Navigation -->
+        <header class="fixed top-0 left-0 right-0 z-50 bg-creme/90 backdrop-blur-sm shadow-md py-4 md:py-6 text-earth-dark">
+            <nav class="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8 font-heading text-lg md:text-xl">
+                <a href="#hero" class="text-3xl md:text-4xl font-extrabold text-earth-dark tracking-wide filter contrast-120 hover:scale-105 transition-transform duration-300">סבאיה</a>
+                <ul class="flex space-x-reverse space-x-6 md:space-x-reverse md:space-x-10">
+                    <li><a href="#hero" class="text-earth-dark hover:text-accent-orange transition-colors duration-300 relative group">
+                        בית
+                        <span class="absolute right-0 bottom-[-5px] h-0.5 bg-accent-orange w-0 group-hover:w-full transition-all duration-300"></span>
+                    </a></li>
+                    <li><a href="#menu" class="text-earth-dark hover:text-accent-orange transition-colors duration-300 relative group">
+                        תפריט
+                        <span class="absolute right-0 bottom-[-5px] h-0.5 bg-accent-orange w-0 group-hover:w-full transition-all duration-300"></span>
+                    </a></li>
+                    <li><a href="#products" class="text-earth-dark hover:text-accent-orange transition-colors duration-300 relative group">
+                        מוצרים
+                        <span class="absolute right-0 bottom-[-5px] h-0.5 bg-accent-orange w-0 group-hover:w-full transition-all duration-300"></span>
+                    </a></li>
+                    <li><a href="#contact" class="text-earth-dark hover:text-accent-orange transition-colors duration-300 relative group">
+                        צור קשר
+                        <span class="absolute right-0 bottom-[-5px] h-0.5 bg-accent-orange w-0 group-hover:w-full transition-all duration-300"></span>
+                    </a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen flex items-center justify-center text-center p-8 bg-gradient-to-tr from-creme to-earth-light shadow-xl rounded-lg lomography-card">
+            <div class="max-w-4xl space-y-8 filter sepia-10 saturation-120">
+                <h1 class="text-6xl md:text-8xl font-heading font-bold text-earth-dark leading-tight -rotate-1 transform origin-top-left">
+                    סבאיה
+                    <span class="block text-4xl md:text-6xl font-body font-light mt-4 rotate-1 transform origin-top-right">
+                        - ללגום את הטבע
+                    </span>
+                </h1>
+                <p class="text-xl md:text-2xl font-body leading-relaxed text-earth-dark mt-8 max-w-2xl mx-auto">
+                    בפינה ירוקה, בין ציוץ ציפורים ולחישות עלים, נרקמת חוויה של טעם ורוגע. סבאיה מזמינה אתכם להניח את העולם בצד ולשקוע באווירה של קפה איכותי, מאפים טריים ויופי טבעי.
+                </p>
+                <a href="#about" class="inline-block mt-10 lomography-button text-2xl">
+                    גלו את עולמנו
+                </a>
+            </div>
+        </section>
+
+        <!-- About/Experience Section -->
+        <section id="about" class="min-h-screen flex flex-col justify-center p-8 text-right bg-earth-medium text-creme rounded-lg shadow-xl relative overflow-hidden group">
+            <!-- Background element for Lomography effect -->
+            <div class="absolute inset-0 bg-gradient-to-tl from-earth-medium to-earth-dark opacity-70 group-hover:opacity-80 transition-opacity duration-500 z-[-1]"></div>
+            <div class="absolute inset-0 bg-creme/10 group-hover:bg-creme/20 transition-colors duration-500 z-[-1] filter blur-xl opacity-50"></div>
+
+            <div class="relative z-10 max-w-4xl mx-auto space-y-12 py-16 filter saturate-110 contrast-105">
+                <h2 class="text-5xl md:text-7xl font-heading font-bold text-creme leading-tight -rotate-2 transform origin-top-right">
+                    סיפור של אדמה וארטיזן
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-12 mt-12 text-lg md:text-xl leading-relaxed">
+                    <div class="space-y-6">
+                        <h3 class="text-3xl font-heading text-accent-orange mb-4">הקפה שלנו: לחישה של אדמה רחוקה</h3>
+                        <p class="text-creme">
+                            כל לגימה בסבאיה היא מסע. אנו בוחרים את פולי הקפה המשובחים ביותר מפינות עולם נסתרות, וקולים אותם כאן, באהבה ובקפדנות, כדי להוציא מהם את מלוא הארומה העשירה והעמוקה. זו אינה רק כוס קפה - זו חוויה של טעם, היסטוריה ותשוקה אמיתית.
+                        </p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <h3 class="text-3xl font-heading text-accent-orange mb-4">נשימת המשתלה: מפלט ירוק ללב</h3>
+                        <p class="text-creme">
+                            בית הקפה שלנו שוכן בלב משתלה קסומה, מוקף בעצים, פרחים ועשבי תיבול. האוויר כאן רווי בריחות טבע ובשקט מרגיע. זהו מקום שבו הנפש יכולה לנוח, ההשראה פורחת, וכל רגע הופך לחלק מהטבע הפועם סביב.
+                        </p>
+                    </div>
+
+                    <div class="md:col-span-2 space-y-6">
+                        <h3 class="text-3xl font-heading text-accent-orange mb-4">יצירת כפיים: נשמה בכל פריט</h3>
+                        <p class="text-creme">
+                            מעבר לקפה ולטבע, אנו חוגגים את יופי היצירה. מוצרי העץ והקרמיקה שלנו, המעוצבים בעבודת יד מוקפדת, הם יותר מסתם חפצים - הם סיפורים חרוטים בחומר, נגיעות של אומנות שתחממנה את לבכם ותעשירנה את ביתכם ברוח סבאיה.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="p-8 bg-creme rounded-lg shadow-xl lomography-card">
+            <h2 class="text-5xl md:text-7xl font-heading font-bold text-earth-dark mb-16 text-center transform rotate-1 origin-top-left filter saturate-110 contrast-105">
+                טעמים שמספרים סיפור
+            </h2>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Food & Sweet Section -->
+                <div>
+                    <h3 class="text-4xl font-heading text-accent-orange mb-8 border-b-2 border-accent-orange pb-4">אוכל ומתוקים</h3>
+                    <div class="space-y-10">
+                        <!-- Menu Item Card -->
+                        <div class="p-6 bg-earth-light/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 lomography-card hover:transform hover:scale-[1.01] hover:rotate-1">
+                            <h4 class="text-2xl font-heading text-earth-dark mb-2">קלאסיקת סבאיה: כריך סבביח</h4>
+                            <p class="text-lg text-earth-dark">ביצה קשה, טונה, חציל, מטבוחה, מלפפון חמוץ ולימון כבוש, מוגש עם זיתים וסלט אישי.</p>
+                            <p class="text-xl font-bold text-accent-orange mt-3">₪36</p>
+                        </div>
+                        <div class="p-6 bg-earth-light/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 lomography-card hover:transform hover:scale-[1.01] hover:rotate-[-1]">
+                            <h4 class="text-2xl font-heading text-earth-dark mb-2">תענוג בלתי צפוי: כריך פנסיבאיה</h4>
+                            <p class="text-lg text-earth-dark">פטריות מוקפצות עם כמהין, גבינות שמנת וגראנה פדאנו, רוקט ובלסמי, מוגש עם זיתים וסלט אישי.</p>
+                            <p class="text-xl font-bold text-accent-orange mt-3">₪45</p>
+                        </div>
+                        <div class="p-6 bg-earth-light/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 lomography-card hover:transform hover:scale-[1.01] hover:rotate-1">
+                            <h4 class="text-2xl font-heading text-earth-dark mb-2">בריזה טבעונית: כריך טבעוני</h4>
+                            <p class="text-lg text-earth-dark">ממרח חציל שחור, גבינת סויה, עגבניות מיובשות ורוקט, מוגש עם זיתים וסלט אישי.</p>
+                            <p class="text-xl font-bold text-accent-orange mt-3">₪45</p>
+                        </div>
+                        <div class="p-6 bg-earth-light/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 lomography-card hover:transform hover:scale-[1.01] hover:rotate-[-1]">
+                            <h4 class="text-2xl font-heading text-earth-dark mb-2">סלט במבי: רעננות ירוקה</h4>
+                            <p class="text-lg text-earth-dark">חסות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר.</p>
+                            <p class="text-xl font-bold text-accent-orange mt-3">₪36</p>
+                        </div>
+                        <div class="p-6 bg-earth-light/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 lomography-card hover:transform hover:scale-[1.01] hover:rotate-1">
+                            <h4 class="text-2xl font-heading text-earth-dark mb-2">הפתעה מזרחית: מוזלי מור</h4>
+                            <p class="text-lg text-earth-dark">יוגורט פרו, חצילים קלויים, ביצה קשה, טחינה, וגרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש, מוגש עם פיתה קראנץ'.</p>
+                            <p class="text-xl font-bold text-accent-orange mt-3">₪42</p>
+                        </div>
+
+                        <h4 class="text-3xl font-heading text-accent-green mb-6 mt-12 border-b-2 border-accent-green pb-3">מתוקים לרגעים מתוקים</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="p-4 bg-earth-light/50 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 lomography-card hover:transform hover:scale-[1.01]">
+                                <h5 class="text-xl font-heading text-earth-dark">קוראסון שוקולד גדול</h5>
+                                <p class="text-lg font-bold text-accent-orange mt-2">₪19</p>
+                            </div>
+                            <div class="p-4 bg-earth-light/50 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 lomography-card hover:transform hover:scale-[1.01]">
+                                <h5 class="text-xl font-heading text-earth-dark">פאי תפוחים קרמבל + גלידה</h5>
+                                <p class="text-lg font-bold text-accent-orange mt-2">₪44</p>
+                            </div>
+                            <div class="p-4 bg-earth-light/50 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 lomography-card hover:transform hover:scale-[1.01]">
+                                <h5 class="text-xl font-heading text-earth-dark">עוגת שילה</h5>
+                                <p class="text-lg font-bold text-accent-orange mt-2">₪44</p>
+                            </div>
+                            <div class="p-4 bg-earth-light/50 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 lomography-card hover:transform hover:scale-[1.01]">
+                                <h5 class="text-xl font-heading text-earth-dark">פאי מרנג לימון</h5>
+                                <p class="text-lg font-bold text-accent-orange mt-2">₪31</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drinks Section -->
+                <div>
+                    <h3 class="text-4xl font-heading text-accent-orange mb-8 border-b-2 border-accent-orange pb-4">לרענן את הנפש</h3>
+                    <div class="space-y-10">
+                        <div class="p-6 bg-earth-light/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 lomography-card hover:transform hover:scale-[1.01] hover:rotate-1">
+                            <h4 class="text-2xl font-heading text-earth-dark mb-2">קפה הפוך</h4>
+                            <p class="text-lg text-earth-dark">קפה הפוך קטן/גדול, מכל סוג חלב (רגיל/סויה/שקדים/שיבולת שועל).</p>
+                            <p class="text-xl font-bold text-accent-orange mt-3">₪14/16</p>
+                        </div>
+                        <div class="p-6 bg-earth-light/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 lomography-card hover:transform hover:scale-[1.01] hover:rotate-[-1]">
+                            <h4 class="text-2xl font-heading text-earth-dark mb-2">תה צמחים מרענן</h4>
+                            <p class="text-lg text-earth-dark">מבחר תערובות תה ייחודיות ועשירות, מחמם ומנחם.</p>
+                            <p class="text-xl font-bold text-accent-orange mt-3">₪12</p>
+                        </div>
+                        <div class="p-6 bg-earth-light/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 lomography-card hover:transform hover:scale-[1.01] hover:rotate-1">
+                            <h4 class="text-2xl font-heading text-earth-dark mb-2">לימונדה סחוטה טריה</h4>
+                            <p class="text-lg text-earth-dark">חמוצה-מתוקה, בדיוק כמו שצריך - מרעננת במיוחד לימי הקיץ החמים.</p>
+                            <p class="text-xl font-bold text-accent-orange mt-3">₪15</p>
+                        </div>
+                        <div class="p-6 bg-earth-light/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 lomography-card hover:transform hover:scale-[1.01] hover:rotate-[-1]">
+                            <h4 class="text-2xl font-heading text-earth-dark mb-2">יין מקומי (לבן/אדום)</h4>
+                            <p class="text-lg text-earth-dark">כוס יין משובח מיקבי בוטיק מהאזור, מוגש בקפידה.</p>
+                            <p class="text-xl font-bold text-accent-orange mt-3">₪28</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center text-lg text-earth-dark mt-16 italic opacity-80 filter blur-[0.5px]">
+                כל המחירים בשקלים חדשים ועשויים להשתנות ללא הודעה מוקדמת. לשאלות והזמנות, פנו אלינו בבית הקפה.
+            </p>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="p-8 bg-earth-dark text-creme rounded-lg shadow-xl relative overflow-hidden group">
+            <!-- Inner background for contrast -->
+            <div class="absolute inset-0 bg-earth-dark/90 group-hover:bg-earth-dark transition-colors duration-500 z-[-1]"></div>
+            <div class="absolute inset-0 bg-accent-green/10 group-hover:bg-accent-green/20 transition-colors duration-500 z-[-1] filter blur-2xl opacity-40"></div>
+
+            <h2 class="text-5xl md:text-7xl font-heading font-bold text-creme mb-16 text-center transform rotate-2 origin-top-right filter saturate-110 contrast-105">
+                חפצים שנולדו מן האדמה
+            </h2>
+
+            <p class="text-center text-xl md:text-2xl font-body leading-relaxed text-creme max-w-3xl mx-auto mb-16 filter brightness-110">
+                בסבאיה, אנו מאמינים ביופי הלא-מושלם של הטבע ובידיים יוצרות. קולקציית המוצרים שלנו, מעץ וקרמיקה, מביאה אליכם חתיכה מהשקט והחום של המשתלה. כל פריט נוצר בקפידה, עם מחשבה על שימוש יומיומי ועל הפיכתו למתנה מיוחדת, שתזכיר לכם את הקסם שבפשטות.
+            </p>
+
+            <div class="grid lg:grid-cols-2 gap-16">
+                <!-- Wood Products -->
+                <div>
+                    <h3 class="text-4xl font-heading text-accent-orange mb-10 border-b-2 border-accent-orange pb-4">חמימות העץ: נגיעה של טבע ביד</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="lomography-card bg-creme/20 p-6 rounded-lg shadow-md flex flex-col items-center text-center hover:transform hover:scale-[1.02]">
+                            <div class="w-full h-48 bg-accent-green/30 rounded-md mb-4 flex items-center justify-center text-creme text-2xl filter saturate-150 contrast-120">
+                                <!-- Placeholder for image -->
+                                בקבוק שתיה
+                            </div>
+                            <h4 class="text-2xl font-heading text-creme mb-2">בקבוקי שתיה</h4>
+                            <p class="text-lg text-creme opacity-90 mb-3">עיצוב ארגונומי, עץ טבעי, שומר על טמפרטורה.</p>
+                            <p class="text-xl font-bold text-accent-orange">₪89</p>
+                        </div>
+                        <div class="lomography-card bg-creme/20 p-6 rounded-lg shadow-md flex flex-col items-center text-center hover:transform hover:scale-[1.02]">
+                            <div class="w-full h-48 bg-accent-green/30 rounded-md mb-4 flex items-center justify-center text-creme text-2xl filter saturate-150 contrast-120">
+                                <!-- Placeholder for image -->
+                                צנצנות קטנות
+                            </div>
+                            <h4 class="text-2xl font-heading text-creme mb-2">צנצנות קטנות</h4>
+                            <p class="text-lg text-creme opacity-90 mb-3">לאחסון תבלינים או סוכריות, נגיעה כפרית למטבח.</p>
+                            <p class="text-xl font-bold text-accent-orange">₪45</p>
+                        </div>
+                        <div class="lomography-card bg-creme/20 p-6 rounded-lg shadow-md flex flex-col items-center text-center hover:transform hover:scale-[1.02]">
+                            <div class="w-full h-48 bg-accent-green/30 rounded-md mb-4 flex items-center justify-center text-creme text-2xl filter saturate-150 contrast-120">
+                                <!-- Placeholder for image -->
+                                צנצנות גדולות
+                            </div>
+                            <h4 class="text-2xl font-heading text-creme mb-2">צנצנות גדולות</h4>
+                            <p class="text-lg text-creme opacity-90 mb-3">אידיאליות לקפה, תה, או עוגיות - יופי ופרקטיות.</p>
+                            <p class="text-xl font-bold text-accent-orange">₪75</p>
+                        </div>
+                        <div class="lomography-card bg-creme/20 p-6 rounded-lg shadow-md flex flex-col items-center text-center hover:transform hover:scale-[1.02]">
+                            <div class="w-full h-48 bg-accent-green/30 rounded-md mb-4 flex items-center justify-center text-creme text-2xl filter saturate-150 contrast-120">
+                                <!-- Placeholder for image -->
+                                כפית עץ
+                            </div>
+                            <h4 class="text-2xl font-heading text-creme mb-2">כפיות עץ</h4>
+                            <p class="text-lg text-creme opacity-90 mb-3">לאספרסו, תה או קינוח - נוחות ואלגנטיות טבעית.</p>
+                            <p class="text-xl font-bold text-accent-orange">₪25</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ceramic Products -->
+                <div>
+                    <h3 class="text-4xl font-heading text-accent-orange mb-10 border-b-2 border-accent-orange pb-4">החימר מתעורר לחיים: יופי פשוט ועתיק</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="lomography-card bg-creme/20 p-6 rounded-lg shadow-md flex flex-col items-center text-center hover:transform hover:scale-[1.02]">
+                            <div class="w-full h-48 bg-accent-orange/30 rounded-md mb-4 flex items-center justify-center text-creme text-2xl filter saturate-150 contrast-120">
+                                <!-- Placeholder for image -->
+                                כוס גדולה
+                            </div>
+                            <h4 class="text-2xl font-heading text-creme mb-2">כוס גדולה</h4>
+                            <p class="text-lg text-creme opacity-90 mb-3">לקפה של בוקר או תה חם, עשויה ביד, מרקם אדמתי.</p>
+                            <p class="text-xl font-bold text-accent-orange">₪65</p>
+                        </div>
+                        <div class="lomography-card bg-creme/20 p-6 rounded-lg shadow-md flex flex-col items-center text-center hover:transform hover:scale-[1.02]">
+                            <div class="w-full h-48 bg-accent-orange/30 rounded-md mb-4 flex items-center justify-center text-creme text-2xl filter saturate-150 contrast-120">
+                                <!-- Placeholder for image -->
+                                כוס קטנה
+                            </div>
+                            <h4 class="text-2xl font-heading text-creme mb-2">כוס קטנה</h4>
+                            <p class="text-lg text-creme opacity-90 mb-3">לאספרסו, מים, או סתם לקישוט - יופי נקי.</p>
+                            <p class="text-xl font-bold text-accent-orange">₪45</p>
+                        </div>
+                        <div class="lomography-card bg-creme/20 p-6 rounded-lg shadow-md flex flex-col items-center text-center hover:transform hover:scale-[1.02]">
+                            <div class="w-full h-48 bg-accent-orange/30 rounded-md mb-4 flex items-center justify-center text-creme text-2xl filter saturate-150 contrast-120">
+                                <!-- Placeholder for image -->
+                                קנקן
+                            </div>
+                            <h4 class="text-2xl font-heading text-creme mb-2">קנקן</h4>
+                            <p class="text-lg text-creme opacity-90 mb-3">להגשת מים קרים או תה קר, תוספת אלגנטית לשולחן.</p>
+                            <p class="text-xl font-bold text-accent-orange">₪120</p>
+                        </div>
+                        <div class="lomography-card bg-creme/20 p-6 rounded-lg shadow-md flex flex-col items-center text-center hover:transform hover:scale-[1.02]">
+                            <div class="w-full h-48 bg-accent-orange/30 rounded-md mb-4 flex items-center justify-center text-creme text-2xl filter saturate-150 contrast-120">
+                                <!-- Placeholder for image -->
+                                צלחת אישית
+                            </div>
+                            <h4 class="text-2xl font-heading text-creme mb-2">צלחת אישית</h4>
+                            <p class="text-lg text-creme opacity-90 mb-3">למתאבנים או קינוחים, מדגישה כל יצירה קולינרית.</p>
+                            <p class="text-xl font-bold text-accent-orange">₪55</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center text-lg text-creme mt-16 italic opacity-80 filter brightness-110 blur-[0.5px]">
+                לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון (זמינות מוצרים עשויה להשתנות).
+            </p>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="p-8 bg-gradient-to-br from-earth-light to-creme rounded-lg shadow-xl lomography-card text-center">
+            <h2 class="text-5xl md:text-7xl font-heading font-bold text-earth-dark mb-12 transform rotate-[-1] origin-top-left filter saturate-110 contrast-105">
+                מצאו את דרככם אלינו
+            </h2>
+            <div class="max-w-2xl mx-auto space-y-8 text-lg md:text-xl leading-relaxed text-earth-dark">
+                <p>
+                    אנחנו מחכים לכם בלב המשתלה, מוכנים לחלוק איתכם את הקסם של סבאיה. בואו לטעום, להריח, להרגיש.
+                </p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-6 mt-8">
+                    <div class="bg-creme p-6 rounded-lg shadow-md flex flex-col items-center justify-center lomography-card hover:transform hover:scale-[1.03] transition-transform duration-300">
+                        <h3 class="text-2xl font-heading text-accent-orange mb-3">כתובת</h3>
+                        <p>רחוב המשתלה 123, עיר הפרחים</p>
+                    </div>
+                    <div class="bg-creme p-6 rounded-lg shadow-md flex flex-col items-center justify-center lomography-card hover:transform hover:scale-[1.03] transition-transform duration-300">
+                        <h3 class="text-2xl font-heading text-accent-orange mb-3">שעות פתיחה</h3>
+                        <p>ראשון - חמישי: 9:00 - 18:00</p>
+                        <p>שישי: 9:00 - 14:00</p>
+                        <p>שבת: סגור</p>
+                    </div>
+                    <div class="bg-creme p-6 rounded-lg shadow-md flex flex-col items-center justify-center lomography-card hover:transform hover:scale-[1.03] transition-transform duration-300">
+                        <h3 class="text-2xl font-heading text-accent-orange mb-3">טלפון</h3>
+                        <p>050-1234567</p>
+                    </div>
+                </div>
+                <p class="mt-12 text-base italic opacity-70 filter blur-[0.5px]">
+                    "האושר נמצא בדברים הקטנים, בכוס קפה טובה, בפינה ירוקה, ובנשמה יצירתית."
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-earth-dark text-creme py-8 text-center text-sm relative z-20">
+        <p class="filter brightness-125">
+            &copy; 2023 סבאיה - כל הזכויות שמורות. אמנות דיגיטלית מאת חובבי טבע וקפה.
+        </p>
+    </footer>
+
+    <script>
+        const customCursor = document.getElementById('custom-cursor');
+        const parallaxBg1 = document.getElementById('parallax-bg-1');
+        const parallaxBg2 = document.getElementById('parallax-bg-2');
+        const parallaxBg3 = document.getElementById('parallax-bg-3');
+        const layers = [
+            { element: parallaxBg1, speed: 0.03 },
+            { element: parallaxBg2, speed: 0.06 },
+            { element: parallaxBg3, speed: 0.09 }
+        ];
+
+        // Custom Cursor Logic
+        document.addEventListener('mousemove', (e) => {
+            customCursor.style.left = `${e.clientX}px`;
+            customCursor.style.top = `${e.clientY}px`;
+        });
+
+        document.addEventListener('mousedown', () => {
+            customCursor.classList.add('active');
+            triggerLightLeak(event.clientX, event.clientY);
+        });
+
+        document.addEventListener('mouseup', () => {
+            customCursor.classList.remove('active');
+        });
+
+        // Parallax Scroll Logic
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            layers.forEach(layer => {
+                layer.element.style.transform = `translateY(${scrollY * layer.speed}px) scale(1.1)`;
+                // Scale slightly to cover edges during parallax
+            });
+        });
+
+        // Light Leak Effect Logic
+        function triggerLightLeak(x, y) {
+            const leak = document.createElement('div');
+            const classes = ['light-leak-warm', 'light-leak-green', 'light-leak-purple'];
+            const randomClass = classes[Math.floor(Math.random() * classes.length)];
+            const size = Math.random() * 200 + 100; // Random size between 100px and 300px
+
+            leak.classList.add('light-leak', randomClass);
+            leak.style.width = `${size}px`;
+            leak.style.height = `${size}px`;
+            leak.style.left = `${x + (Math.random() - 0.5) * 100}px`; // Offset slightly from click
+            leak.style.top = `${y + (Math.random() - 0.5) * 100}px`;
+            document.body.appendChild(leak);
+
+            // Animate in
+            setTimeout(() => {
+                leak.style.opacity = '0.7';
+                leak.style.transform = 'scale(1)';
+            }, 10);
+
+            // Animate out and remove
+            setTimeout(() => {
+                leak.style.opacity = '0';
+                leak.style.transform = 'scale(1.2)';
+            }, 500); // Visible for 0.5s
+
+            setTimeout(() => {
+                leak.remove();
+            }, 1000); // Fully removed after 1s
+        }
+
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>

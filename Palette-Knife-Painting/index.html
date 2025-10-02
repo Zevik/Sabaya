@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - ציור בשפכטל דיגיטלי: חוויה של טעם וטבע</title>
+    <!-- Google Fonts: Frank Ruhl Libre for artistic headers, Heebo for clean body text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300..900&family=Heebo:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define a rich, earthy color palette as CSS variables for consistent "palette knife" feel */
+        :root {
+            --color-cream: #FBF7F0; /* Soft off-white */
+            --color-light-beige: #D4C7AE; /* Muted sand tone */
+            --color-warm-brown: #A08C73; /* Earthy, mid-tone brown */
+            --color-olive-green: #6B8E23; /* Natural, muted green */
+            --color-saddle-brown: #8B4513; /* Rich, dark brown */
+            --color-ochre: #C2A26F; /* Vibrant, warm ochre/caramel */
+            --color-tan: #D2B48C; /* Light, warm tan */
+            --color-coffee-dark: #3B2E24; /* Deep, almost black coffee brown */
+            --color-almost-black: #1F1A15; /* Very dark background for contrast */
+        }
+
+        /* Set default fonts and hide system cursor to reveal custom one */
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--color-cream); /* Base for background layers */
+            cursor: none; /* Crucial for custom cursor */
+            overflow-x: hidden; /* Prevent horizontal scroll from rotated elements */
+            color: var(--color-coffee-dark); /* Default text color for high contrast */
+        }
+
+        /* Apply Frank Ruhl Libre to headings for artistic touch */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Frank Ruhl Libre', serif;
+        }
+
+        /* Custom Cursor Styling - High Contrast Mandatory */
+        .custom-cursor {
+            position: fixed;
+            pointer-events: none; /* Ensures cursor doesn't interfere with interaction */
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            /* REQUIRED: Light border for dark backgrounds, dark shadow for light backgrounds */
+            border: 2px solid var(--color-cream);
+            box-shadow: 0 0 0 2px var(--color-almost-black);
+            transform: translate(-50%, -50%); /* Centers the cursor on the mouse point */
+            z-index: 9999; /* Always on top */
+            transition: width 0.15s ease-out, height 0.15s ease-out, background-color 0.15s ease-out;
+            will-change: transform, width, height, background-color; /* Optimize animations */
+        }
+
+        /* Cursor state on hover over interactive elements */
+        .custom-cursor.hovered {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(194, 162, 111, 0.4); /* Subtle ochre glow */
+            border: 2px solid var(--color-ochre); /* Stronger border for highlight */
+            box-shadow: 0 0 0 2px var(--color-almost-black); /* Maintain dark shadow */
+        }
+
+        /* Palette Knife Background Layers - Fixed position, negative z-index for parallax */
+        .palette-layer {
+            position: fixed;
+            inset: 0; /* Cover entire viewport */
+            opacity: 0.8;
+            will-change: transform, opacity; /* Optimize for parallax */
+        }
+
+        /* Layer-specific styles with gradients and irregular shapes via clip-path and rotation */
+        .layer-1 {
+            background: linear-gradient(135deg, var(--color-cream) 0%, var(--color-light-beige) 50%, var(--color-warm-brown) 100%);
+            transform: scale(1.1) rotate(-5deg); /* Larger and slightly rotated */
+        }
+        .layer-2 {
+            background: radial-gradient(circle at 10% 90%, rgba(107, 142, 35, 0.15) 0%, transparent 60%), /* Subtle green hint */
+                        linear-gradient(45deg, var(--color-tan) 0%, var(--color-light-beige) 100%);
+            transform: scale(1.05) rotate(3deg);
+            clip-path: polygon(0 0, 100% 5%, 95% 100%, 5% 90%); /* Irregular "stroke" shape */
+        }
+        .layer-3 {
+            background: linear-gradient(225deg, var(--color-saddle-brown) 0%, var(--color-coffee-dark) 100%);
+            clip-path: polygon(0 80%, 10% 0, 100% 20%, 90% 100%);
+            opacity: 0.08; /* Very subtle dark overlay */
+            transform: scale(1.15) rotate(10deg);
+        }
+
+        /* Paint Splat for cursor trail - Generative effect */
+        .splat {
+            position: fixed;
+            pointer-events: none;
+            width: 5px;
+            height: 5px;
+            background-color: rgba(194, 162, 111, 0.7); /* Ochre with transparency */
+            border-radius: 50%;
+            z-index: 9998; /* Below cursor, above content */
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            animation: fadeOutSplat 1.2s ease-out forwards; /* Longer fade out */
+            will-change: transform, opacity;
+        }
+
+        /* Keyframe for splat fading animation */
+        @keyframes fadeOutSplat {
+            0% { opacity: 0.7; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(2); } /* Grow as it fades */
+        }
+
+        /* General Section Styling - Like a canvas mounted on the background */
+        .art-section {
+            background-color: rgba(251, 247, 240, 0.9); /* Opaque cream for content, allowing background layers to peek */
+            backdrop-filter: blur(3px); /* Subtle blur to distinguish layers */
+            border-radius: 1.5rem; /* Soft, organic corners */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15); /* Pronounced shadow for depth */
+            margin-bottom: 5rem; /* Ample spacing between artistic sections */
+            position: relative; /* Establish stacking context */
+            padding: 3rem; /* Default padding */
+            line-height: 1.8; /* Enhanced readability for artistic text */
+        }
+        @media (min-width: 768px) {
+            .art-section {
+                padding: 5rem; /* More padding on larger screens */
+            }
+        }
+
+        /* Section Header Styling */
+        .section-header {
+            color: var(--color-saddle-brown);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.15); /* More prominent shadow for headers */
+        }
+
+        /* Artistic Card Style for menu items and products - Neumorphic-ish */
+        .art-card {
+            background-color: var(--color-cream);
+            border-radius: 1.25rem; /* Rounded corners */
+            box-shadow: 6px 6px 18px rgba(0,0,0,0.12), -6px -6px 18px rgba(255,255,255,0.75); /* Soft, opposing shadows for "lifted" effect */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            cursor: pointer;
+            padding: 1.5rem; /* Inner padding */
+            line-height: 1.6;
+        }
+        .art-card:hover {
+            transform: translateY(-8px) rotate(2deg) scale(1.02); /* More exaggerated lift, tilt, and slight grow on hover */
+            box-shadow: 10px 10px 25px rgba(0,0,0,0.2), -10px -10px 25px rgba(255,255,255,0.9);
+        }
+
+        /* Specific background for 'מוצרים' sections - textured canvas effect */
+        .products-section {
+            background-color: var(--color-cream); /* Base color */
+            background-image:
+                linear-gradient(45deg, rgba(var(--color-ochre), 0.1) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(var(--color-ochre), 0.1) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, rgba(var(--color-ochre), 0.1) 75%),
+                linear-gradient(-45deg, transparent 75%, rgba(var(--color-ochre), 0.1) 75%);
+            background-size: 24px 24px; /* Larger tile size for subtle texture */
+            background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+            /* Creates a subtle, interwoven fabric/canvas texture */
+        }
+
+        /* Parallax effect on scroll - uses CSS variables updated by JS */
+        .parallax-bg-1 { transform: translate3d(0, var(--scroll-y-1, 0), 0) scale(1.1) rotate(-5deg); }
+        .parallax-bg-2 { transform: translate3d(0, var(--scroll-y-2, 0), 0) scale(1.05) rotate(3deg); }
+        .parallax-bg-3 { transform: translate3d(0, var(--scroll-y-3, 0), 0) scale(1.15) rotate(10deg); }
+
+        /* Custom scrollbar for artistic flair */
+        ::-webkit-scrollbar {
+            width: 14px; /* Wider scrollbar */
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--color-light-beige);
+            border-radius: 7px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-ochre);
+            border-radius: 7px;
+            border: 4px solid var(--color-light-beige); /* Creates a distinct, framed thumb */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-saddle-brown); /* Darker on hover */
+        }
+
+        /* Fade-in-up animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { animation: fadeInUp 1s ease-out forwards; }
+        .animate-fade-in-up-100ms { animation-delay: 100ms; } /* Custom delay for sequential animations */
+        .animate-fade-in-up-200ms { animation-delay: 200ms; }
+        /* Add more specific delays as needed, or let Tailwind generate if configured */
+    </style>
+</head>
+<body class="selection:bg-ochre/40 selection:text-coffee-dark">
+    <!-- Custom Cursor Element -->
+    <div id="custom-cursor" class="custom-cursor"></div>
+
+    <!-- Palette Knife Background Layers with Parallax -->
+    <div class="palette-layer layer-1 z-[-3] parallax-bg-1"></div>
+    <div class="palette-layer layer-2 z-[-2] parallax-bg-2"></div>
+    <div class="palette-layer layer-3 z-[-1] parallax-bg-3"></div>
+
+    <!-- Main Content Wrapper, positioned above background layers -->
+    <div class="relative z-10 min-h-screen pt-20 pb-20">
+        <!-- Navigation - Fixed at top, semi-transparent for depth -->
+        <nav class="fixed top-0 inset-x-0 bg-gradient-to-b from-coffee-dark/95 to-coffee-dark/80 text-cream p-4 shadow-xl z-50">
+            <div class="container mx-auto flex flex-col md:flex-row justify-between items-center flex-wrap gap-y-3">
+                <a href="#home" class="text-4xl font-bold text-ochre tracking-wider hover:text-tan transition-colors duration-300">סבאיה</a>
+                <div class="flex flex-wrap gap-x-8 gap-y-2 text-xl font-heebo font-light">
+                    <a href="#home" class="hover:text-tan transition-colors duration-300 transform hover:scale-105">בית</a>
+                    <a href="#menu" class="hover:text-tan transition-colors duration-300 transform hover:scale-105">תפריט</a>
+                    <a href="#wood-products" class="hover:text-tan transition-colors duration-300 transform hover:scale-105">כפית עץ</a>
+                    <a href="#ceramic-products" class="hover:text-tan transition-colors duration-300 transform hover:scale-105">מוצרי קרמיקה</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Home Section: Welcoming, poetic introduction -->
+        <section id="home" class="pt-32 pb-28 px-6 md:px-12 flex flex-col justify-center items-center text-center art-section max-w-5xl mx-auto mt-20 md:mt-24">
+            <h1 class="text-6xl md:text-8xl section-header mb-8 leading-tight animate-fade-in-up">ברוכים הבאים לסבאיה</h1>
+            <p class="text-xl md:text-2xl text-coffee-dark mb-10 max-w-3xl leading-relaxed animate-fade-in-up animate-fade-in-up-100ms">
+                מעבר למרחבים הירוקים של המשתלה, שוכן לו עולם של טעם ורוגע.
+                <br>
+                סבאיה אינה רק בית קפה, היא קנווס חי שבו קפה משובח פוגש את אמנות הטבע, וכל לגימה היא משיחת מכחול על לוח הרגש.
+                אנו מזמינים אתכם לטבול באווירה חמה, לחוש את העץ המגולף ואת הקרמיקה העדינה- ופשוט להיות.
+            </p>
+            <div class="flex flex-col md:flex-row gap-6 mt-8 animate-fade-in-up animate-fade-in-up-200ms">
+                <a href="#menu" class="bg-ochre text-coffee-dark px-8 py-4 rounded-full text-xl font-bold hover:bg-saddle-brown hover:text-cream transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-2">
+                    צפיה בתפריט
+                </a>
+                <a href="#wood-products" class="bg-coffee-dark text-ochre px-8 py-4 rounded-full text-xl font-bold hover:bg-saddle-brown hover:text-cream transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-2">
+                    מוצרי אמנות
+                </a>
+            </div>
+        </section>
+
+        <!-- Experience Overview Section: Artistic descriptions of Sabaia's core values -->
+        <section class="py-24 px-6 md:px-12 art-section max-w-6xl mx-auto grid md:grid-cols-3 gap-12 text-center products-section">
+            <div class="flex flex-col items-center p-8 art-card transform rotate-1">
+                <h3 class="text-4xl font-bold text-saddle-brown mb-4">קפה איכותי בנשמה</h3>
+                <p class="text-lg text-coffee-dark leading-relaxed">
+                    גרגרים שנבחרו בקפידה, נקלו באהבה ונמזגו באמנות. כל כוס היא סיפור-מסע מפסגת הקפה אל ליבכם. טעם עמוק ומרקם חלומי, כמו ציור מודרני בכל לגימה.
+                </p>
+            </div>
+            <div class="flex flex-col items-center p-8 art-card transform -rotate-1">
+                <h3 class="text-4xl font-bold text-saddle-brown mb-4">אווירה טבעית מציירת</h3>
+                <p class="text-lg text-coffee-dark leading-relaxed">
+                    שבו בין גווני הירוק, תנו לריח הפרחים להשלים את הקפה שלכם. פינה שלווה, בה הטבע הוא שותף פעיל ליצירה. תחושה של משתלה פורחת, מוגשת על קפה.
+                </p>
+            </div>
+            <div class="flex flex-col items-center p-8 art-card transform rotate-2">
+                <h3 class="text-4xl font-bold text-saddle-brown mb-4">מוצרים ייחודיים, פיסול</h3>
+                <p class="text-lg text-coffee-dark leading-relaxed">
+                    כפיות עץ מגולפות ברוח, מוצרי קרמיקה חמים וארציים. כל פריט הוא יצירת אמנות שימושית, עבודת יד הנושאת עליה את חותם היוצר. קחו הביתה פיסה מסבאיה.
+                </p>
+            </div>
+        </section>
+
+        <!-- Menu Section: Culinary creations presented artistically -->
+        <section id="menu" class="py-24 px-6 md:px-12 art-section max-w-6xl mx-auto">
+            <h2 class="text-6xl md:text-7xl section-header text-center mb-16">התפריט שלנו: יצירות קולינריות</h2>
+
+            <div class="mb-16">
+                <h3 class="text-5xl font-bold text-saddle-brown mb-8 text-center md:text-right">אוכל ומתוקים</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <!-- Food Item 1 -->
+                    <div class="p-6 art-card transform rotate-2">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">כריך סבביח</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            מפגש מרתק של ביצה קשה, טונה עשירה, חציל קלוי, מטבוחה ביתית, מלפפון חמוץ ונגיעת לימון כבוש. מוגש עם זיתים וסלט אישי. חוויה עמוקה, כמו שמן על קנווס.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪36</span>
+                    </div>
+                    <!-- Food Item 2 -->
+                    <div class="p-6 art-card transform -rotate-1">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">כריך פנסיבאיה</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            פטריות מוקפצות בעדינות עם שמן כמהין ארומטי, גבינות שמנת וגראנה פדאנו, רוקט טרי ובלסמי מודגש. מוגש עם זיתים וסלט אישי. יצירה מורכבת של טעמים.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪45</span>
+                    </div>
+                    <!-- Food Item 3 -->
+                    <div class="p-6 art-card transform rotate-1">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">כריך טבעוני</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            ממרח חציל שחור עשיר, גבינת סויה קרמית, עגבניות מיובשות עסיסיות ורוקט רענן. מוגש עם זיתים וסלט אישי. טבעונות בשיא תפארתה, הרמוניה של צבעים.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪45</span>
+                    </div>
+                    <!-- Food Item 4 -->
+                    <div class="p-6 art-card transform -rotate-2">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">פלטת גבינות ולחמים</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            מבחר גבינות משובחות, לחמים טריים, חמאה מוקצפת מתובלת, טחינה יוגורט עדינה וריבה עשירה. חגיגה של מרקמים וגוונים, כמו טבע דומם ציורי.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪68</span>
+                    </div>
+                    <!-- Food Item 5 -->
+                    <div class="p-6 art-card transform rotate-3">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">סלט במבי</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            חסות רעננות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר. קליל, חי וצבעוני - כמו ציור נוף אביבי.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪36</span>
+                    </div>
+                    <!-- Food Item 6 -->
+                    <div class="p-6 art-card transform -rotate-1">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">סלט חלבון</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון. סלט עשיר בבריאות וטעמים, כמו קולאז' של מרקמים.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪32</span>
+                    </div>
+                     <!-- Food Item 7 -->
+                     <div class="p-6 art-card transform rotate-2">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">מוזלי מור</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            יוגורט פרו, חצילים קלויים, ביצה קשה, טחינה, וגרעיני דלעת. מתובל באריסה מתוקה ולימון כבוש. מוגש עם פיתה קראנץ'. שילוב נועז ומרענן.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪42</span>
+                    </div>
+                    <!-- Food Item 8 -->
+                    <div class="p-6 art-card transform -rotate-3">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">קערת אסאי</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            אסאי קפוא ומרענן עם גרנולה פריכה, שבבי קוקוס עדינים ופרי העונה הטרי ביותר. צבעוני וטעים, ציור פירות קייצי.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪39</span>
+                    </div>
+                    <!-- Food Item 9 -->
+                    <div class="p-6 art-card transform rotate-1">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">קיש מגוון</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            קיש ברוקולי, פטריות או בצל ויין לבן- לבחירתכם. מוגש עם סלט אישי ושמנת חמוצה. פריך מבחוץ, רך מבפנים, תענוג חמים וביתי.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪37</span>
+                    </div>
+
+                    <!-- Sweet Items -->
+                    <div class="p-6 art-card transform -rotate-1">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">קוראסון שוקולד</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            קוראסון ענק וזהוב, ממולא בשוקולד מריר עשיר. פריך מבחוץ, נימוח מבפנים- קלאסיקה מתוקה.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪19</span>
+                    </div>
+                    <div class="p-6 art-card transform rotate-2">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">קוראסון שקדים/פיסטוק</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            פצצת טעם בכיסוי פריך, במילוי קרם שקדים עשיר או פיסטוק אגוזי. יצירה צרפתית בפרשנות סבאית.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪22</span>
+                    </div>
+                    <div class="p-6 art-card transform -rotate-2">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">עוגה בחושה בננה ושוקולד</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            עוגה ביתית חמה וריחנית, רכה ועסיסית, משלבת את מתיקות הבננה עם מרירות השוקולד. כמו חיבוק מתוק.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪15</span>
+                    </div>
+                    <div class="p-6 art-card transform rotate-1">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">פאי תפוחים קרמבל</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            פאי תפוחים קלאסי עם שכבת קרמבל זהובה ופריכה. מוגש חם עם כדור גלידה וניל- חום וקור, מושלם.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪44</span>
+                    </div>
+                    <div class="p-6 art-card transform -rotate-1">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">פאי מרנג לימון</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            שכבת לימון חמצמצה ומרעננת, מכוסה במרנג אוורירי וזהוב. איזון מושלם בין מתוק לחמוץ.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪31</span>
+                    </div>
+                    <div class="p-6 art-card transform rotate-3">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">אוראו צ'יז קייק</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            עוגת גבינה עשירה עם עוגיות אוראו מפוררות- קלאסיקה אמריקאית במיטבה, מרקם קרמי וטעם ממכר.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪38</span>
+                    </div>
+                    <div class="p-6 art-card transform -rotate-2">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">קראנץ' סניקרס</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            שכבות של שוקולד, קרמל, בוטנים וקראנץ'- חוויה אינטנסיבית של מתיקות ומרקמים.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪23</span>
+                    </div>
+                    <div class="p-6 art-card transform rotate-1">
+                        <h4 class="text-3xl font-bold text-coffee-dark mb-2">עוגת שילה</h4>
+                        <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                            היצירה המיוחדת של סבאיה- עוגה סודית עם שילוב טעמים מפתיע שישאירו אתכם עם חיוך. מומלץ לגלות במקום.
+                        </p>
+                        <span class="block text-2xl font-bold text-ochre">₪44</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center text-lg text-gray-600 mt-12 leading-relaxed">
+                לשאלות והזמנות, אנא פנו אלינו בבית הקפה- אנו כאן לשרת אתכם באהבה.
+                <br>
+                כל המחירים בשקלים חדשים ועשויים להשתנות- כמו גווני השמיים.
+            </p>
+        </section>
+
+        <!-- Wood Products Section: Hand-carved stories -->
+        <section id="wood-products" class="py-24 px-6 md:px-12 art-section max-w-6xl mx-auto products-section">
+            <h2 class="text-6xl md:text-7xl section-header text-center mb-16">כפיות עץ: סיפורים מגולפים</h2>
+            <p class="text-xl md:text-2xl text-coffee-dark mb-10 max-w-3xl mx-auto text-center leading-relaxed">
+                מוצרי עץ איכותיים בעבודת יד, כל כפית- פסל קטן, כל קערה- חיבוק מהטבע.
+                מגולפים בחום ואהבה, מהחומרים הטבעיים והידידותיים ביותר לסביבה.
+                פריטים שמספרים סיפור, נועדו ללוות אתכם ביומיום או להיות מתנה מיוחדת ועמוקה.
+            </p>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 mt-12">
+                <!-- Product 1 -->
+                <div class="p-6 art-card transform rotate-1 flex flex-col items-center text-center">
+                    <!-- Placeholder div for image, styled to represent the product visually with text -->
+                    <div class="w-48 h-48 bg-tan rounded-full flex items-center justify-center mb-4 shadow-inner text-coffee-dark text-4xl font-bold opacity-90" role="img" aria-label="איור בקבוקי שתיה מעץ טבעי">
+                        <span>בקבוקי שתיה</span>
+                    </div>
+                    <h4 class="text-3xl font-bold text-coffee-dark mb-2">בקבוקי שתיה</h4>
+                    <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                        בקבוקי שתיה מעץ טבעי, מעוצבים באופן ייחודי ושומרים על טמפרטורה. כל לגימה הופכת לחוויה, כל בקבוק הוא יצירת אמנות של קיימות.
+                    </p>
+                    <span class="block text-2xl font-bold text-ochre">₪89</span>
+                </div>
+                <!-- Product 2 -->
+                <div class="p-6 art-card transform -rotate-2 flex flex-col items-center text-center">
+                    <div class="w-48 h-48 bg-ochre rounded-full flex items-center justify-center mb-4 shadow-inner text-coffee-dark text-4xl font-bold opacity-90" role="img" aria-label="איור צנצנות עץ קטנות לאחסון">
+                        <span>צנצנות קטנות</span>
+                    </div>
+                    <h4 class="text-3xl font-bold text-coffee-dark mb-2">צנצנות קטנות</h4>
+                    <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                        צנצנות עץ קטנות לאחסון תבלינים, סוכר או סודות. עם מכסה אטום, הן משלבות פונקציונליות ויופי פראי. משיחת צבע טבעית לכל מטבח.
+                    </p>
+                    <span class="block text-2xl font-bold text-ochre">₪45</span>
+                </div>
+                <!-- Product 3 -->
+                <div class="p-6 art-card transform rotate-3 flex flex-col items-center text-center">
+                    <div class="w-48 h-48 bg-saddle-brown rounded-full flex items-center justify-center mb-4 shadow-inner text-cream text-4xl font-bold opacity-90" role="img" aria-label="איור צנצנות עץ גדולות">
+                        <span>צנצנות גדולות</span>
+                    </div>
+                    <h4 class="text-3xl font-bold text-coffee-dark mb-2">צנצנות גדולות</h4>
+                    <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                        צנצנות עץ גדולות לאחסון פולי קפה, דגנים או פשוט כפריט נוי מרשים. כל אחת היא אובייקט פיסולי, חפץ אמנותי שמוסיף חום לבית.
+                    </p>
+                    <span class="block text-2xl font-bold text-ochre">₪75</span>
+                </div>
+            </div>
+            <p class="text-center text-lg text-gray-600 mt-12 leading-relaxed">
+                לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון- אנו נשמח להנחות אתכם.
+            </p>
+        </section>
+
+        <!-- Ceramic Products Section: Earth dancing in clay -->
+        <section id="ceramic-products" class="py-24 px-6 md:px-12 art-section max-w-6xl mx-auto products-section">
+            <h2 class="text-6xl md:text-7xl section-header text-center mb-16">מוצרי קרמיקה: אדמה רוקדת</h2>
+            <p class="text-xl md:text-2xl text-coffee-dark mb-10 max-w-3xl mx-auto text-center leading-relaxed">
+                מוצרי קרמיקה בעבודת יד, עשויים באהבה ועם ציפוי טבעי בגוני אדמה חמים.
+                כל פריט מספר סיפור של אדמה, מים ואש. הם לא רק כלים, הם יצירות אמנות שימושיות.
+                מוסיפים אווירה חמה, אנושית ומיוחדת לכל בית, כמו נוף צבוע בשמן.
+            </p>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 mt-12">
+                <!-- Product 1 -->
+                <div class="p-6 art-card transform -rotate-1 flex flex-col items-center text-center">
+                    <div class="w-48 h-48 bg-warm-brown rounded-full flex items-center justify-center mb-4 shadow-inner text-cream text-4xl font-bold opacity-90" role="img" aria-label="איור כוס קרמיקה גדולה">
+                        <span>כוס גדולה</span>
+                    </div>
+                    <h4 class="text-3xl font-bold text-coffee-dark mb-2">כוס גדולה</h4>
+                    <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                        כוס קרמיקה גדולה ומרשימה, מושלמת לקפה של בוקר או תה חם. אחיזה נוחה, מרקם טבעי- חוויה אמנותית יומיומית.
+                    </p>
+                    <span class="block text-2xl font-bold text-ochre">₪65</span>
+                </div>
+                <!-- Product 2 -->
+                <div class="p-6 art-card transform rotate-2 flex flex-col items-center text-center">
+                    <div class="w-48 h-48 bg-tan rounded-full flex items-center justify-center mb-4 shadow-inner text-coffee-dark text-4xl font-bold opacity-90" role="img" aria-label="איור כוס קרמיקה קטנה">
+                        <span>כוס קטנה</span>
+                    </div>
+                    <h4 class="text-3xl font-bold text-coffee-dark mb-2">כוס קטנה</h4>
+                    <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                        כוס קרמיקה קטנה ואלגנטית, לאספרסו, מקיאטו או סתם ללגימה קטנה של יופי. קטנה אך מלאת אופי, כמו פרט בציור גדול.
+                    </p>
+                    <span class="block text-2xl font-bold text-ochre">₪45</span>
+                </div>
+                <!-- Product 3 -->
+                <div class="p-6 art-card transform -rotate-3 flex flex-col items-center text-center">
+                    <div class="w-48 h-48 bg-ochre rounded-full flex items-center justify-center mb-4 shadow-inner text-coffee-dark text-4xl font-bold opacity-90" role="img" aria-label="איור קנקן קרמיקה">
+                        <span>קנקן</span>
+                    </div>
+                    <h4 class="text-3xl font-bold text-coffee-dark mb-2">קנקן</h4>
+                    <p class="text-base text-gray-700 mb-4 leading-relaxed">
+                        קנקן קרמיקה מהודר, מושלם למזיגת מים, מיץ או פשוט כחפץ עיצובי. צורתו האורגנית וגימורו הטבעי הופכים אותו למרכז שולחן אמיתי.
+                    </p>
+                    <span class="block text-2xl font-bold text-ochre">₪120</span>
+                </div>
+            </div>
+            <p class="text-center text-lg text-gray-600 mt-12 leading-relaxed">
+                לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון- אנו נשמח לסייע.
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-12 px-6 bg-coffee-dark text-cream text-center text-lg mt-10">
+            <p class="mb-4">
+                © <span id="current-year"></span> סבאיה - כל הזכויות שמורות ליצירה.
+            </p>
+            <p class="mb-2">
+                מקום מפגש לטעם, לטבע ולאמנות.
+            </p>
+            <p>
+                <a href="tel:+972501234567" class="text-ochre hover:text-tan transition-colors duration-300">טלפון: 050-123-4567</a>
+            </p>
+        </footer>
+
+    </div> <!-- End Main Content Wrapper -->
+
+    <script>
+        // Configure Tailwind CSS JIT for custom colors, fonts, and animations
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cream': 'var(--color-cream)',
+                        'light-beige': 'var(--color-light-beige)',
+                        'warm-brown': 'var(--color-warm-brown)',
+                        'olive-green': 'var(--color-olive-green)',
+                        'saddle-brown': 'var(--color-saddle-brown)',
+                        'ochre': 'var(--color-ochre)',
+                        'tan': 'var(--color-tan)',
+                        'coffee-dark': 'var(--color-coffee-dark)',
+                        'almost-black': 'var(--color-almost-black)',
+                    },
+                    fontFamily: {
+                        'frank-ruhl': ['Frank Ruhl Libre', 'serif'],
+                        'heebo': ['Heebo', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 1s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+
+        // JavaScript for custom cursor, generative splats, parallax, and smooth scrolling
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursor = document.getElementById('custom-cursor');
+            let mouseX = 0;
+            let mouseY = 0;
+            let cursorX = 0;
+            let cursorY = 0;
+            const speed = 0.2; // Smoothing factor for cursor movement
+
+            // Animation loop for smooth cursor movement
+            function animateCursor() {
+                cursorX += (mouseX - cursorX) * speed;
+                cursorY += (mouseY - cursorY) * speed;
+                cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0px) translate(-50%, -50%)`;
+                requestAnimationFrame(animateCursor);
+            }
+
+            // Update mouse coordinates and create splats on mouse movement
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                // Generate a small "paint splat" at the mouse position
+                createSplat(e.clientX + (Math.random() * 6 - 3), e.clientY + (Math.random() * 6 - 3)); // Slight random offset
+            });
+
+            animateCursor(); // Start the cursor animation
+
+            // Add hover effect to interactive elements
+            const interactiveElements = document.querySelectorAll('a, button, .art-card');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+            });
+
+            // Function to create a fading "splat" element
+            const splatContainer = document.body; // Splats are appended directly to the body
+            function createSplat(x, y) {
+                const splat = document.createElement('div');
+                splat.classList.add('splat');
+                splat.style.left = `${x}px`;
+                splat.style.top = `${y}px`;
+                splatContainer.appendChild(splat);
+
+                // Remove the splat after its animation completes to prevent DOM bloat
+                splat.addEventListener('animationend', () => {
+                    splat.remove();
+                });
+            }
+
+            // Parallax effect for background layers based on scroll position
+            const parallaxLayers = {
+                layer1: document.querySelector('.parallax-bg-1'),
+                layer2: document.querySelector('.parallax-bg-2'),
+                layer3: document.querySelector('.parallax-bg-3'),
+            };
+
+            function updateParallax() {
+                const scrollY = window.scrollY;
+                if (parallaxLayers.layer1) parallaxLayers.layer1.style.setProperty('--scroll-y-1', `${-scrollY * 0.05}px`);
+                if (parallaxLayers.layer2) parallaxLayers.layer2.style.setProperty('--scroll-y-2', `${-scrollY * 0.1}px`);
+                if (parallaxLayers.layer3) parallaxLayers.layer3.style.setProperty('--scroll-y-3', `${-scrollY * 0.15}px`);
+            }
+
+            window.addEventListener('scroll', updateParallax);
+            updateParallax(); // Initial call to set background positions
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Set current year in the footer dynamically
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - אשליות הטבע והטעם</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;470;700&family=Rubik+Mono+One&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-bg: #0F172A; /* slate-900 */
+            --accent-color-1: #FCD34D; /* amber-300 */
+            --accent-color-2: #065F46; /* emerald-700 */
+            --text-color: #E2E8F0; /* slate-200 */
+        }
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            cursor: none; /* Hide default cursor */
+            overflow-x: hidden;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        h1, h2, h3 {
+            font-family: 'Rubik Mono One', monospace;
+            color: var(--accent-color-1);
+        }
+        .custom-cursor {
+            position: fixed;
+            pointer-events: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #FFFFFF; /* Light border */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Dark, high-opacity shadow */
+            z-index: 9999;
+            transition: transform 0.1s ease-out; /* Smooth movement */
+            transform: translate(-50%, -50%); /* Center cursor */
+        }
+
+        /* Op Art Background Layers */
+        .op-art-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: -10; /* Behind content */
+            will-change: transform, background-position; /* Optimize for animation */
+        }
+
+        /* Pattern 1: Subtle oscillating grid */
+        .pattern-grid {
+            background-image:
+                repeating-linear-gradient(0deg, var(--accent-color-2) 0, transparent 1px, transparent 20px, var(--accent-color-2) 21px),
+                repeating-linear-gradient(90deg, var(--accent-color-2) 0, transparent 1px, transparent 20px, var(--accent-color-2) 21px);
+            background-size: 21px 21px;
+            opacity: 0.05;
+            transition: background-position 0.2s ease-out;
+        }
+
+        /* Pattern 2: Concentric circles / radial effect */
+        .pattern-concentric {
+            background-image: radial-gradient(circle at center,
+                var(--accent-color-1) 0%, transparent 1%, transparent 5%, var(--accent-color-1) 6%, transparent 7%, transparent 12%, var(--accent-color-1) 13%);
+            background-size: 200px 200px;
+            opacity: 0.03;
+            filter: blur(0.5px);
+            transition: transform 0.2s ease-out;
+            transform: scale(1.05); /* Slightly larger to give room for movement */
+        }
+
+        /* Pattern 3: Wavy lines / depth illusion */
+        .pattern-waves {
+            background-image: repeating-linear-gradient(45deg,
+                var(--accent-color-1) 0%, var(--accent-color-1) 2px,
+                transparent 2px, transparent 10px);
+            background-size: 40px 40px;
+            opacity: 0.02;
+            filter: blur(0.8px);
+            transition: background-position 0.2s ease-out;
+        }
+
+        /* Content section styling */
+        .content-section {
+            padding: 8rem 4rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 10; /* Above patterns */
+            overflow: hidden; /* Ensure patterns don't bleed into content */
+        }
+
+        .hero-text {
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        /* Navbar styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 50;
+            background-color: rgba(15, 23, 42, 0.7); /* semi-transparent slate-900 */
+            backdrop-filter: blur(5px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        .navbar a {
+            font-family: 'Rubik Mono One', monospace;
+            color: var(--accent-color-1);
+            padding: 0.5rem 1.5rem;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+        }
+        .navbar a:hover {
+            color: var(--text-color);
+            transform: scale(1.05);
+        }
+        .navbar a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--text-color);
+            bottom: -5px;
+            right: 0; /* RTL */
+            transition: width 0.3s ease;
+        }
+        .navbar a:hover::after {
+            width: 100%;
+            left: 0; /* RTL adjusted */
+            right: auto;
+        }
+        
+        /* Specific content enhancements */
+        .menu-item {
+            background-color: rgba(15, 23, 42, 0.6); /* semi-transparent slate-900 */
+            border: 1px solid var(--accent-color-2);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem;
+            backdrop-filter: blur(3px);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .menu-item:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 0 20px rgba(252, 211, 77, 0.4); /* amber-300 shadow */
+        }
+        
+        .product-card {
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--accent-color-1);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            backdrop-filter: blur(3px);
+            text-align: center;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .product-card:hover {
+            transform: rotateY(5deg) scale(1.02); /* Subtle 3D effect */
+            box-shadow: 0 0 25px rgba(6, 95, 70, 0.5); /* emerald-700 shadow */
+        }
+        .product-card .placeholder-div {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(45deg, var(--accent-color-2), var(--accent-color-1));
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-bg);
+            font-family: 'Rubik Mono One', monospace;
+            font-size: 1.25rem;
+            line-height: 1.2;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            padding: 0.5rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .content-section {
+                padding: 6rem 1.5rem;
+            }
+            .navbar {
+                padding: 0.8rem 1rem;
+            }
+            .navbar a {
+                padding: 0.4rem 0.6rem;
+                margin: 0 0.15rem;
+                font-size: 0.75rem;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+            h2 {
+                font-size: 1.8rem;
+            }
+            .hero-text {
+                font-size: 1rem;
+            }
+            .menu-item h3, .product-card h3 {
+                font-size: 1.8rem;
+            }
+            .menu-item p, .product-card p {
+                font-size: 0.9rem;
+            }
+            .content-section p {
+                font-size: 1rem;
+            }
+            .product-card .placeholder-div {
+                font-size: 1rem;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+
+    <!-- Op Art Background Layers -->
+    <div id="op-layer-grid" class="op-art-layer pattern-grid"></div>
+    <div id="op-layer-concentric" class="op-art-layer pattern-concentric"></div>
+    <div id="op-layer-waves" class="op-art-layer pattern-waves"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="#home">בית</a>
+        <a href="#menu">תפריט</a>
+        <a href="#wood-spoon">כפית עץ</a>
+        <a href="#ceramics">מוצרי קרמיקה</a>
+    </nav>
+
+    <!-- Main Content Sections -->
+
+    <section id="home" class="content-section">
+        <h1 class="text-6xl md:text-7xl lg:text-8xl mb-8 hero-text">סבאיה</h1>
+        <h2 class="text-4xl md:text-5xl lg:text-6xl mb-12 text-center hero-text">היכן הטבע רוקד עם התודעה</h2>
+        <p class="text-xl md:text-2xl lg:text-3xl max-w-4xl leading-relaxed mb-10 text-center hero-text text-gray-100">
+            בואו לצלול לעולם של אשליות חושיות, שבו כל לגימת קפה היא פסיפס משתנה וכל מבט אל הטבע חושף צורות נסתרות.
+            סבאיה אינה רק בית קפה במשתלה - זוהי נקודת מפגש בין קווים דמיוניים לטעמים מוחשיים, חוויה שמשנה את מה שידעתם על יופי וטעם.
+            התמסרו לקצב המרצד של העלים ולעומק הבלתי נתפס של הקפה.
+        </p>
+        <a href="#menu" class="px-8 py-4 bg-emerald-700 text-amber-300 text-2xl font-bold rounded-full hover:bg-emerald-600 transition-all shadow-lg hover:shadow-2xl">
+            גלו את התפריט האמנותי
+        </a>
+    </section>
+
+    <section id="menu" class="content-section">
+        <h2 class="text-5xl md:text-6xl mb-16 text-amber-300">פסיפס הטעמים: התפריט האשלייתי שלנו</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl w-full">
+            <div class="menu-item">
+                <h3 class="text-3xl mb-4 text-amber-300">כריך סבביח - אשליית העומק</h3>
+                <p class="text-lg mb-2 text-gray-100">
+                    ביצה קשה, חציל עמוק, טונה שובבה, מטבוחה מפתה, מלפפון חמוץ ולימון כבוש - רקדנים על הלשון. מוגש עם זיתים וסלט אישי.
+                    כל נגיסה היא נקודת מגוז אחרת, אשליה של טעמים המשתלבים ומתפצלים.
+                </p>
+                <span class="text-2xl font-bold text-emerald-300">₪36</span>
+            </div>
+            <div class="menu-item">
+                <h3 class="text-3xl mb-4 text-amber-300">כריך פנסיבאיה - ריקוד הכמהין</h3>
+                <p class="text-lg mb-2 text-gray-100">
+                    פטריות מוקפצות עם ניחוח כמהין, שכבות של גבינות שמנת וגראנה פדאנו, רוקט טרי ונגיעת בלסמי. מוגש עם זיתים וסלט אישי.
+                    טעמים עשירים המשתלבים יחד ליצירת אשליה של יער קסום, קווים של טעם הנפרשים בחיך.
+                </p>
+                <span class="text-2xl font-bold text-emerald-300">₪45</span>
+            </div>
+            <div class="menu-item">
+                <h3 class="text-3xl mb-4 text-amber-300">סלט במבי - פקאן של אשליות</h3>
+                <p class="text-lg mb-2 text-gray-100">
+                    חסות רעננות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר.
+                    הצבעים והמרקמים יוצרים אשליה אופטית של טעמים, עומק ורעננות אינסופיים.
+                </p>
+                <span class="text-2xl font-bold text-emerald-300">₪36</span>
+            </div>
+            <div class="menu-item">
+                <h3 class="text-3xl mb-4 text-amber-300">קערת אסאי - מערבולת הפרי</h3>
+                <p class="text-lg mb-2 text-gray-100">
+                    עם גרנולה קראנצ'ית, שבבי קוקוס עדינים ופרי העונה.
+                    קערה שמשלבת צבעים עזים ומרקמים מתעתעים, אשליה של בריאות ומתוק שמתעוררים לחיים.
+                </p>
+                <span class="text-2xl font-bold text-emerald-300">₪39</span>
+            </div>
+            <div class="menu-item md:col-span-2">
+                <h3 class="text-3xl mb-4 text-amber-300">פאי תפוחים קרמבל - גלגלי זמן מתוקים</h3>
+                <p class="text-lg mb-2 text-gray-100">
+                    שכבות של חום מתוק, כאילו נוצרו מקווים נעים. תפוחים מתערבלים בתוך סוכר, מחול של צורות וטעמים עתיקים. מוגש עם כדור גלידה.
+                    כל ביס הוא מסע בזמן, אשליה מתוקה של נוסטלגיה וחדשנות.
+                </p>
+                <span class="text-2xl font-bold text-emerald-300">₪44</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="wood-spoon" class="content-section">
+        <h2 class="text-5xl md:text-6xl mb-16 text-amber-300">כפית עץ: תנועה בחומר</h2>
+        <p class="text-xl md:text-2xl max-w-4xl leading-relaxed mb-10 text-center text-gray-100">
+            מכל עץ, צומחת צורה. הכפית, פשוטה ועמוקה, מגלמת תנועה של אור וצל, קווים של חיים.
+            היא אינה רק כלי, היא נקודת מבט. מוצרי העץ שלנו הם פרשנות מחודשת של הטבע, אמנות שימושית המזמינה אתכם לגעת באשליה.
+            התבוננו בקווים, בחיים שנחרטו בהם.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
+            <div class="product-card">
+                <div class="placeholder-div">
+                    <span class="text-base">בקבוקי שתיה - גאומטריה טבעית</span>
+                </div>
+                <h3 class="text-2xl mb-2 text-amber-300">בקבוקי שתיה</h3>
+                <p class="text-gray-100">בקבוקים חרוטים, עם קווים נקיים המרצדים באור יום. אחיזה נוחה, חוויה ויזואלית.</p>
+                <span class="text-xl font-bold text-emerald-300">₪89</span>
+            </div>
+            <div class="product-card">
+                <div class="placeholder-div">
+                    <span class="text-base">צנצנות קטנות - קסם בפרט</span>
+                </div>
+                <h3 class="text-2xl mb-2 text-amber-300">צנצנות קטנות</h3>
+                <p class="text-gray-100">פיסות עץ קטנות, שומרות סודות וטעמים. צורות מינימליסטיות, השפעה אופטית מקסימלית.</p>
+                <span class="text-xl font-bold text-emerald-300">₪45</span>
+            </div>
+            <div class="product-card">
+                <div class="placeholder-div">
+                    <span class="text-base">צנצנות גדולות - עומק בלתי צפוי</span>
+                </div>
+                <h3 class="text-2xl mb-2 text-amber-300">צנצנות גדולות</h3>
+                <p class="text-gray-100">נוכחות מרשימה, קווים עדינים שהופכים למורכבים כשמתקרבים. אחסון אשלייתי.</p>
+                <span class="text-xl font-bold text-emerald-300">₪75</span>
+            </div>
+        </div>
+        <p class="text-lg md:text-xl text-gray-100 mt-8">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון. הנגיעה הבאה שלכם באמנות.</p>
+    </section>
+
+    <section id="ceramics" class="content-section">
+        <h2 class="text-5xl md:text-6xl mb-16 text-amber-300">מוצרי קרמיקה: אדמה שהתעוררה</h2>
+        <p class="text-xl md:text-2xl max-w-4xl leading-relaxed mb-10 text-center text-gray-100">
+            אדמה שחוממה, עוצבה וקיבלה חיים חדשים. כל כלי קרמיקה הוא מחול של מרקמים, קווים שנסתרים ונגלים באור משתנה.
+            חוו את כובד האדמה ואת קלילות הרוח, באחיזה של צורה מבלבלת יופי.
+            אמנות שימושית שמוסיפה עומק ויזואלי לכל רגע.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
+            <div class="product-card">
+                <div class="placeholder-div">
+                    <span class="text-base">כוס גדולה - מימד נוסף ללגימה</span>
+                </div>
+                <h3 class="text-2xl mb-2 text-amber-300">כוס גדולה</h3>
+                <p class="text-gray-100">כוס שמגדירה מחדש את חווית השתייה, עם קווים מעוותים עדינים הלוכדים את האור.</p>
+                <span class="text-xl font-bold text-emerald-300">₪65</span>
+            </div>
+            <div class="product-card">
+                <div class="placeholder-div">
+                    <span class="text-base">כוס קטנה - פרספקטיבה חדשה</span>
+                </div>
+                <h3 class="text-2xl mb-2 text-amber-300">כוס קטנה</h3>
+                <p class="text-gray-100">קטנה אך עוצמתית, כל לגימה מתוכה היא מסע ויזואלי. אחיזה המטעה את העין.</p>
+                <span class="text-xl font-bold text-emerald-300">₪45</span>
+            </div>
+            <div class="product-card">
+                <div class="placeholder-div">
+                    <span class="text-base">קנקן - מרכז הכובד הוויזואלי</span>
+                </div>
+                <h3 class="text-2xl mb-2 text-amber-300">קנקן</h3>
+                <p class="text-gray-100">קנקן שאינו רק מכיל - הוא יוצר. נוזלים זורמים דרך אשליה של צורה וגודל.</p>
+                <span class="text-xl font-bold text-emerald-300">₪120</span>
+            </div>
+        </div>
+        <p class="text-lg md:text-xl text-gray-100 mt-8">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון. הנגיעה הבאה שלכם באמנות.</p>
+    </section>
+
+    <script>
+        // Custom Cursor Logic
+        const customCursor = document.querySelector('.custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            customCursor.style.left = `${e.clientX}px`;
+            customCursor.style.top = `${e.clientY}px`;
+        });
+
+        // Op Art Background Parallax/Movement Logic
+        const opLayerGrid = document.getElementById('op-layer-grid');
+        const opLayerConcentric = document.getElementById('op-layer-concentric');
+        const opLayerWaves = document.getElementById('op-layer-waves');
+
+        document.addEventListener('mousemove', (e) => {
+            // Normalize mouse position from -0.5 to 0.5
+            const x = e.clientX / window.innerWidth - 0.5;
+            const y = e.clientY / window.innerHeight - 0.5;
+
+            // Grid pattern moves slightly with mouse for subtle shift
+            opLayerGrid.style.backgroundPositionX = `${-x * 20}px`;
+            opLayerGrid.style.backgroundPositionY = `${-y * 20}px`;
+
+            // Concentric pattern translates for a warping effect, maintaining scale
+            opLayerConcentric.style.transform = `translate(${x * 30}px, ${y * 30}px) scale(1.05)`;
+
+            // Waves pattern moves more dramatically for depth illusion
+            opLayerWaves.style.backgroundPositionX = `${x * 50}px`;
+            opLayerWaves.style.backgroundPositionY = `${y * 50}px`;
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
