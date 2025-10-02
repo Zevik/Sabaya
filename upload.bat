@@ -1,29 +1,11 @@
 @echo off
-REM --- הגדרות ---
-SET GITHUB_USERNAME=Zevik
-SET REPOSITORY_NAME=Sabaya
-
-REM --- אתחול מאגר Git מקומי ---
-echo Initializing Git repository...
 git init
-
-REM --- הוספת כל הקבצים למעקב ---
+git remote add origin https://github.com/Zevik/Sabaya.git >nul 2>&1
 git add .
-
-REM --- יצירת קומיט ---
-git commit -m "Upload 150 HTML sites"
-
-REM --- קישור למאגר המרוחק ב-GitHub ---
-REM בודק אם ה-remote כבר קיים, ואם לא, מוסיף אותו
-git remote add origin https://github.com/%GITHUB_USERNAME%/%REPOSITORY_NAME%.git >nul 2>&1
-
-REM --- הגדרת הענף הראשי לשם main ---
+git commit -m "Restructure project for iframe random content"
 git branch -M main
-
-REM --- דחיפת הקבצים ל-GitHub ---
-echo Pushing files to GitHub...
-git push -u origin main
+git push -u origin main --force
 
 echo.
-echo Upload complete! The files were pushed to Zevik/Sabaya repository.
+echo New structure uploaded successfully!
 pause

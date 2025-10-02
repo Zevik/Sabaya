@@ -14,7 +14,7 @@ git remote add origin https://github.com/%GITHUB_USERNAME%/%REPOSITORY_NAME%.git
 git branch -M main
 
 echo.
-echo Forcing the update to GitHub. This will delete the old Hebrew folders...
+echo Forcing the update to GitHub...
 git push -u origin main --force
 
 echo.
