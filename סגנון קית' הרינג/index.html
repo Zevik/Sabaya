@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - אמנות הקפה והטבע הרוקד</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☕%3C/text%3E%3C/svg%3E">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles and custom properties */
+        :root {
+            --color-haring-red: #EF4444; /* Tailwind red-500 */
+            --color-haring-blue: #3B82F6; /* Tailwind blue-500 */
+            --color-haring-yellow: #FACC15; /* Tailwind yellow-400 */
+            --color-haring-green: #22C55E; /* Tailwind green-500 */
+            --color-haring-black: #000000;
+            --color-haring-white: #FFFFFF;
+            --color-haring-accent: #EC4899; /* Pink-500 for secondary pop */
+        }
+        body {
+            font-family: 'Assistant', sans-serif;
+            cursor: none; /* Hide default cursor */
+            background-color: var(--color-haring-white);
+            color: var(--color-haring-black);
+            overflow-x: hidden; /* Prevent horizontal scroll from Haring elements */
+        }
+        h1, h2, h3, h4, .font-haring {
+            font-family: 'Amatic SC', cursive;
+            font-weight: 700;
+        }
+
+        /* Custom Cursor Styling */
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999; /* Always on top */
+            transition: width 0.2s ease-out, height 0.2s ease-out, transform 0.1s ease-out, background-color 0.2s ease-out;
+            transform: translate(-50%, -50%); /* Center cursor on mouse position */
+            background-color: transparent; /* Default transparent */
+            /* High contrast border and shadow combination */
+            border: 2px solid var(--color-haring-white); /* White border for dark backgrounds */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Dark shadow for light backgrounds */
+        }
+        #custom-cursor.active {
+            width: 36px;
+            height: 36px;
+            background-color: var(--color-haring-accent); /* Pink on hover */
+            border-color: var(--color-haring-black);
+            box-shadow: 0 0 0 2px var(--color-haring-white), 0 0 15px rgba(236, 72, 153, 0.7); /* Glow effect */
+        }
+
+        /* Haring-style general outlines */
+        .haring-outline {
+            border: 3px solid var(--color-haring-black);
+            box-shadow: 6px 6px 0px 0px var(--color-haring-black); /* Drop shadow for depth */
+        }
+        .haring-shadow-md {
+            box-shadow: 4px 4px 0px 0px var(--color-haring-black);
+        }
+        .haring-shadow-lg {
+            box-shadow: 6px 6px 0px 0px var(--color-haring-black);
+        }
+
+        /* Custom utility for absolute positioning with Haring-esque touch */
+        .haring-figure-container {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        /* Unique shapes for Haring elements */
+        .haring-blob {
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            transform: rotate(20deg);
+        }
+        .haring-coffee-cup {
+            width: 60px;
+            height: 50px;
+            background-color: var(--color-haring-white);
+            border: 3px solid var(--color-haring-black);
+            border-radius: 0 0 25px 25px;
+            position: relative;
+        }
+        .haring-coffee-cup::before { /* handle */
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            border: 3px solid var(--color-haring-black);
+            border-radius: 50%;
+            top: 10px;
+            right: -18px;
+            border-left: none;
+        }
+        .haring-coffee-cup::after { /* steam */
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid var(--color-haring-black);
+            border-bottom: none;
+            border-right: none;
+            top: -10px;
+            left: 20px;
+            transform: rotate(-45deg);
+        }
+
+        /* Specific parallax container for background elements */
+        .parallax-bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        /* For the Haring-style grid/layout */
+        .haring-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem; /* Tailwind gap-6 */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .md\:haring-grid-cols-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .md\:haring-grid-cols-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Keyframe Animations */
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-bounce-slow {
+            animation: bounce-slow 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 4s infinite ease-in-out;
+        }
+
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 10s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-yellow-100 via-white to-blue-100 min-h-screen text-gray-800 relative">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+
+    <!-- Haring-style Background Elements (Parallax) -->
+    <div class="parallax-bg-layer" id="parallax-layer-1">
+        <!-- Abstract dancing figure 1 -->
+        <div class="haring-figure-container w-24 h-24 sm:w-32 sm:h-32 bg-red-500 rounded-full haring-outline top-[10%] right-[15%] rotate-12 opacity-80" data-parallax-speed="0.05">
+            <div class="w-8 h-8 bg-black rounded-full absolute top-1/4 left-1/4"></div>
+            <div class="w-8 h-8 bg-black rounded-full absolute top-1/4 right-1/4"></div>
+            <div class="w-12 h-6 bg-black rounded-full absolute bottom-1/4 left-1/2 -translate-x-1/2"></div>
+        </div>
+        <!-- Abstract plant/leaf form -->
+        <div class="haring-figure-container w-20 h-32 sm:w-28 sm:h-44 bg-green-500 haring-blob haring-outline bottom-[5%] left-[10%] rotate-[-20deg] opacity-70" data-parallax-speed="0.1"></div>
+        <!-- Coffee bean cluster -->
+        <div class="haring-figure-container flex gap-1 bottom-[20%] right-[30%] opacity-90" data-parallax-speed="0.07">
+            <div class="w-8 h-12 bg-gray-700 haring-outline rounded-full"></div>
+            <div class="w-9 h-14 bg-gray-800 haring-outline rounded-full -rotate-6"></div>
+            <div class="w-7 h-11 bg-gray-600 haring-outline rounded-full rotate-12"></div>
+        </div>
+    </div>
+    <div class="parallax-bg-layer" id="parallax-layer-2">
+        <!-- Abstract dancing figure 2 -->
+        <div class="haring-figure-container w-20 h-20 sm:w-28 sm:h-28 bg-blue-500 rounded-full haring-outline top-[25%] left-[5%] rotate-[-20deg] opacity-80" data-parallax-speed="0.08">
+            <div class="w-6 h-6 bg-black rounded-full absolute top-1/4 left-1/4"></div>
+            <div class="w-6 h-6 bg-black rounded-full absolute top-1/4 right-1/4"></div>
+        </div>
+        <!-- Ceramic pot/mug shape -->
+        <div class="haring-figure-container w-24 h-32 sm:w-32 sm:h-44 bg-orange-300 haring-outline bottom-[15%] left-[40%] rotate-3 opacity-90" data-parallax-speed="0.06">
+            <div class="w-16 h-8 bg-orange-400 absolute bottom-0 left-1/2 -translate-x-1/2 rounded-b-lg"></div>
+        </div>
+    </div>
+
+
+    <header class="fixed top-0 w-full z-50 py-4 px-6 md:px-12 bg-white bg-opacity-90 backdrop-blur-sm haring-shadow-md">
+        <nav class="container mx-auto flex flex-col md:flex-row items-center justify-between text-lg font-haring text-gray-900">
+            <a href="#hero" class="text-4xl md:text-5xl font-extrabold mb-4 md:mb-0 text-red-600 hover:text-blue-600 transition-colors duration-300 haring-shadow-md py-1 px-3">סבאיה</a>
+            <ul class="flex flex-wrap justify-center gap-x-6 gap-y-2 md:gap-x-10 text-xl md:text-2xl lg:text-3xl">
+                <li><a href="#hero" class="nav-link hover:text-green-500 transition-colors duration-200">בית</a></li>
+                <li><a href="#menu" class="nav-link hover:text-yellow-500 transition-colors duration-200">תפריט</a></li>
+                <li><a href="#wood-products" class="nav-link hover:text-purple-500 transition-colors duration-200">כפית עץ</a></li>
+                <li><a href="#ceramic-products" class="nav-link hover:text-pink-500 transition-colors duration-200">מוצרי קרמיקה</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="relative z-10 pt-32 pb-16 container mx-auto px-4 md:px-8">
+
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-[calc(100vh-10rem)] flex flex-col items-center justify-center text-center py-16 md:py-24 relative overflow-hidden">
+            <h1 class="text-6xl md:text-8xl font-haring text-red-600 mb-6 haring-shadow-lg p-2 bg-yellow-100 rounded-lg">קפה ותנועה: סבאיה חוגגת את החיים!</h1>
+            <p class="text-2xl md:text-3xl max-w-3xl leading-relaxed text-gray-800 mb-10">
+                בואו לצלול למרחב שבו כל לגימה היא ריקוד, וכל צמח שר סימפוניה. סבאיה אינה רק בית קפה - היא סצנה חיה, קופצנית, שבה קצב הטבע פוגש את פעימות העיר. הצטרפו אלינו לחוויה ויזואלית וקולינרית שטרם הכרתם. כאן, החיוך מתפשט מהפה לכל הגוף, והצבעים קופצים מהקיר לצלחת.
+            </p>
+            <a href="#menu" class="cta-button bg-blue-500 text-white text-3xl md:text-4xl font-haring py-4 px-8 rounded-full haring-outline hover:scale-105 transition-transform duration-300 relative overflow-hidden group">
+                <span class="relative z-10">בואו לרקוד עם התפריט!</span>
+                <span class="absolute inset-0 bg-pink-500 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300 ease-out z-0"></span>
+            </a>
+            <div class="haring-figure-container w-28 h-28 bg-red-500 rounded-full haring-outline absolute top-10 left-10 opacity-70 rotate-[-30deg]"></div>
+            <div class="haring-figure-container w-36 h-36 bg-green-500 rounded-lg haring-outline absolute bottom-20 right-20 opacity-70 rotate-45"></div>
+        </section>
+
+        <!-- Our Experience Section -->
+        <section id="experience" class="py-16 md:py-24 text-center">
+            <h2 class="text-5xl md:text-6xl font-haring text-blue-600 mb-12 haring-shadow-lg p-2 bg-green-100 rounded-lg inline-block">החוויה שלנו: חגיגה של טעמים וצבעים</h2>
+
+            <div class="haring-grid md:haring-grid-cols-3">
+                <!-- Coffee Card -->
+                <div class="bg-white rounded-xl p-8 haring-outline flex flex-col items-center justify-center text-center hover:bg-yellow-100 transition-colors duration-300">
+                    <div class="haring-coffee-cup w-24 h-20 bg-yellow-400 mb-6 relative">
+                        <div class="w-12 h-12 bg-black rounded-full absolute -top-8 left-1/2 -translate-x-1/2 animate-bounce-slow"></div>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-haring text-red-500 mb-4">קפה קופצני</h3>
+                    <p class="text-lg leading-relaxed">
+                        כל גרגר פולי קפה בוער בלהט, נקטף בתשוקה, נקלה באמנות. כל כוס היא יצירה, אנרגיה מתפרצת של טעם שיעיף אתכם באוויר! בואו לחוות את הקסם.
+                    </p>
+                </div>
+
+                <!-- Nature Card -->
+                <div class="bg-white rounded-xl p-8 haring-outline flex flex-col items-center justify-center text-center hover:bg-blue-100 transition-colors duration-300">
+                    <div class="w-24 h-24 bg-green-500 haring-blob haring-outline mb-6 relative animate-pulse-slow">
+                        <div class="w-10 h-10 bg-black rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-haring text-green-500 mb-4">ריקוד הטבע</h3>
+                    <p class="text-lg leading-relaxed">
+                        בין עלעל ירוק לפרח פורח, אתם חלק מבלט אקולוגי. אוויר צח מחבק, שמש מלטפת, וקיר שצוחק אליכם. מקום שמעורר את כל החושים ומזמין לתנועה חופשית.
+                    </p>
+                </div>
+
+                <!-- Handmade Products Card -->
+                <div class="bg-white rounded-xl p-8 haring-outline flex flex-col items-center justify-center text-center hover:bg-red-100 transition-colors duration-300">
+                    <div class="w-24 h-24 bg-purple-400 haring-outline rounded-lg mb-6 relative rotate-[-10deg]">
+                        <div class="w-16 h-4 bg-black absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45"></div>
+                        <div class="w-16 h-4 bg-black absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-[-45deg]"></div>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-haring text-purple-500 mb-4">יצירות ידיים</h3>
+                    <p class="text-lg leading-relaxed">
+                        מעץ עתיק ועד חימר רך, כל חפץ נוצר באהבה. כפיות עץ שמחייכות, כוסות קרמיקה שמחממות. יצירות שמחברות אתכם לרוח האמנות ולטבע בחיבוק עדין.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="py-16 md:py-24 text-center">
+            <h2 class="text-5xl md:text-6xl font-haring text-yellow-600 mb-12 haring-shadow-lg p-2 bg-blue-100 rounded-lg inline-block">התפריט שלנו: חגיגה לחיך ולנשמה</h2>
+
+            <div class="max-w-4xl mx-auto">
+                <!-- Food & Sweets Header -->
+                <h3 class="text-4xl md:text-5xl font-haring text-red-500 mb-8 haring-shadow-md">אוכל ומתוקים</h3>
+                <div class="haring-grid md:haring-grid-cols-2">
+                    <!-- Item: Sandwich 1 -->
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">כריך סבביח רוקד בפה</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">ביצה קשה, טונה, חציל, מטבוחה, מלפפון חמוץ ולימון כבוש, מוגש עם זיתים וסלט אישי. פיצוץ של טעמים בכל ביס!</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪36</span>
+                    </div>
+                    <!-- Item: Sandwich 2 -->
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">כריך פנסיבאיה מפתיע</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">פטריות מוקפצות עם כמהין, גבינות שמנת וגראנה פדאנו, רוקט ובלסמי, מוגש עם זיתים וסלט אישי. יצירת פאר של טעם!</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪45</span>
+                    </div>
+                    <!-- Item: Sandwich 3 -->
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">כריך טבעוני שמח</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">ממרח חציל שחור, גבינת סויה, עגבניות מיובשות ורוקט, מוגש עם זיתים וסלט אישי. חגיגה טבעונית מופלאה!</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪45</span>
+                    </div>
+                    <!-- Item: Cheese Platter -->
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">פלטת גבינות: קשת של טעמים מתעוררים</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">חמאה מוקצפת מתובלת, טחינה יוגורט, ריבה, ולחמים טריים. מסע קולינרי שישמח את הלב.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪68</span>
+                    </div>
+                    <!-- Item: Salad Bambi -->
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">סלט במבי: חגיגה ירוקה</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">חסות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר. ריקוד טעמים מרענן.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪36</span>
+                    </div>
+                    <!-- Item: Protein Salad -->
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">סלט חלבון: אנרגיה ליום שלם</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון. מנה מזינה ומעוררת.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪32</span>
+                    </div>
+                    <!-- Item: Muesli -->
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">מוזלי מור: הפתעה מתוקה-מלוחה</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">יוגורט פרו, חצילים קלויים, ביצה קשה, טחינה, וגרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש, מוגש עם פיתה קראנץ'. שילוב נועז ומופלא.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪42</span>
+                    </div>
+                    <!-- Item: Acai Bowl -->
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">קערת אסאי: אנרגיה קפואה</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">עם גרנולה קריספית, שבבי קוקוס מתוקים ופירות העונה הטריים ביותר. מרענן, מזין וטעים בטירוף.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪39</span>
+                    </div>
+                     <!-- Item: Quiche -->
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">קיש: חום ונוחות בכל ביס</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">ברוקולי / פטריות / בצל ויין לבן - בחרו את טעמכם! מוגש עם סלט אישי ושמנת חמוצה. ארוחה מושלמת לכל זמן.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪37</span>
+                    </div>
+
+                    <!-- Desserts -->
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">קוראסון שוקולד גדול: חלום מתוק</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">פחזנית חמאה עשירה במילוי שוקולד איכותי. פריכות מבחוץ, רכות מבפנים, מתוקה ומושלמת עם הקפה.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪19</span>
+                    </div>
+                     <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">קוראסון שקדים/פיסטוק גדול: חוויה פריכה</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">קרואסון גדול וזהוב, ממולא בקרם שקדים עשיר או קרם פיסטוק משגע, בתוספת שבבי אגוזים. מושלם לאוהבי המתוק.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪22</span>
+                    </div>
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">עוגה בחושה בננה ושוקולד: טעם של בית</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">עוגה עשירה ולחה עם בננות בשלות ושוקולד צ'יפס. מנחמת ומושלמת לצד הקפה של הבוקר או אחר הצהריים.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪15</span>
+                    </div>
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">פאי תפוחים קרמבל: מוגש בחום</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">פאי תפוחים קלאסי עם שכבת קרמבל פריכה מעל, מוגש עם כדור גלידת וניל. חם, מתוק ומלא אהבה.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪44</span>
+                    </div>
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">פאי מרנג לימון: ענן של חמיצות</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">פאי מרענן עם מלית לימון חמצמצה ומרנג אוורירי ומתוק. איזון מושלם בין חמיצות למתיקות.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪31</span>
+                    </div>
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">אוראו צ'יז קייק: חלום שוקולדי</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">עוגת גבינה עשירה עם עוגיות אוראו פריכות, בסיס שוקולדי וציפוי קרמי. פינוק אמיתי לאוהבי השוקולד והגבינה.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪38</span>
+                    </div>
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">קראנץ' סניקרס: ביס של אושר</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">שכבות של שוקולד, בוטנים וקרמל, בציפוי פריך ומתוק. כל ביס הוא חוויה ממכרת ומשמחת.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪23</span>
+                    </div>
+                    <div class="menu-item bg-white rounded-xl p-6 haring-outline text-right flex flex-col justify-between group">
+                        <div>
+                            <h4 class="text-2xl md:text-3xl font-haring text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-200">עוגת שילה: מסורת וטעם</h4>
+                            <p class="text-md md:text-lg text-gray-700 leading-relaxed">עוגת שוקולד עשירה, מיוחדת ומרגשת. מתכון סודי של סבתא שילה, שמביא שמחה לכל שולחן.</p>
+                        </div>
+                        <span class="text-xl md:text-2xl font-bold text-green-600 mt-4">₪44</span>
+                    </div>
+                </div>
+                <p class="text-xl md:text-2xl font-haring text-gray-700 mt-10">לשאלות והזמנות, אנא פנו אלינו בבית הקפה - אנחנו כאן כדי לשמח אתכם!</p>
+                <p class="text-sm text-gray-500 mt-4">כל המחירים בשקלים חדשים ועשויים להשתנות</p>
+            </div>
+        </section>
+
+        <!-- Wood Products Section -->
+        <section id="wood-products" class="py-16 md:py-24 text-center">
+            <h2 class="text-5xl md:text-6xl font-haring text-purple-600 mb-12 haring-shadow-lg p-2 bg-yellow-100 rounded-lg inline-block">כפיות עץ: סימפוניה של חומר ורוח</h2>
+            <p class="text-xl md:text-2xl max-w-3xl mx-auto mb-10 leading-relaxed">
+                מוצרי עץ איכותיים בעבודת יד, מתאימים לשימוש יומיומי ולמתנה מיוחדת. כל מוצר עשוי מחומרים טבעיים וידידותיים לסביבה, נושא בחובו סיפור וחיבור לטבע הפראי.
+            </p>
+
+            <div class="haring-grid md:haring-grid-cols-3">
+                <!-- Wood Item 1 -->
+                <div class="product-item bg-white rounded-xl p-8 haring-outline flex flex-col items-center group hover:bg-green-100 transition-colors duration-300">
+                    <div class="w-32 h-48 bg-amber-700 haring-outline rounded-lg flex items-center justify-center mb-6 relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                        <div class="w-12 h-20 bg-amber-800 rounded-r-full absolute left-0 top-1/2 -translate-y-1/2 -rotate-12"></div>
+                        <div class="w-12 h-12 bg-gray-200 rounded-full border-2 border-black absolute -top-4 right-4"></div>
+                        <span class="text-6xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">💧</span>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-haring text-amber-700 mb-2 group-hover:text-blue-500 transition-colors duration-200">בקבוקי שתיה</h3>
+                    <p class="text-lg text-gray-700 mb-4">בקבוקי שתיה מעץ טבעי, שומרים על הטעם והאנרגיה של המשקה. יצירת אמנות אקולוגית.</p>
+                    <span class="text-xl md:text-2xl font-bold text-green-600">₪89</span>
+                </div>
+
+                <!-- Wood Item 2 -->
+                <div class="product-item bg-white rounded-xl p-8 haring-outline flex flex-col items-center group hover:bg-red-100 transition-colors duration-300">
+                    <div class="w-32 h-32 bg-amber-600 haring-outline rounded-full flex items-center justify-center mb-6 relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                        <div class="w-20 h-20 bg-amber-700 rounded-full absolute bottom-4 right-4"></div>
+                        <div class="w-8 h-8 bg-black rounded-full absolute top-10 left-10"></div>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-haring text-amber-600 mb-2 group-hover:text-blue-500 transition-colors duration-200">צנצנות קטנות</h3>
+                    <p class="text-lg text-gray-700 mb-4">צנצנות קטנות מעץ, שומרות על התבלינים והסודות של המטבח. פינה חמה לכל בית.</p>
+                    <span class="text-xl md:text-2xl font-bold text-green-600">₪45</span>
+                </div>
+
+                <!-- Wood Item 3 -->
+                <div class="product-item bg-white rounded-xl p-8 haring-outline flex flex-col items-center group hover:bg-blue-100 transition-colors duration-300">
+                    <div class="w-36 h-36 bg-amber-500 haring-outline rounded-2xl flex items-center justify-center mb-6 relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                        <div class="w-24 h-24 bg-amber-600 rounded-full absolute top-6 left-6 -rotate-15"></div>
+                        <div class="w-10 h-10 bg-black rounded-full absolute bottom-4 right-4 animate-spin-slow"></div>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-haring text-amber-500 mb-2 group-hover:text-blue-500 transition-colors duration-200">צנצנות גדולות</h3>
+                    <p class="text-lg text-gray-700 mb-4">צנצנות עץ גדולות, לשמירת קפה, תה או כל אוצר שתבחרו. מראה כפרי וחם.</p>
+                    <span class="text-xl md:text-2xl font-bold text-green-600">₪75</span>
+                </div>
+            </div>
+            <p class="text-xl md:text-2xl font-haring text-gray-700 mt-10">לרכישה ופרטים נוספים, בואו לרקוד איתנו בבית הקפה או חייגו!</p>
+        </section>
+
+        <!-- Ceramic Products Section -->
+        <section id="ceramic-products" class="py-16 md:py-24 text-center">
+            <h2 class="text-5xl md:text-6xl font-haring text-pink-600 mb-12 haring-shadow-lg p-2 bg-green-100 rounded-lg inline-block">מוצרי קרמיקה: אדמה רוקדת בידיים</h2>
+            <p class="text-xl md:text-2xl max-w-3xl mx-auto mb-10 leading-relaxed">
+                מוצרי קרמיקה בעבודת יד איכותית, עם ציפוי טבעי בגוני אדמה חמים. מתאימים לשימוש יומיומי ומוסיפים אווירה חמה לכל בית. כל כלי נושא חותם אישי של אמן.
+            </p>
+
+            <div class="haring-grid md:haring-grid-cols-3">
+                <!-- Ceramic Item 1 -->
+                <div class="product-item bg-white rounded-xl p-8 haring-outline flex flex-col items-center group hover:bg-yellow-100 transition-colors duration-300">
+                    <div class="w-32 h-40 bg-gray-400 haring-outline rounded-b-full rounded-t-lg flex items-center justify-center mb-6 relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                        <div class="w-24 h-8 bg-gray-500 rounded-full absolute -top-4"></div>
+                        <div class="w-6 h-6 bg-black rounded-full absolute bottom-4 left-4"></div>
+                        <div class="w-6 h-6 bg-black rounded-full absolute bottom-4 right-4"></div>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-haring text-gray-800 mb-2 group-hover:text-blue-500 transition-colors duration-200">כוס גדולה</h3>
+                    <p class="text-lg text-gray-700 mb-4">כוס קרמיקה גדולה, לשתיית קפה, תה או כל משקה אהוב. חום ונוחות בכל לגימה.</p>
+                    <span class="text-xl md:text-2xl font-bold text-green-600">₪65</span>
+                </div>
+
+                <!-- Ceramic Item 2 -->
+                <div class="product-item bg-white rounded-xl p-8 haring-outline flex flex-col items-center group hover:bg-purple-100 transition-colors duration-300">
+                    <div class="w-24 h-32 bg-gray-300 haring-outline rounded-t-full rounded-b-lg flex items-center justify-center mb-6 relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                        <div class="w-16 h-6 bg-gray-400 rounded-full absolute -top-3"></div>
+                        <div class="w-4 h-4 bg-black rounded-full absolute bottom-3 left-3"></div>
+                        <div class="w-4 h-4 bg-black rounded-full absolute bottom-3 right-3"></div>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-haring text-gray-700 mb-2 group-hover:text-blue-500 transition-colors duration-200">כוס קטנה</h3>
+                    <p class="text-lg text-gray-700 mb-4">כוס קרמיקה קטנה ואלגנטית, מושלמת לאספרסו או ספל תה אישי. קסם קטן ביד.</p>
+                    <span class="text-xl md:text-2xl font-bold text-green-600">₪45</span>
+                </div>
+
+                <!-- Ceramic Item 3 -->
+                <div class="product-item bg-white rounded-xl p-8 haring-outline flex flex-col items-center group hover:bg-blue-100 transition-colors duration-300">
+                    <div class="w-36 h-48 bg-gray-500 haring-outline rounded-3xl flex items-center justify-center mb-6 relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                        <div class="w-12 h-12 bg-gray-600 rounded-full absolute -top-6 left-1/2 -translate-x-1/2"></div>
+                        <div class="w-16 h-10 bg-black rounded-r-full absolute right-0 top-1/3 -translate-y-1/2"></div>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-haring text-gray-900 mb-2 group-hover:text-blue-500 transition-colors duration-200">קנקן</h3>
+                    <p class="text-lg text-gray-700 mb-4">קנקן קרמיקה יפהפה, להגשת משקאות בסטייל. פיסת אמנות פונקציונלית.</p>
+                    <span class="text-xl md:text-2xl font-bold text-green-600">₪120</span>
+                </div>
+            </div>
+            <p class="text-xl md:text-2xl font-haring text-gray-700 mt-10">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון - בואו נדבר איתכם!</p>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white py-12 px-6 md:px-12 text-center relative z-20">
+        <div class="container mx-auto">
+            <h2 class="text-4xl md:text-5xl font-haring text-yellow-300 mb-6">סבאיה - איפה שהקפה רוקד והטבע שר!</h2>
+            <p class="text-lg md:text-xl mb-4">
+                נשמח לראותכם רוקדים איתנו במשתלה. לפרטים נוספים, התקשרו או פשוט קפצו לבקר!
+            </p>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4 text-xl md:text-2xl">
+                <span class="text-red-400 font-haring">טלפון:</span> <a href="tel:+972555555555" class="text-white hover:text-blue-400 transition-colors duration-200">055-5555555</a>
+                <span class="hidden md:inline">|</span>
+                <span class="text-green-400 font-haring">כתובת:</span> <address class="inline">רחוב האמנים 1, עיר האושר</address>
+            </div>
+            <p class="text-sm mt-8 text-gray-400">© 2023 סבאיה. כל הזכויות שמורות ליצירה ולריקוד.</p>
+
+            <!-- Haring figures in footer -->
+            <div class="haring-figure-container w-20 h-20 bg-pink-500 rounded-full haring-outline absolute top-5 left-5 opacity-80 animate-pulse-slow"></div>
+            <div class="haring-figure-container w-16 h-16 bg-blue-500 rounded-lg haring-outline absolute bottom-5 right-5 opacity-80 rotate-12"></div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Custom Cursor Logic ---
+        const customCursor = document.getElementById('custom-cursor');
+
+        document.addEventListener('mousemove', e => {
+            customCursor.style.left = `${e.clientX}px`;
+            customCursor.style.top = `${e.clientY}px`;
+        });
+
+        const interactiveElements = document.querySelectorAll('a, button, .menu-item, .product-item, .group');
+
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', () => customCursor.classList.add('active'));
+            element.addEventListener('mouseleave', () => customCursor.classList.remove('active'));
+        });
+
+        // --- Smooth Scrolling for Navigation ---
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    const headerOffset = document.querySelector('header').offsetHeight;
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                    // Adjusted offset for better visual alignment, accounting for fixed header
+                    const offsetPosition = elementPosition - headerOffset - (window.innerWidth < 768 ? 20 : 40);
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+            });
+        });
+
+        // --- Parallax Scrolling Logic ---
+        const parallaxLayers = document.querySelectorAll('.parallax-bg-layer > div');
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.pageYOffset;
+
+            parallaxLayers.forEach(layer => {
+                const speed = parseFloat(layer.getAttribute('data-parallax-speed'));
+                if (!isNaN(speed)) {
+                    const yPos = -scrollY * speed;
+                    // Apply a slight X movement as well for more organic feel
+                    const xPos = Math.sin(scrollY * 0.0005) * (speed * 50); // Small wave-like motion
+                    layer.style.transform = `translate(${xPos}px, ${yPos}px)`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

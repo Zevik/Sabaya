@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - אמנות האדמה והקפה</title>
+
+    <!-- Google Fonts for Arte Povera typography: Secular One for raw headings, Assistant for readable body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&family=Secular+One&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN for utility-first styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Custom CSS Variables for Arte Povera Color Palette */
+        :root {
+            --color-earth-parchment: #DED8BD; /* Light, warm background - high contrast with dark */
+            --color-terracotta: #B5A38C; /* Muted red-brown, accent color - good contrast */
+            --color-dark-earth: #7A6A53; /* Darker green-brown, secondary text - good contrast */
+            --color-charcoal: #524637; /* Very dark brown, primary text & shadows - excellent contrast */
+            --color-off-white: #EAE3D2; /* Creamy off-white, element background - good contrast */
+            --color-sage: #9FB8A0; /* Muted sage green, subtle nature accent - good contrast */
+        }
+
+        /* Base styles, ensuring smooth scroll and font application */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Assistant', sans-serif;
+            color: var(--color-dark-earth);
+            background-color: var(--color-earth-parchment);
+            overflow-x: hidden; /* Prevent horizontal scroll for parallax/animations */
+            cursor: none; /* Hide default cursor to use custom one */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Secular One', sans-serif;
+            color: var(--color-charcoal);
+        }
+
+        /* Custom Cursor Styling - High Contrast Mandatory */
+        .cursor-outer, .cursor-inner {
+            pointer-events: none; /* Ensure cursor doesn't block interactions */
+            position: fixed;
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            z-index: 9999; /* Always on top */
+            mix-blend-mode: normal !important; /* STRICTLY enforced: Do NOT use blend modes */
+        }
+        .cursor-outer {
+            width: 32px;
+            height: 32px;
+            /* High contrast technique: light border, dark shadow */
+            border: 2px solid #FFFFFF; /* Visible on dark backgrounds */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Visible on light backgrounds */
+            transition: transform 0.1s ease-out, opacity 0.2s ease-in-out; /* Smooth follow and hover effect */
+        }
+        .cursor-inner {
+            width: 8px;
+            height: 8px;
+            background-color: #FFFFFF; /* Visible on dark backgrounds */
+            border: 1px solid rgba(0,0,0,0.8); /* Visible on light backgrounds */
+            transition: transform 0.05s ease-out, opacity 0.2s ease-in-out;
+            opacity: 0.9;
+        }
+        /* Hide default cursor for interactive elements too */
+        a, button, [role="button"], .interactive {
+            cursor: none;
+        }
+
+        /* Custom Tailwind Configuration - extend default theme with our colors and fonts */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'earth-parchment': 'var(--color-earth-parchment)',
+                        'terracotta': 'var(--color-terracotta)',
+                        'dark-earth': 'var(--color-dark-earth)',
+                        'charcoal': 'var(--color-charcoal)',
+                        'off-white': 'var(--color-off-white)',
+                        'sage': 'var(--color-sage)',
+                    },
+                    fontFamily: {
+                        'assistant': ['Assistant', 'sans-serif'],
+                        'secular-one': ['Secular One', 'sans-serif'],
+                    },
+                }
+            }
+        }
+
+        /* Arte Povera specific styling enhancements */
+        .section-container {
+            position: relative;
+            padding: 4rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            scroll-snap-align: start; /* For potential scroll snapping */
+        }
+        .arte-povera-text {
+            line-height: 1.8;
+            letter-spacing: 0.05em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05); /* Subtle depth */
+        }
+        /* Element style for a "raw," handcrafted look with offset shadow */
+        .arte-povera-element {
+            border: 2px solid var(--color-terracotta);
+            background-color: var(--color-off-white);
+            box-shadow: 4px 4px 0px var(--color-charcoal);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .arte-povera-element:hover {
+            transform: translate(-4px, -4px); /* Shifts up-left on hover */
+            box-shadow: 8px 8px 0px var(--color-dark-earth); /* Deeper shadow */
+        }
+
+        /* Navigation link hover effect */
+        .nav-link {
+            transition: color 0.3s, transform 0.3s;
+        }
+        .nav-link:hover {
+            color: var(--color-terracotta);
+            transform: scale(1.05);
+        }
+
+        /* Scroll-based animation for content reveal */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Specific menu item card styling */
+        .menu-item-card {
+            background-color: var(--color-off-white);
+            border: 1px solid var(--color-terracotta);
+            box-shadow: 2px 2px 0px var(--color-dark-earth);
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+            text-align: right; /* RTL content inside cards */
+            padding: 1.5rem;
+        }
+        .menu-item-card:hover {
+            transform: translateY(-5px) translateX(-2px); /* Lift and shift */
+            box-shadow: 4px 4px 0px var(--color-charcoal);
+        }
+    </style>
+</head>
+<body class="bg-earth-parchment text-dark-earth font-assistant min-h-screen">
+
+    <!-- Custom Cursor Elements -->
+    <div class="cursor-outer"></div>
+    <div class="cursor-inner"></div>
+
+    <!-- Fixed Background Layer: Subtle texture/artwork (placeholder) -->
+    <div class="fixed inset-0 w-full h-full bg-no-repeat bg-cover bg-center z-[-1]" 
+         style="background-image: url('https://via.placeholder.com/1920x1080/DED8BD/B5A38C?text=RAW+TEXTURE'); 
+                opacity: 0.2; filter: grayscale(50%) blur(0.5px) contrast(1.1);"></div>
+    <!-- Fixed Background Layer: Gradient overlay for depth -->
+    <div class="fixed inset-0 w-full h-full bg-gradient-to-t from-earth-parchment/70 to-transparent z-[-1]"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 right-0 left-0 p-4 md:p-8 z-50 bg-earth-parchment/80 backdrop-blur-sm shadow-sm">
+        <div class="container mx-auto flex justify-between items-center text-lg md:text-xl font-secular-one text-charcoal">
+            <a href="#home" class="text-3xl md:text-4xl font-bold nav-link">סבאיה</a>
+            <div class="flex space-x-4 md:space-x-8">
+                <a href="#home" class="nav-link interactive">בית</a>
+                <a href="#menu" class="nav-link interactive">תפריט</a>
+                <a href="#wood-products" class="nav-link interactive">כפית עץ</a>
+                <a href="#ceramic-products" class="nav-link interactive">מוצרי קרמיקה</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Wrapper with positive z-index to be above background -->
+    <div class="relative z-10 pt-24">
+
+        <!-- Home Section -->
+        <section id="home" class="section-container pt-24 pb-12 flex flex-col justify-center items-center px-4">
+            <div class="max-w-4xl text-center animate-on-scroll">
+                <h1 class="text-5xl md:text-7xl font-secular-one mb-8 text-terracotta leading-tight arte-povera-text">סבאיה: נשימת האדמה בלב העיר</h1>
+                <p class="text-xl md:text-2xl mb-8 leading-relaxed arte-povera-text text-dark-earth">
+                    ברוכים הבאים לסבאיה - לא רק בית קפה, אלא מפלט שבו הזמן מאט, הידיים יוצרות, והלב נפתח אל יופיו הפשוט של הטבע.
+                    כאן, כל לגימה של קפה איכותי וכל נגיעה במוצר עבודת יד, מחברים אותנו לסיפור של חומר, צבע ורוח האדמה.
+                </p>
+                <p class="text-lg md:text-xl mb-10 leading-relaxed arte-povera-text text-charcoal/80">
+                    אווירה של שלווה וחיבור טבעי עוטפת כל פינה, בין הצמחים והפרחים, מול חומרי הגלם הפשוטים שהפכו ליצירה.
+                    זוהי חוויה של טעם, מגע ונשמה.
+                </p>
+                <a href="#menu" class="inline-block px-8 py-4 bg-terracotta text-off-white text-xl md:text-2xl font-secular-one rounded-full shadow-lg hover:bg-dark-earth transition-colors duration-300 arte-povera-element interactive">
+                    גלו את תפריט הסודות שלנו
+                </a>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="section-container bg-off-white/80 p-8 md:p-12 min-h-screen pt-24 pb-12">
+            <div class="max-w-6xl mx-auto text-center animate-on-scroll">
+                <h2 class="text-4xl md:text-6xl font-secular-one mb-12 text-charcoal arte-povera-text">תפריט: אוכל של יצירה פשוטה</h2>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                    <!-- אוכל -->
+                    <div class="col-span-full md:col-span-1 lg:col-span-full text-right animate-on-scroll">
+                        <h3 class="text-3xl md:text-4xl font-secular-one text-terracotta mb-6 border-b-2 border-terracotta pb-2 inline-block">ממטבח האדמה - אוכל</h3>
+                    </div>
+
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">כריך סבביח מפורק</h4>
+                        <p class="text-dark-earth mb-4">ביצה חופשית, טונה טרייה, חציל שרוף, מטבוחה ביתית, מלפפון כבוש ולימון מאיר, מוגש לצד זיתי קלמטה וסלט גינה רענן.</p>
+                        <span class="text-xl font-bold text-terracotta">₪36</span>
+                    </div>
+
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">כריך פנסיבאיה - חגיגה יערנית</h4>
+                        <p class="text-dark-earth mb-4">פטריות יער מוקפצות בשמן כמהין, עטופות בגבינות שמנת וגראנה פדאנו, עם רוקט פריך ונגיעת בלסמי מצומצם. מוגש עם זיתים וסלט אישי.</p>
+                        <span class="text-xl font-bold text-terracotta">₪45</span>
+                    </div>
+
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">כריך טבעוני - לחיבור ירוק</h4>
+                        <p class="text-dark-earth mb-4">ממרח חציל שחור עשיר, גבינת סויה עדינה, עגבניות מיובשות בשמש ועלעלי רוקט טריים. מוגש עם זיתים וסלט ירוק.</p>
+                        <span class="text-xl font-bold text-terracotta">₪45</span>
+                    </div>
+
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">פלטת גבינות ולחמים - מגע של בית</h4>
+                        <p class="text-dark-earth mb-4">מבחר גבינות בוטיק, לחמים טריים נאפים במקום, מוגשים עם חמאה מוקצפת מתובלת, טחינת יוגורט וריבה עונתית.</p>
+                        <span class="text-xl font-bold text-terracotta">₪68</span>
+                    </div>
+
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">סלט במבי - רעננות יער</h4>
+                        <p class="text-dark-earth mb-4">חסות פריכות, בצל סגול מתוק, תפוח ירוק חמצמץ, עגבניות שרי, מלפפון, פקאן מסוכר, בתוספת פטה עדינה ורוטב הבית הסודי.</p>
+                        <span class="text-xl font-bold text-terracotta">₪36</span>
+                    </div>
+
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">סלט חלבון - אנרגיה טבעית</h4>
+                        <p class="text-dark-earth mb-4">עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת פריכים וגרידת לימון מרעננת.</p>
+                        <span class="text-xl font-bold text-terracotta">₪32</span>
+                    </div>
+
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">מוזלי מור - בוקר של אגדה</h4>
+                        <p class="text-dark-earth mb-4">יוגורט עשיר, חצילים קלויים בלהבה, ביצה קשה, טחינה גולמית, גרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש. מוגש עם פיתה קראנצ'ית.</p>
+                        <span class="text-xl font-bold text-terracotta">₪42</span>
+                    </div>
+
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">קערת אסאי - בריאות טרופית</h4>
+                        <p class="text-dark-earth mb-4">קערה מרעננת של אסאי קפוא, מוגש עם גרנולה ביתית, שבבי קוקוס פריכים ופירות העונה הטריים ביותר.</p>
+                        <span class="text-xl font-bold text-terracotta">₪39</span>
+                    </div>
+
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">קיש היום - עונתי ומשתנה</h4>
+                        <p class="text-dark-earth mb-4">קיש ברוקולי / פטריות יער / בצל ויין לבן - לבחירתכם. מוגש עם סלט אישי ונגיעת שמנת חמוצה.</p>
+                        <span class="text-xl font-bold text-terracotta">₪37</span>
+                    </div>
+
+                    <!-- מתוקים -->
+                    <div class="col-span-full md:col-span-1 lg:col-span-full text-right mt-10 animate-on-scroll">
+                        <h3 class="text-3xl md:text-4xl font-secular-one text-terracotta mb-6 border-b-2 border-terracotta pb-2 inline-block">מתיקות האדמה - מתוקים</h3>
+                    </div>
+
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">קרואסון שוקולד - נחמה קלאסית</h4>
+                        <p class="text-dark-earth mb-4">קרואסון חמאה פריך במילוי שוקולד מריר עשיר.</p>
+                        <span class="text-xl font-bold text-terracotta">₪19</span>
+                    </div>
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">קרואסון שקדים / פיסטוק - אצילות מתוקה</h4>
+                        <p class="text-dark-earth mb-4">קרואסון אפוי במילוי קרם שקדים או פיסטוק עשיר.</p>
+                        <span class="text-xl font-bold text-terracotta">₪22</span>
+                    </div>
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">עוגה בחושה - בננה ושוקולד</h4>
+                        <p class="text-dark-earth mb-4">פרוסה עשירה וביתית של עוגת בננה עם נגיעות שוקולד מריר.</p>
+                        <span class="text-xl font-bold text-terracotta">₪15</span>
+                    </div>
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">פאי תפוחים קרמבל - חמימות ביתית</h4>
+                        <p class="text-dark-earth mb-4">פאי תפוחים חמים עם ציפוי קרמבל פריך, מוגש עם כדור גלידת וניל.</p>
+                        <span class="text-xl font-bold text-terracotta">₪44</span>
+                    </div>
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">פאי מרנג לימון - חמצמץ ומרענן</h4>
+                        <p class="text-dark-earth mb-4">פאי לימון עם קרום מרנג אוורירי וזהוב.</p>
+                        <span class="text-xl font-bold text-terracotta">₪31</span>
+                    </div>
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">אוראו צ'יז קייק - חלום מתוק</h4>
+                        <p class="text-dark-earth mb-4">עוגת גבינה עשירה עם עוגיות אוראו פריכות.</p>
+                        <span class="text-xl font-bold text-terracotta">₪38</span>
+                    </div>
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">קראנץ' סניקרס - אנרגיה מתוקה</h4>
+                        <p class="text-dark-earth mb-4">שכבות קראנצ'יות של שוקולד, בוטנים וקרמל.</p>
+                        <span class="text-xl font-bold text-terracotta">₪23</span>
+                    </div>
+                    <div class="menu-item-card animate-on-scroll">
+                        <h4 class="text-2xl font-secular-one text-charcoal mb-2">עוגת שילה - יצירה עונתית</h4>
+                        <p class="text-dark-earth mb-4">עוגת הבית המשתנה שלנו, בהשראת טעמים ופירות העונה.</p>
+                        <span class="text-xl font-bold text-terracotta">₪44</span>
+                    </div>
+                </div>
+
+                <p class="text-lg md:text-xl mt-8 mb-4 text-charcoal/80 arte-povera-text animate-on-scroll">
+                    לשאלות והזמנות מיוחדות, אנו מזמינים אתכם לבקר אותנו בבית הקפה ולשוחח עם צוות 'סבאיה'.
+                </p>
+                <p class="text-md md:text-lg text-charcoal/60 arte-povera-text animate-on-scroll">
+                    כל המחירים בשקלים חדשים ועשויים להשתנות מעת לעת.
+                </p>
+            </div>
+        </section>
+
+        <!-- Wood Products Section -->
+        <section id="wood-products" class="section-container bg-earth-parchment p-8 md:p-12 min-h-screen pt-24 pb-12">
+            <div class="max-w-6xl mx-auto text-center animate-on-scroll">
+                <h2 class="text-4xl md:text-6xl font-secular-one mb-12 text-charcoal arte-povera-text">כפית עץ: חום היער בידיכם</h2>
+                <p class="text-xl md:text-2xl mb-12 leading-relaxed arte-povera-text text-dark-earth">
+                    כל כפית, כל צנצנת עץ, נוצרה מתוך כבוד עמוק לחומר הגלם.
+                    מוצרי העץ שלנו הם עבודת יד טהורה, משקפים את יופיו הגולמי והטבעי של העץ,
+                    ומביאים חמימות ייחודית לביתכם. הם ידידותיים לסביבה, וכל סימן עליהם מספר סיפור.
+                </p>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="arte-povera-element p-6 text-center animate-on-scroll">
+                        <!-- Placeholder div for wood bottle, imperfect organic shape -->
+                        <div class="w-48 h-48 mx-auto mb-4 bg-terracotta/70 flex items-center justify-center text-off-white text-3xl font-secular-one" 
+                             style="border-radius: 40% 60% 70% 30% / 60% 30% 70% 40%; box-shadow: 6px 6px 0px var(--color-charcoal);">
+                            בקבוק
+                        </div>
+                        <h3 class="text-2xl font-secular-one text-charcoal mb-2">בקבוק שתיה מעץ</h3>
+                        <p class="text-dark-earth mb-4">בקבוק עץ מגולף בעבודת יד, לשמירה על טמפרטורה ולסטייל טבעי. כל אחד ייחודי.</p>
+                        <span class="text-xl font-bold text-terracotta">₪89</span>
+                    </div>
+
+                    <div class="arte-povera-element p-6 text-center animate-on-scroll">
+                        <!-- Placeholder div for small wooden jar, imperfect organic shape -->
+                        <div class="w-48 h-48 mx-auto mb-4 bg-sage/70 flex items-center justify-center text-off-white text-3xl font-secular-one" 
+                             style="border-radius: 30% 70% 40% 60% / 70% 40% 60% 30%; box-shadow: 6px 6px 0px var(--color-charcoal);">
+                            צנצנת קטנה
+                        </div>
+                        <h3 class="text-2xl font-secular-one text-charcoal mb-2">צנצנת עץ קטנה</h3>
+                        <p class="text-dark-earth mb-4">צנצנת עץ קטנה לאחסון תבלינים, עלים או סודות קטנים. מגע של טבע.</p>
+                        <span class="text-xl font-bold text-terracotta">₪45</span>
+                    </div>
+
+                    <div class="arte-povera-element p-6 text-center animate-on-scroll">
+                        <!-- Placeholder div for large wooden jar, imperfect organic shape -->
+                        <div class="w-48 h-48 mx-auto mb-4 bg-terracotta/70 flex items-center justify-center text-off-white text-3xl font-secular-one" 
+                             style="border-radius: 60% 40% 50% 50% / 40% 60% 50% 50%; box-shadow: 6px 6px 0px var(--color-charcoal);">
+                            צנצנת גדולה
+                        </div>
+                        <h3 class="text-2xl font-secular-one text-charcoal mb-2">צנצנת עץ גדולה</h3>
+                        <p class="text-dark-earth mb-4">צנצנת עץ גדולה לאחסון קפה, תה או כל דבר שתרצו לשמור קרוב ללב.</p>
+                        <span class="text-xl font-bold text-terracotta">₪75</span>
+                    </div>
+                </div>
+
+                <p class="text-lg md:text-xl mt-12 text-charcoal/80 arte-povera-text animate-on-scroll">
+                    לרכישה ופרטים נוספים על קולקציית העץ שלנו, אנא פנו אלינו ישירות בבית הקפה או בטלפון.
+                </p>
+            </div>
+        </section>
+
+        <!-- Ceramic Products Section -->
+        <section id="ceramic-products" class="section-container bg-off-white/80 p-8 md:p-12 min-h-screen pt-24 pb-12">
+            <div class="max-w-6xl mx-auto text-center animate-on-scroll">
+                <h2 class="text-4xl md:text-6xl font-secular-one mb-12 text-charcoal arte-povera-text">מוצרי קרמיקה: סיפור של חימר ואש</h2>
+                <p class="text-xl md:text-2xl mb-12 leading-relaxed arte-povera-text text-dark-earth">
+                    כל כלי קרמיקה בסבאיה הוא יצירה חד פעמית - נוצרה ביד אמן, עוצבה באהבה, ונאפתה באש.
+                    הצבעים הטבעיים, גוני האדמה החמים, והציפוי הלא מושלם מספרים את סיפורו של החימר,
+                    ומעניקים אווירה חמה ואותנטית לכל בית.
+                </p>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="arte-povera-element p-6 text-center animate-on-scroll">
+                        <!-- Placeholder div for large ceramic cup, imperfect organic shape -->
+                        <div class="w-48 h-48 mx-auto mb-4 bg-dark-earth/70 flex items-center justify-center text-off-white text-3xl font-secular-one" 
+                             style="border-radius: 50% 50% 40% 60% / 60% 40% 60% 40%; box-shadow: 6px 6px 0px var(--color-charcoal);">
+                            כוס גדולה
+                        </div>
+                        <h3 class="text-2xl font-secular-one text-charcoal mb-2">כוס קרמיקה גדולה</h3>
+                        <p class="text-dark-earth mb-4">כוס קרמיקה גדולה לקפה של בוקר או תה מרגיע, עם אחיזה נעימה. יצירה גולמית.</p>
+                        <span class="text-xl font-bold text-terracotta">₪65</span>
+                    </div>
+
+                    <div class="arte-povera-element p-6 text-center animate-on-scroll">
+                        <!-- Placeholder div for small ceramic cup, imperfect organic shape -->
+                        <div class="w-48 h-48 mx-auto mb-4 bg-terracotta/70 flex items-center justify-center text-off-white text-3xl font-secular-one" 
+                             style="border-radius: 40% 60% 50% 50% / 50% 50% 60% 40%; box-shadow: 6px 6px 0px var(--color-charcoal);">
+                            כוס קטנה
+                        </div>
+                        <h3 class="text-2xl font-secular-one text-charcoal mb-2">כוס קרמיקה קטנה</h3>
+                        <p class="text-dark-earth mb-4">כוס אספרסו או קפה קצר, נוצרה להתמזג עם כפות הידיים. אותנטיות בכל לגימה.</p>
+                        <span class="text-xl font-bold text-terracotta">₪45</span>
+                    </div>
+
+                    <div class="arte-povera-element p-6 text-center animate-on-scroll">
+                        <!-- Placeholder div for ceramic pitcher, imperfect organic shape -->
+                        <div class="w-48 h-48 mx-auto mb-4 bg-sage/70 flex items-center justify-center text-off-white text-3xl font-secular-one" 
+                             style="border-radius: 60% 40% 60% 40% / 40% 60% 40% 60%; box-shadow: 6px 6px 0px var(--color-charcoal);">
+                            קנקן
+                        </div>
+                        <h3 class="text-2xl font-secular-one text-charcoal mb-2">קנקן קרמיקה</h3>
+                        <p class="text-dark-earth mb-4">קנקן קרמיקה גדול להגשת מים, מיץ או חלב בסטייל כפרי. נוכחות ארצית.</p>
+                        <span class="text-xl font-bold text-terracotta">₪120</span>
+                    </div>
+                </div>
+
+                <p class="text-lg md:text-xl mt-12 text-charcoal/80 arte-povera-text animate-on-scroll">
+                    לרכישה ופרטים נוספים על יצירות הקרמיקה הייחודיות שלנו, אתם מוזמנים אלינו לבית הקפה או ליצור קשר טלפוני.
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer - Simple and earthy -->
+    <footer class="bg-charcoal text-off-white text-center p-8 mt-12 arte-povera-text animate-on-scroll">
+        <p class="text-lg mb-4">&copy; 2023 סבאיה - אמנות, טבע וקפה. כל הזכויות שמורות ליצירה.</p>
+        <p class="text-md">נוצר באהבה מהאדמה.</p>
+    </footer>
+
+    <!-- JavaScript for Custom Cursor and Scroll Animations -->
+    <script>
+        const cursorOuter = document.querySelector('.cursor-outer');
+        const cursorInner = document.querySelector('.cursor-inner');
+        let mouse = { x: -100, y: -100 }; // Initialize outside viewport
+        let cursor = { x: -100, y: -100 };
+        let innerCursor = { x: -100, y: -100 };
+        const speed = 0.2; // Smoothness of outer cursor follow
+        const innerSpeed = 0.1; // Smoothness of inner cursor follow
+
+        // Update mouse coordinates on movement
+        const handleMouseMove = (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        };
+
+        // Animation loop for custom cursor to follow mouse
+        const animateCursor = () => {
+            cursor.x += (mouse.x - cursor.x) * speed;
+            cursor.y += (mouse.y - cursor.y) * speed;
+            cursorOuter.style.transform = `translate3d(${cursor.x}px, ${cursor.y}px, 0) scale(${isHovering ? 1.5 : 1})`;
+
+            innerCursor.x += (mouse.x - innerCursor.x) * innerSpeed;
+            innerCursor.y += (mouse.y - innerCursor.y) * innerSpeed;
+            cursorInner.style.transform = `translate3d(${innerCursor.x}px, ${innerCursor.y}px, 0) scale(${isHovering ? 1.5 : 1})`;
+
+            requestAnimationFrame(animateCursor); // Continue animation
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        animateCursor(); // Start the cursor animation
+
+        // Cursor hover effect: enlarge on interactive elements
+        let isHovering = false;
+        // Select all interactive elements to apply hover effect
+        const interactiveElements = document.querySelectorAll('a, button, .interactive, .menu-item-card, .arte-povera-element');
+
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                isHovering = true;
+                // Directly set scale for immediate visual feedback
+                cursorOuter.style.transform = `translate3d(${cursor.x}px, ${cursor.y}px, 0) scale(1.5)`;
+                cursorInner.style.transform = `translate3d(${innerCursor.x}px, ${innerCursor.y}px, 0) scale(1.5)`;
+            });
+            el.addEventListener('mouseleave', () => {
+                isHovering = false;
+                // Revert scale
+                cursorOuter.style.transform = `translate3d(${cursor.x}px, ${cursor.y}px, 0) scale(1)`;
+                cursorInner.style.transform = `translate3d(${innerCursor.x}px, ${innerCursor.y}px, 0) scale(1)`;
+            });
+        });
+
+        // Scroll animation for content sections (reveal on intersection)
+        const animateOnScrollElements = document.querySelectorAll('.animate-on-scroll');
+
+        const observerOptions = {
+            root: null, // Observe intersection with the viewport
+            rootMargin: '0px',
+            threshold: 0.1 // Trigger when 10% of the element is visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Stop observing once visible to prevent re-triggering
+                }
+            });
+        }, observerOptions);
+
+        animateOnScrollElements.forEach(el => {
+            observer.observe(el);
+        });
+
+        // Initial check for elements already in view on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            animateOnScrollElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                // If element is already in (or largely in) the viewport, make it visible immediately
+                if (rect.top < window.innerHeight * 0.9 && rect.bottom >= 0) { // Using 0.9 to be a bit more lenient
+                    el.classList.add('is-visible');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

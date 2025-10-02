@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - מערת המפגש והיצירה</title>
+    <!-- Google Fonts for Hebrew: Amatic SC for display, Heebo for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles to enhance the prehistoric cave painting aesthetic */
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: #1a1a1a; /* Very dark stone */
+            color: #d1d5db; /* Light gray for text */
+            overflow-x: hidden; /* Prevent horizontal scroll from parallax */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Amatic SC', cursive;
+            color: #fcd34d; /* Amber for headings */
+            text-shadow: 2px 2px #b45309, 4px 4px #7c2d12; /* Chiseled effect */
+            letter-spacing: 0.05em;
+        }
+
+        .text-body {
+            font-weight: 300;
+            line-height: 1.8;
+            color: #e5e7eb; /* Off-white for readability on dark */
+            text-shadow: 1px 1px rgba(0, 0, 0, 0.3); /* Subtle depth */
+        }
+
+        /* Prehistoric texture overlay - subtle grain/noise */
+        .cave-texture::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2; /* Below background layers */
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM2MzQ3MjciPjxwYXRoIGQ9Ik0wIDQwTDQwIDAgMzUgMEwwIDM1eiIvPjxwYXRoIGQ9Ik00MCA0MEw0MCAzNCAzNCA0MHoiLz48L2c+PC9nPjwvc3ZnPg==');
+            background-size: 10px 10px;
+            opacity: 0.05;
+        }
+
+        /* Custom Cursor */
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            will-change: transform;
+            transition: transform 0.1s ease-out; /* Smooth movement */
+        }
+
+        .cursor-inner {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #FFFFFF; /* Visible on dark */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Visible on light */
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .cursor-inner.active {
+            transform: scale(1.8); /* Enlarges when hovering over clickable elements */
+            border-color: #fcd34d; /* Amber on hover */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8), 0 0 15px rgba(252, 211, 77, 0.7); /* Glow effect */
+        }
+
+        /* Parallax layers */
+        .parallax-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            will-change: transform;
+        }
+
+        .layer-1 {
+            background-image: radial-gradient(circle at center, rgba(161,98,7,0.1) 0%, transparent 70%), 
+                              url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjcwMCIgdmlld0JveD0iMCAwIDcwMCA3MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTMwMCAwQzQ0MCAwIDcwMCAxNjAgNzAwIDMwMFM0NDAgNzAwIDMwMCA3MDBWNDAwQzQ0MCA0MDAgNDAwIDQ0MCA0MDAgMzAwUzMwMCAxNjAgMzAwIDMwMFYwWiIgZmlsbD0iI2Y5NzMyNiIgb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg=='); /* Abstract shape */
+            background-size: cover, 70% 70%;
+        }
+
+        .layer-2 {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDUwMCA1MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZIGN4PSIxMDAiIGN5PSIxMDAiIHI9IjMwIiBmaWxsPSIjYTE2MjA3IiBvcGFjaXR5PSIwLjA0Ii8+PGNpcmNsZIGN4PSIzMDAiIGN5PSIyMDAiIHI9IjQwIiBmaWxsPSIjYTE2MjA3IiBvcGFjaXR5PSIwLjA0Ii8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iNDAwIiByPSI1MCIgZmlsbD0iI2ExNjIwNyIgb3BhY2l0eT0iMC4wNCIvPjwvc3ZnPg=='); /* Subtle circles */
+            background-size: 80% 80%;
+            background-position: 10% 80%;
+        }
+
+        /* Scroll reveal animation */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .scroll-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Button styling */
+        .btn-cave {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: #b45309; /* Deep orange */
+            color: #fef3c7; /* Light cream */
+            font-family: 'Amatic SC', cursive;
+            font-size: 1.5rem;
+            text-align: center;
+            border-radius: 9999px; /* Pill shape */
+            border: 2px solid #fcd34d; /* Amber border */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .btn-cave:hover {
+            background-color: #92400e; /* Darker orange */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+        }
+
+        /* Placeholder image divs */
+        .placeholder-image {
+            background-image: linear-gradient(to bottom right, #78350f, #92400e, #a16207); /* Earthy gradient */
+            border: 2px dashed #d97706; /* Dashed border for raw feel */
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px;
+            text-align: center;
+            color: #fef3c7;
+            font-family: 'Amatic SC', cursive;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body class="bg-stone-950 text-stone-100 min-h-screen relative cave-texture cursor-none">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor">
+        <div class="cursor-inner"></div>
+    </div>
+
+    <!-- Parallax Background Layers -->
+    <div class="parallax-layer layer-1" data-speed="0.1"></div>
+    <div class="parallax-layer layer-2" data-speed="0.05"></div>
+
+    <!-- Main Content Wrapper with positive z-index -->
+    <div class="relative z-10 p-4 sm:p-8 max-w-6xl mx-auto">
+
+        <!-- Header - Navigation -->
+        <header class="flex flex-col sm:flex-row justify-between items-center py-6 border-b-2 border-amber-800 border-opacity-50 mb-12 scroll-reveal" data-delay="0.1">
+            <h1 class="text-5xl sm:text-6xl text-amber-200 mb-4 sm:mb-0">סבאיה</h1>
+            <nav class="space-x-4 space-x-reverse sm:space-x-6 sm:space-x-reverse text-xl sm:text-2xl font-bold">
+                <a href="#home" class="text-amber-300 hover:text-amber-500 transition duration-300 text-shadow-md">בית</a>
+                <a href="#menu" class="text-amber-300 hover:text-amber-500 transition duration-300 text-shadow-md">מנחות</a>
+                <a href="#wood" class="text-amber-300 hover:text-amber-500 transition duration-300 text-shadow-md">כלי עץ</a>
+                <a href="#ceramics" class="text-amber-300 hover:text-amber-500 transition duration-300 text-shadow-md">כלי חרס</a>
+            </nav>
+        </header>
+
+        <!-- Home Section -->
+        <section id="home" class="mb-24 py-16 px-6 sm:px-12 bg-stone-900 bg-opacity-70 rounded-3xl shadow-xl border-2 border-stone-700 scroll-reveal" data-delay="0.2">
+            <h2 class="text-6xl sm:text-7xl mb-8 text-center text-red-300 leading-tight">ברוכים הבאים למערת סבאיה</h2>
+            <p class="text-body text-xl sm:text-2xl text-center max-w-3xl mx-auto mb-12">
+                מקום שבו רוחות האדמה מדברות, והאדם מוצא מפלט. כאן, בין צלילי הנהר העתיק ולחישות העצים, אנו חוגגים את מתנות הטבע והיצירה. בואו למצוא נחמה וחום בלב המדבר.
+            </p>
+            <div class="text-center">
+                <a href="#menu" class="btn-cave">חקור את מנחות השפע</a>
+            </div>
+        </section>
+
+        <!-- Features/Experience Section -->
+        <section class="mb-24 py-16 px-6 sm:px-12 bg-stone-900 bg-opacity-70 rounded-3xl shadow-xl border-2 border-stone-700 scroll-reveal" data-delay="0.3">
+            <h3 class="text-5xl sm:text-6xl mb-12 text-center text-amber-200">קסם המפגש - אדמה, אש, רוח וידיים יוצרות</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                <div class="p-8 border-2 border-amber-700 rounded-2xl bg-stone-800 bg-opacity-60 shadow-lg scroll-reveal" data-delay="0.4">
+                    <div class="text-7xl mb-4 text-red-300">☕</div>
+                    <h4 class="text-4xl mb-4 text-amber-300">תמצית האדמה המעוררת</h4>
+                    <p class="text-body text-lg">פרי האש הבוערת, שנבשל בקפידה לרוחכם, מן המקורות העתיקים ביותר.</p>
+                </div>
+                <div class="p-8 border-2 border-amber-700 rounded-2xl bg-stone-800 bg-opacity-60 shadow-lg scroll-reveal" data-delay="0.5">
+                    <div class="text-7xl mb-4 text-green-300">🌿</div>
+                    <h4 class="text-4xl mb-4 text-amber-300">ממלכת השקט</h4>
+                    <p class="text-body text-lg">שבו בנחת בין עלי הבר ולחישות הפרחים, במקום שבו הזמן עומד מלכת.</p>
+                </div>
+                <div class="p-8 border-2 border-amber-700 rounded-2xl bg-stone-800 bg-opacity-60 shadow-lg scroll-reveal" data-delay="0.6">
+                    <div class="text-7xl mb-4 text-gray-300">🏺</div>
+                    <h4 class="text-4xl mb-4 text-amber-300">לחישות החומר</h4>
+                    <p class="text-body text-lg">חפצים שיצרו ידי אמן מן העץ העתיק והאדמה הפורייה, לקישוט המערה ולמנחה יקרה.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="mb-24 py-16 px-6 sm:px-12 bg-stone-900 bg-opacity-70 rounded-3xl shadow-xl border-2 border-stone-700 scroll-reveal" data-delay="0.7">
+            <h3 class="text-5xl sm:text-6xl mb-12 text-center text-red-300">מנחות האדמה והאש</h3>
+
+            <div class="mb-12">
+                <h4 class="text-4xl sm:text-5xl mb-8 text-amber-200 border-b-2 border-amber-800 pb-4 text-center">מטעמי הציד והליקוט</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Item 1 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="0.8">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">פרי הנהר</h5>
+                            <p class="text-body text-lg mb-4">לחם ממולא בביצה, טונה, חציל, ממרח עגבניות, מלפפון ולימון כבוש. מוגש עם זיתי מדבר וסלט בר.</p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪36</p>
+                    </div>
+                    <!-- Item 2 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="0.9">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">לחם הקוסם</h5>
+                            <p class="text-body text-lg mb-4">פטריות מהיער עם נגיעת כמהין, גבינת שמנת וגראנה פדאנו, רוקט וחומץ יין. מוגש עם זיתים וסלט בר.</p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪45</p>
+                    </div>
+                    <!-- Item 3 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="1.0">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">לחם היער</h5>
+                            <p class="text-body text-lg mb-4">ממרח חציל שחור, גבינת סויה, עגבניות שמש ורוקט. מוגש עם זיתים וסלט בר.</p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪45</p>
+                    </div>
+                    <!-- Item 4 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="1.1">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">מגש הרועה</h5>
+                            <p class="text-body text-lg mb-4">גבינות הרים ולחמי מחמצת, מוגש עם חמאת עשבים מוקצפת, טחינת יוגורט וריבת פירות יער.</p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪68</p>
+                    </div>
+                    <!-- Item 5 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="1.2">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">סלט הפיות</h5>
+                            <p class="text-body text-lg mb-4">חסה, בצל סגול, תפוח ירוק, עגבניות פרא, מלפפון, פקאן מסוכר עם גבינת צאן ורוטב סודי.</p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪36</p>
+                    </div>
+                     <!-- Item 6 -->
+                     <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="1.3">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">סלט הלוחם</h5>
+                            <p class="text-body text-lg mb-4">עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון מן הפרדס.</p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪32</p>
+                    </div>
+                    <!-- Item 7 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="1.4">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">קערת השפע של מור</h5>
+                            <p class="text-body text-lg mb-4">יוגורט עיזים, חצילים קלויים, ביצה קשה, טחינה, גרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש. מוגש עם פיתה פריכה.</p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪42</p>
+                    </div>
+                    <!-- Item 8 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="1.5">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">קסם הליקוט</h5>
+                            <p class="text-body text-lg mb-4">קערת אסאי עם גרנולה, שבבי קוקוס ופירות העונה.</p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪39</p>
+                    </div>
+                    <!-- Item 9 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="1.6">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">פאי המרעה</h5>
+                            <p class="text-body text-lg mb-4">פאי מלוח מברוקולי/פטריות/בצל ויין לבן. מוגש עם סלט בר ושמנת חמוצה.</p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪37</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-4xl sm:text-5xl mb-8 text-amber-200 border-b-2 border-amber-800 pb-4 text-center">ממתקי הרוחות הטובות</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Dessert Item 1 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="1.7">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">חצי סהר של שוקולד</h5>
+                            <p class="text-body text-lg mb-4"></p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪19</p>
+                    </div>
+                    <!-- Dessert Item 2 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="1.8">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">חצי סהר של אגוזים</h5>
+                            <p class="text-body text-lg mb-4">שקדים או פיסטוק.</p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪22</p>
+                    </div>
+                    <!-- Dessert Item 3 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="1.9">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">עוגת הפרי המעורבב</h5>
+                            <p class="text-body text-lg mb-4">בננה ושוקולד.</p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪15</p>
+                    </div>
+                    <!-- Dessert Item 4 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="2.0">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">פאי תפוחים עם ציפוי מתפורר</h5>
+                            <p class="text-body text-lg mb-4">מוגש עם כדור גלידת וניל.</p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪44</p>
+                    </div>
+                    <!-- Dessert Item 5 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="2.1">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">פאי מרנג לימון חמוץ-מתוק</h5>
+                            <p class="text-body text-lg mb-4"></p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪31</p>
+                    </div>
+                    <!-- Dessert Item 6 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="2.2">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">עוגת גבינה עשירה עם עוגיות כהות</h5>
+                            <p class="text-body text-lg mb-4"></p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪38</p>
+                    </div>
+                    <!-- Dessert Item 7 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="2.3">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">חטיף הסניקרס הפריך</h5>
+                            <p class="text-body text-lg mb-4"></p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪23</p>
+                    </div>
+                    <!-- Dessert Item 8 -->
+                    <div class="bg-stone-800 bg-opacity-60 p-6 rounded-xl border-2 border-stone-700 flex flex-col justify-between scroll-reveal" data-delay="2.4">
+                        <div>
+                            <h5 class="text-3xl sm:text-4xl text-amber-300 mb-2">עוגת שילה המסתורית</h5>
+                            <p class="text-body text-lg mb-4"></p>
+                        </div>
+                        <p class="text-red-300 text-2xl font-bold self-end mt-4">₪44</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-body text-lg text-center mt-12">לשאלות נוספות וכישופים מיוחדים, בואו למערת סבאיה.</p>
+            <p class="text-body text-sm text-center mt-4 text-stone-400">כל המחירים הינם במטבעות האזור ועשויים להשתנות בהתאם למתנות הטבע.</p>
+        </section>
+
+        <!-- Wooden Spoon Section -->
+        <section id="wood" class="mb-24 py-16 px-6 sm:px-12 bg-stone-900 bg-opacity-70 rounded-3xl shadow-xl border-2 border-stone-700 scroll-reveal" data-delay="2.5">
+            <h3 class="text-5xl sm:text-6xl mb-12 text-center text-amber-200">כף העץ - כלי קודש מן היער</h3>
+            <p class="text-body text-xl text-center max-w-3xl mx-auto mb-12">
+                כלי עץ יקרי ערך שנוצרו בידי אמן, מתאימים לשימוש יומיומי ולמתנה שתיזכר לעד. כל יצירה מגולפת מחומרי הטבע ביראת כבוד.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="p-6 bg-stone-800 bg-opacity-60 rounded-xl border-2 border-stone-700 scroll-reveal" data-delay="2.6">
+                    <div class="placeholder-image h-48 mb-4">
+                        <span class="text-2xl">כלי שתיה מהיער</span>
+                    </div>
+                    <h5 class="text-3xl text-amber-300 mb-2">כלי שתיה מהיער</h5>
+                    <p class="text-red-300 text-2xl font-bold">₪89</p>
+                </div>
+                <div class="p-6 bg-stone-800 bg-opacity-60 rounded-xl border-2 border-stone-700 scroll-reveal" data-delay="2.7">
+                    <div class="placeholder-image h-48 mb-4">
+                        <span class="text-2xl">קופסאות נסתרות קטנות</span>
+                    </div>
+                    <h5 class="text-3xl text-amber-300 mb-2">קופסאות נסתרות קטנות</h5>
+                    <p class="text-red-300 text-2xl font-bold">₪45</p>
+                </div>
+                <div class="p-6 bg-stone-800 bg-opacity-60 rounded-xl border-2 border-stone-700 scroll-reveal" data-delay="2.8">
+                    <div class="placeholder-image h-48 mb-4">
+                        <span class="text-2xl">קופסאות נסתרות גדולות</span>
+                    </div>
+                    <h5 class="text-3xl text-amber-300 mb-2">קופסאות נסתרות גדולות</h5>
+                    <p class="text-red-300 text-2xl font-bold">₪75</p>
+                </div>
+            </div>
+            <p class="text-body text-lg text-center mt-12">לרכישה ולסיפורי היצירה, בואו אל המערה או שילחו לנו מסר דרך ציפור שיר.</p>
+        </section>
+
+        <!-- Ceramics Section -->
+        <section id="ceramics" class="mb-24 py-16 px-6 sm:px-12 bg-stone-900 bg-opacity-70 rounded-3xl shadow-xl border-2 border-stone-700 scroll-reveal" data-delay="2.9">
+            <h3 class="text-5xl sm:text-6xl mb-12 text-center text-amber-200">מוצרי קרמיקה - כלי החרס של השבט</h3>
+            <p class="text-body text-xl text-center max-w-3xl mx-auto mb-12">
+                כלי חרס שנוצרו בידי אמן מן האדמה עצמה, עם ציפוי טבעי בגווני המדבר החמים. מתאימים לשימוש יומיומי ומוסיפים רוח חמה למערה.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="p-6 bg-stone-800 bg-opacity-60 rounded-xl border-2 border-stone-700 scroll-reveal" data-delay="3.0">
+                    <div class="placeholder-image h-48 mb-4 bg-gradient-to-br from-red-800 to-amber-900">
+                        <span class="text-2xl">כוס הברכה הגדולה</span>
+                    </div>
+                    <h5 class="text-3xl text-amber-300 mb-2">כוס הברכה הגדולה</h5>
+                    <p class="text-red-300 text-2xl font-bold">₪65</p>
+                </div>
+                <div class="p-6 bg-stone-800 bg-opacity-60 rounded-xl border-2 border-stone-700 scroll-reveal" data-delay="3.1">
+                    <div class="placeholder-image h-48 mb-4 bg-gradient-to-br from-red-700 to-amber-800">
+                        <span class="text-2xl">כוס הברכה הקטנה</span>
+                    </div>
+                    <h5 class="text-3xl text-amber-300 mb-2">כוס הברכה הקטנה</h5>
+                    <p class="text-red-300 text-2xl font-bold">₪45</p>
+                </div>
+                <div class="p-6 bg-stone-800 bg-opacity-60 rounded-xl border-2 border-stone-700 scroll-reveal" data-delay="3.2">
+                    <div class="placeholder-image h-48 mb-4 bg-gradient-to-br from-red-900 to-amber-950">
+                        <span class="text-2xl">קנקן המים הקדוש</span>
+                    </div>
+                    <h5 class="text-3xl text-amber-300 mb-2">קנקן המים הקדוש</h5>
+                    <p class="text-red-300 text-2xl font-bold">₪120</p>
+                </div>
+            </div>
+            <p class="text-body text-lg text-center mt-12">לרכישה ולסיפורי החרס, בואו אל המערה או שילחו לנו מסר דרך עשן המדורה.</p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center py-12 border-t-2 border-amber-800 border-opacity-50 text-stone-400 text-lg scroll-reveal" data-delay="3.3">
+            <p>&copy; 2023 מערת סבאיה - כל הזכויות שמורות לרוחות האדמה.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Custom Cursor Logic
+        const cursor = document.getElementById('custom-cursor');
+        const cursorInner = cursor.querySelector('.cursor-inner');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let isHoveringLink = false;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+        });
+
+        const updateCursor = () => {
+            cursorX += (mouseX - cursorX) * 0.1;
+            cursorY += (mouseY - cursorY) * 0.1;
+            cursor.style.transform = `translate(${cursorX - cursor.offsetWidth / 2}px, ${cursorY - cursor.offsetHeight / 2}px)`;
+            requestAnimationFrame(updateCursor);
+        };
+        // updateCursor(); // Uncomment if you want delayed/smoothed cursor movement, but `transform` directly on mousemove is faster for responsiveness.
+
+        const clickableElements = document.querySelectorAll('a, button, .btn-cave, input[type="submit"], [tabindex]:not([tabindex="-1"])');
+
+        clickableElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursorInner.classList.add('active'));
+            el.addEventListener('mouseleave', () => cursorInner.classList.remove('active'));
+        });
+
+        // Parallax Effect Logic
+        const parallaxLayers = document.querySelectorAll('.parallax-layer');
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+
+            parallaxLayers.forEach(layer => {
+                const speed = parseFloat(layer.getAttribute('data-speed'));
+                const yPos = -(scrollY * speed);
+                layer.style.transform = `translate3d(0, ${yPos}px, 0)`;
+            });
+        });
+
+        // Scroll Reveal Animation Logic
+        const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = parseFloat(entry.target.getAttribute('data-delay')) || 0;
+                    setTimeout(() => {
+                        entry.target.classList.add('is-visible');
+                    }, delay * 1000); // Convert seconds to milliseconds
+                    observer.unobserve(entry.target); // Only animate once
+                }
+            });
+        }, {
+            root: null, // viewport
+            rootMargin: '0px',
+            threshold: 0.1 // 10% of element visible
+        });
+
+        scrollRevealElements.forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>

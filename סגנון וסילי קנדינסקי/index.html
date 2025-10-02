@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - קומפוזיציה חיה</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&family=Rubik:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Base styles for Kandinsky aesthetic */
+        body {
+            font-family: 'Heebo', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll from overflowing elements */
+            background-color: #F8F8F8; /* Light neutral background for main canvas */
+            cursor: none; /* Hide default cursor */
+            perspective: 1000px; /* For 3D effects later if desired */
+        }
+
+        h1, h2, h3 {
+            font-family: 'Rubik', sans-serif;
+        }
+
+        /* Custom Cursor Styling - MANDATORY High Contrast */
+        #custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease-out, width 0.3s ease-out, height 0.3s ease-out, background-color 0.3s ease-out;
+            border: 2px solid #FFFFFF; /* Light border for dark backgrounds */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Dark shadow for light backgrounds */
+            background-color: rgba(255, 255, 255, 0.2); /* Subtle inner fill */
+            transform: translate(-50%, -50%); /* Center cursor */
+        }
+
+        #custom-cursor.active {
+            width: 30px;
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Kandinsky-esque background shapes and animations */
+        @keyframes rotate-kandinsky {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(15deg) scale(1.05); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+
+        @keyframes move-kandinsky {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(20px, -10px); }
+            50% { transform: translate(0, 20px); }
+            75% { transform: translate(-10px, -15px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        @keyframes pulse-color {
+            0% { background-color: #EF4444; } /* red-500 */
+            50% { background-color: #EC4899; } /* pink-500 */
+            100% { background-color: #EF4444; }
+        }
+        
+        @keyframes pulse-color-yellow {
+            0% { background-color: #FACC15; } /* yellow-400 */
+            50% { background-color: #FCD34D; } /* yellow-300 */
+            100% { background-color: #FACC15; }
+        }
+
+        .kandinsky-shape {
+            position: absolute;
+            opacity: 0.7;
+            filter: blur(1px);
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid; /* Color will be set by Tailwind */
+            opacity: 0.8;
+            filter: blur(1px);
+        }
+
+        .square-animated {
+            animation: rotate-kandinsky 15s ease-in-out infinite alternate;
+        }
+        .circle-animated {
+            animation: move-kandinsky 20s ease-in-out infinite alternate;
+        }
+        .line-animated {
+            animation: rotate-kandinsky 10s linear infinite alternate;
+        }
+
+        /* Specific styles for menu items, etc. */
+        .menu-item-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #E5E7EB; /* Subtle border */
+        }
+
+        .menu-item-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-item-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(249, 115, 22, 0.3));
+            border-radius: 50%;
+            transform: rotate(45deg);
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        .product-card {
+            @apply bg-white shadow-lg rounded-xl p-6 text-center transition-transform duration-300 relative overflow-hidden;
+            border: 1px solid #D1D5DB; /* light gray */
+        }
+        .product-card:hover {
+            @apply transform -translate-y-2 scale-105 shadow-xl;
+        }
+        .product-card::before {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, rgba(16, 185, 129, 0.2), rgba(59, 130, 246, 0.2));
+            border-radius: 50%;
+            top: -30px;
+            left: -30px;
+            z-index: 0;
+            opacity: 0.5;
+            transition: all 0.5s ease-out;
+        }
+        .product-card:hover::before {
+            transform: scale(1.2) rotate(90deg);
+        }
+
+        /* Ensure content is above background elements */
+        .content-section {
+            position: relative;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly opaque white background for readability */
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin: 2rem auto;
+            max-width: 1200px;
+            width: 90%;
+        }
+
+        /* Specific adjustments for Kandinsky layout */
+        .section-header-kandinsky {
+            position: relative;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            display: inline-block; /* To contain pseudo-elements */
+        }
+        .section-header-kandinsky::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #F59E0B, #EF4444); /* orange-400 to red-500 */
+            transform: skewX(-20deg);
+            z-index: 0;
+        }
+        .section-header-kandinsky span {
+            position: relative;
+            z-index: 1; /* Keep text above pseudo-element */
+            background-color: white; /* To ensure text contrast against the skewed line */
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+
+    </style>
+</head>
+<body class="overflow-x-hidden text-gray-800">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+
+    <!-- Kandinsky Abstract Background Shapes - Z-index fixed for background -->
+    <div class="fixed inset-0 overflow-hidden z-[-1] pointer-events-none">
+        <!-- Circles -->
+        <div class="kandinsky-shape circle-animated w-32 h-32 bg-red-500 rounded-full top-1/4 right-1/4 opacity-60"></div>
+        <div class="kandinsky-shape circle-animated w-20 h-20 bg-blue-500 rounded-full bottom-1/3 left-1/5 opacity-50 delay-1000"></div>
+        <div class="kandinsky-shape circle-animated w-40 h-40 bg-yellow-400 rounded-full top-1/2 left-1/3 opacity-70" style="animation-delay: 2s;"></div>
+        <div class="kandinsky-shape circle-animated w-24 h-24 bg-green-500 rounded-full top-[10%] left-[80%] opacity-40"></div>
+
+        <!-- Squares -->
+        <div class="kandinsky-shape square-animated w-28 h-28 bg-indigo-600 top-1/3 left-1/4 opacity-50 transform rotate-45"></div>
+        <div class="kandinsky-shape square-animated w-16 h-16 bg-pink-500 bottom-1/4 right-1/5 opacity-60 transform -rotate-30" style="animation-delay: 0.5s;"></div>
+        <div class="kandinsky-shape square-animated w-24 h-24 bg-purple-600 top-1/5 right-1/3 opacity-40 transform rotate-60" style="animation-delay: 1.5s;"></div>
+
+        <!-- Triangles -->
+        <div class="kandinsky-shape triangle border-b-yellow-400 top-1/2 right-1/2 opacity-60 transform rotate-90"></div>
+        <div class="kandinsky-shape triangle border-b-red-500 bottom-1/4 left-1/3 opacity-70 transform rotate-20" style="animation-delay: 1s;"></div>
+        <div class="kandinsky-shape triangle border-b-blue-500 top-[70%] left-[10%] opacity-50 transform -rotate-45"></div>
+
+        <!-- Lines -->
+        <div class="kandinsky-shape line-animated h-2 w-40 bg-gray-700 top-[20%] left-[5%] transform rotate-15 opacity-80"></div>
+        <div class="kandinsky-shape line-animated h-3 w-60 bg-yellow-600 bottom-[5%] right-[20%] transform -rotate-10 opacity-70" style="animation-delay: 0.8s;"></div>
+        <div class="kandinsky-shape line-animated h-1 w-32 bg-green-600 top-[80%] left-[70%] transform rotate-30 opacity-60"></div>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div class="min-h-screen relative z-10 p-4 lg:p-8">
+
+        <!-- Header / Navigation - Abstract and Fluid -->
+        <header class="flex flex-col md:flex-row items-center justify-between text-gray-900 mb-16 p-4 md:p-6 bg-white bg-opacity-90 rounded-xl shadow-lg relative z-20">
+            <h1 class="text-5xl lg:text-6xl font-extrabold text-red-600 mb-4 md:mb-0 relative text-center md:text-right">
+                <span class="inline-block transform -rotate-6 mr-2 text-yellow-500">ס</span>
+                <span class="inline-block transform rotate-3 text-blue-600">ב</span>
+                <span class="inline-block transform -rotate-9 text-green-600">א</span>
+                <span class="inline-block transform rotate-5 text-purple-600">י</span>
+                <span class="inline-block transform -rotate-2 text-red-600">ה</span>
+            </h1>
+            <nav class="flex flex-wrap justify-center md:justify-end gap-4 lg:gap-8 text-xl font-bold text-gray-700">
+                <a href="#home" class="p-2 transition-all duration-300 hover:text-red-500 hover:scale-110 relative group">
+                    בית
+                    <span class="absolute bottom-0 right-0 w-0 h-1 bg-red-500 group-hover:w-full transition-all duration-300 transform -skew-x-12"></span>
+                </a>
+                <a href="#menu" class="p-2 transition-all duration-300 hover:text-blue-500 hover:scale-110 relative group">
+                    תפריט
+                    <span class="absolute bottom-0 right-0 w-0 h-1 bg-blue-500 group-hover:w-full transition-all duration-300 transform -skew-x-12"></span>
+                </a>
+                <a href="#wood-products" class="p-2 transition-all duration-300 hover:text-green-500 hover:scale-110 relative group">
+                    כפית עץ
+                    <span class="absolute bottom-0 right-0 w-0 h-1 bg-green-500 group-hover:w-full transition-all duration-300 transform -skew-x-12"></span>
+                </a>
+                <a href="#ceramic-products" class="p-2 transition-all duration-300 hover:text-yellow-500 hover:scale-110 relative group">
+                    מוצרי קרמיקה
+                    <span class="absolute bottom-0 right-0 w-0 h-1 bg-yellow-500 group-hover:w-full transition-all duration-300 transform -skew-x-12"></span>
+                </a>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section id="home" class="content-section text-center mb-16 relative">
+            <div class="absolute top-0 left-0 w-24 h-24 bg-blue-400 rounded-full transform -translate-x-1/2 -translate-y-1/2 rotate-12 opacity-30"></div>
+            <div class="absolute bottom-0 right-0 w-32 h-32 bg-green-400 rounded-full transform translate-x-1/2 translate-y-1/2 -rotate-24 opacity-30"></div>
+            <h2 class="text-5xl lg:text-7xl font-extrabold text-red-600 mb-8 leading-tight">
+                <span class="block relative z-10">בסבאיה - קומפוזיציה חיה</span>
+            </h2>
+            <p class="text-xl md:text-2xl text-gray-700 leading-relaxed max-w-3xl mx-auto">
+                כאן, בין קווים זורמים של קפה וצורות אורגניות של טבע, נרקם דיאלוג צבעוני. נשמו את הניחוח, חשו את החום, התמזגו עם האמנות של הרגע. סבאיה - סימפוניה של חוויה.
+            </p>
+            <div class="mt-12">
+                <a href="#menu" class="inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-4 px-8 rounded-full text-lg shadow-lg transform hover:scale-105 transition-all duration-300 relative overflow-hidden group">
+                    <span class="relative z-10">צפיה בתפריט - רגעים בצבע</span>
+                    <span class="absolute inset-0 bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform scale-0 group-hover:scale-100 rounded-full z-0"></span>
+                </a>
+            </div>
+        </section>
+
+        <!-- About/Features Section -->
+        <section class="content-section mb-16 relative">
+            <h3 class="text-3xl lg:text-4xl font-bold mb-8 text-center text-gray-800 section-header-kandinsky">
+                <span class="inline-block bg-white pr-2 pl-2">החוויה שלנו - ציור חי של טעמים וצלילים</span>
+            </h3>
+            <div class="grid md:grid-cols-3 gap-8 text-center mt-12">
+                <div class="relative p-6 bg-blue-50 bg-opacity-80 rounded-xl shadow-md transform rotate-1 transition-transform duration-300 hover:rotate-0 hover:scale-105">
+                    <div class="absolute top-4 right-4 w-12 h-12 bg-blue-300 rounded-full opacity-60"></div>
+                    <h4 class="text-2xl font-bold text-blue-700 mb-3">קפה איכותי</h4>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        נקודת צבע חזקה במרכז הבד, רישום מדויק של פולי הקפה, קומפוזיציה של ארומה המתמזגת עם הרגע.
+                    </p>
+                </div>
+                <div class="relative p-6 bg-green-50 bg-opacity-80 rounded-xl shadow-md transform -rotate-1 transition-transform duration-300 hover:rotate-0 hover:scale-105">
+                    <div class="absolute bottom-4 left-4 w-12 h-12 bg-green-300 rounded-lg opacity-60 transform rotate-45"></div>
+                    <h4 class="text-2xl font-bold text-green-700 mb-3">אווירה טבעית</h4>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        סבך של ירוק, קווים אלכסוניים של אור שמש, גוונים של אדמה ופריחה. מרחב שבו הצורות נחות בשלווה.
+                    </p>
+                </div>
+                <div class="relative p-6 bg-yellow-50 bg-opacity-80 rounded-xl shadow-md transform rotate-2 transition-transform duration-300 hover:rotate-0 hover:scale-105">
+                    <div class="absolute top-4 left-4 w-12 h-12 bg-yellow-300 rounded-t-full opacity-60"></div>
+                    <h4 class="text-2xl font-bold text-yellow-700 mb-3">מוצרים ייחודיים</h4>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        חומרים מספרים סיפור. עץ - קווים חמים, קרמיקה - עגלגלות אדמה. אובייקטים שהם פסלים קטנים, כל אחד תוו בתוך סימפוניה של יצירה.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="content-section mb-16 relative">
+            <h3 class="text-3xl lg:text-4xl font-bold mb-8 text-center text-gray-800 section-header-kandinsky">
+                <span class="inline-block bg-white pr-2 pl-2">התפריט שלנו - ציורים לאכילה ולשתיה</span>
+            </h3>
+
+            <div class="mb-12">
+                <h4 class="text-2xl font-bold text-purple-700 mb-6 text-center">אוכל ומתוקים - קומפוזיציות של טעמים</h4>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">כריך סבביח</h5>
+                        <p class="text-gray-700 mb-3 text-sm">קונטרסט של מרקמים - חציל עמוק, ביצה מוצקה, טונה רכה, בנגיעות לימון חדות. ריקוד צבעים בתוך לחם.</p>
+                        <span class="text-red-500 font-bold text-xl">₪36</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">כריך פנסיבאיה</h5>
+                        <p class="text-gray-700 mb-3 text-sm">פטריית כמהין רוחשת סוד, גבינות נמסות ככתמי צבע רכים. מורכבות עדינה בפריים אחד.</p>
+                        <span class="text-red-500 font-bold text-xl">₪45</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">כריך טבעוני</h5>
+                        <p class="text-gray-700 mb-3 text-sm">ממרח חציל שחור, גבינת סויה, עגבניות מיובשות ורוקט. קומפוזיציה טבעית.</p>
+                        <span class="text-red-500 font-bold text-xl">₪45</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">פלטת גבינות ולחמים</h5>
+                        <p class="text-gray-700 mb-3 text-sm">קומפוזיציה של מליחות ומתיקות, מרקמים עשירים, מוקפים בלחם כחומר גלם ראשוני.</p>
+                        <span class="text-red-500 font-bold text-xl">₪68</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">סלט במבי</h5>
+                        <p class="text-gray-700 mb-3 text-sm">ירקות טריים כקווים חדים, פטה ופקאן ככתמי צבע עשירים, רוטב נדיר - סוד קטן.</p>
+                        <span class="text-red-500 font-bold text-xl">₪36</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">סלט חלבון</h5>
+                        <p class="text-gray-700 mb-3 text-sm">אלמנטים מזינים - עדשים, קינואה, בטטה - יוצרים קומפוזיציה הרמונית, חזקה ובריאה.</p>
+                        <span class="text-red-500 font-bold text-xl">₪32</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">מוזלי מור</h5>
+                        <p class="text-gray-700 mb-3 text-sm">יוגורט פרו וחושניות של חצילים, ביצה קשה. אריסה מתוקה ולימון כבוש כנגיעות מפתיעות.</p>
+                        <span class="text-red-500 font-bold text-xl">₪42</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">קערת אסאי</h5>
+                        <p class="text-gray-700 mb-3 text-sm">צבע סגול עמוק, גרנולה כמרקם פריך, קוקוס ופרי העונה ככתמי אור. רעננות מופשטת.</p>
+                        <span class="text-red-500 font-bold text-xl">₪39</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">קיש</h5>
+                        <p class="text-gray-700 mb-3 text-sm">ברוקולי, פטריות או בצל ויין לבן - בחירה של טעם, מוגש עם סלט קטן ושמנת חמוצה כתוספת. קונטרסט עדין.</p>
+                        <span class="text-red-500 font-bold text-xl">₪37</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-12">
+                <h4 class="text-2xl font-bold text-pink-700 mb-6 text-center">מתוקים - מנגינות של מתיקות</h4>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">קוראסון שוקולד גדול</h5>
+                        <span class="text-red-500 font-bold text-xl">₪19</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">קוראסון שקדים/פיסטוק גדול</h5>
+                        <span class="text-red-500 font-bold text-xl">₪22</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">עוגה בחושה בננה ושוקולד</h5>
+                        <span class="text-red-500 font-bold text-xl">₪15</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">פאי תפוחים קרמבל</h5>
+                        <p class="text-gray-700 mb-3 text-sm">מוגש עם כדור גלידה - חום וקור, פריך ורך. יצירה של ניגודים.</p>
+                        <span class="text-red-500 font-bold text-xl">₪44</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">פאי מרנג לימון</h5>
+                        <span class="text-red-500 font-bold text-xl">₪31</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">אוראו צ'יז קייק</h5>
+                        <span class="text-red-500 font-bold text-xl">₪38</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">קראנץ' סניקרס</h5>
+                        <span class="text-red-500 font-bold text-xl">₪23</span>
+                    </div>
+                    <div class="menu-item-card">
+                        <h5 class="text-xl font-bold text-gray-900 mb-2">עוגת שילה</h5>
+                        <span class="text-red-500 font-bold text-xl">₪44</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center text-gray-600 text-sm mt-10">לשאלות והזמנות, אנא פנו אלינו בבית הקפה. כל המחירים בשקלים חדשים ועשויים להשתנות.</p>
+        </section>
+
+        <!-- Wood Products Section -->
+        <section id="wood-products" class="content-section mb-16 relative">
+            <h3 class="text-3xl lg:text-4xl font-bold mb-8 text-center text-gray-800 section-header-kandinsky">
+                <span class="inline-block bg-white pr-2 pl-2">כפית עץ - קווים חמים של טבע</span>
+            </h3>
+            <p class="text-center text-lg text-gray-700 mb-10 max-w-2xl mx-auto">
+                מוצרי עץ איכותיים בעבודת יד, פסלים קטנים המגלפים חום וטבע. כל מוצר עשוי מחומרים טבעיים וידידותיים לסביבה. קו טבעי של עץ, מתמזג עם רגע של טעם או נוכחות בבית.
+            </p>
+            <div class="grid md:grid-cols-3 gap-8 mt-12">
+                <div class="product-card">
+                    <div class="relative w-full h-48 bg-amber-100 rounded-lg mb-4 flex items-center justify-center border-2 border-amber-300 overflow-hidden">
+                        <div class="w-24 h-24 bg-amber-400 rounded-full opacity-70 transform rotate-12"></div>
+                        <span class="absolute text-gray-600 text-sm">בקבוק עץ (הדמיה)</span>
+                    </div>
+                    <h5 class="text-xl font-bold text-gray-900 mb-2">בקבוקי שתיה</h5>
+                    <span class="text-green-600 font-bold text-xl">₪89</span>
+                </div>
+                <div class="product-card">
+                    <div class="relative w-full h-48 bg-amber-100 rounded-lg mb-4 flex items-center justify-center border-2 border-amber-300 overflow-hidden">
+                        <div class="w-16 h-16 bg-amber-400 rounded-xl opacity-70 transform -rotate-24"></div>
+                        <span class="absolute text-gray-600 text-sm">צנצנת עץ קטנה (הדמיה)</span>
+                    </div>
+                    <h5 class="text-xl font-bold text-gray-900 mb-2">צנצנות קטנות</h5>
+                    <span class="text-green-600 font-bold text-xl">₪45</span>
+                </div>
+                <div class="product-card">
+                    <div class="relative w-full h-48 bg-amber-100 rounded-lg mb-4 flex items-center justify-center border-2 border-amber-300 overflow-hidden">
+                        <div class="w-28 h-28 bg-amber-400 rounded-lg opacity-70 transform rotate-30"></div>
+                        <span class="absolute text-gray-600 text-sm">צנצנת עץ גדולה (הדמיה)</span>
+                    </div>
+                    <h5 class="text-xl font-bold text-gray-900 mb-2">צנצנות גדולות</h5>
+                    <span class="text-green-600 font-bold text-xl">₪75</span>
+                </div>
+            </div>
+            <p class="text-center text-gray-600 text-sm mt-10">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.</p>
+        </section>
+
+        <!-- Ceramic Products Section -->
+        <section id="ceramic-products" class="content-section mb-16 relative">
+            <h3 class="text-3xl lg:text-4xl font-bold mb-8 text-center text-gray-800 section-header-kandinsky">
+                <span class="inline-block bg-white pr-2 pl-2">מוצרי קרמיקה - אדמה שנצרפה לאמנות</span>
+            </h3>
+            <p class="text-center text-lg text-gray-700 mb-10 max-w-2xl mx-auto">
+                מוצרי קרמיקה בעבודת יד איכותית, עם ציפוי טבעי בגוני אדמה חמים. צורה עגולה עוטפת נוזל, גווני חום ואפור מתמזגים בקומפוזיציה של חום. מתאימים לשימוש יומיומי ומוסיפים אווירה חמה לכל בית.
+            </p>
+            <div class="grid md:grid-cols-3 gap-8 mt-12">
+                <div class="product-card">
+                    <div class="relative w-full h-48 bg-gray-100 rounded-lg mb-4 flex items-center justify-center border-2 border-gray-300 overflow-hidden">
+                        <div class="w-28 h-28 bg-gray-400 rounded-full opacity-70 transform rotate-20"></div>
+                        <span class="absolute text-gray-600 text-sm">כוס קרמיקה גדולה (הדמיה)</span>
+                    </div>
+                    <h5 class="text-xl font-bold text-gray-900 mb-2">כוס גדולה</h5>
+                    <span class="text-blue-600 font-bold text-xl">₪65</span>
+                </div>
+                <div class="product-card">
+                    <div class="relative w-full h-48 bg-gray-100 rounded-lg mb-4 flex items-center justify-center border-2 border-gray-300 overflow-hidden">
+                        <div class="w-20 h-20 bg-gray-400 rounded-full opacity-70 transform -rotate-10"></div>
+                        <span class="absolute text-gray-600 text-sm">כוס קרמיקה קטנה (הדמיה)</span>
+                    </div>
+                    <h5 class="text-xl font-bold text-gray-900 mb-2">כוס קטנה</h5>
+                    <span class="text-blue-600 font-bold text-xl">₪45</span>
+                </div>
+                <div class="product-card">
+                    <div class="relative w-full h-48 bg-gray-100 rounded-lg mb-4 flex items-center justify-center border-2 border-gray-300 overflow-hidden">
+                        <div class="w-32 h-32 bg-gray-400 rounded-lg opacity-70 transform rotate-45"></div>
+                        <span class="absolute text-gray-600 text-sm">קנקן קרמיקה (הדמיה)</span>
+                    </div>
+                    <h5 class="text-xl font-bold text-gray-900 mb-2">קנקן</h5>
+                    <span class="text-blue-600 font-bold text-xl">₪120</span>
+                </div>
+            </div>
+            <p class="text-center text-gray-600 text-sm mt-10">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.</p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="content-section text-center text-gray-700 text-lg py-12 relative overflow-hidden">
+            <div class="absolute inset-0 bg-yellow-100 bg-opacity-30 transform rotate-3 -translate-y-1/2 -translate-x-1/2 w-[150%] h-[150%] z-0"></div>
+            <div class="absolute inset-0 bg-red-100 bg-opacity-30 transform -rotate-5 translate-y-1/2 translate-x-1/2 w-[150%] h-[150%] z-0"></div>
+            <p class="relative z-10 mb-4">
+                סבאיה - אמנות של הרגע.
+            </p>
+            <p class="relative z-10 mb-4">
+                בית קפה במשתלה - שקט וטעם, בתוך קומפוזיציה ירוקה.
+            </p>
+            <p class="relative z-10">
+                צרו קשר: 050-1234567 | sabaya.cafe@email.com
+            </p>
+            <div class="relative z-10 flex justify-center gap-4 mt-6">
+                <a href="#" class="text-gray-600 hover:text-red-500 transition-colors duration-300">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-label="Facebook">
+                        <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.127-1.333h2.873v-5h-3.873c-4.523 0-5.127 3.011-5.127 4.996v3.004z"></path>
+                    </svg>
+                </a>
+                <a href="#" class="text-gray-600 hover:text-blue-500 transition-colors duration-300">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-label="Instagram">
+                        <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.715-2.118 1.374L.63 4.14c-.297.76-.497 1.63-.557 2.908C.015 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.26 2.148.557 2.908.306.789.715 1.459 1.374 2.118.659.66 1.33.79 2.118 1.374.76.297 1.63.497 2.908.557C8.333 23.985 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.26 2.908-.557.789-.306 1.459-.715 2.118-1.374.66-.659.79-1.33 1.374-2.118.297-.76.497-1.63.557-2.908.057-1.278.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.26-2.148-.557-2.908a5.503 5.503 0 00-1.374-2.118 5.503 5.503 0 00-2.118-1.374c-.76-.297-1.63-.497-2.908-.557C15.667.015 15.26 0 12 0zm0 2.16c3.2 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.425.669.266 1.129.613 1.653 1.137.524.524.87 1.084 1.137 1.653.176.422.37.983.425 2.227.056 1.265.072 1.65.072 4.85s-.016 3.585-.072 4.85c-.055 1.17-.249 1.805-.425 2.227-.266.669-.613 1.129-1.137 1.653-.524.524-1.084.87-1.653 1.137-.422.176-.983.37-2.227.425-1.265.056-1.65.072-4.85.072s-3.585-.016-4.85-.072c-1.17-.055-1.805-.249-2.227-.425-.669-.266-1.129-.613-1.653-1.137-.524-.524-.87-1.084-1.137-1.653-.176-.422-.37-.983-.425-2.227-.056-1.265-.072-1.65-.072-4.85s.016-3.585.072-4.85c.055-1.17.249-1.805.425-2.227.266-.669.613-1.129 1.137-1.653.524-.524 1.084-.87 1.653-1.137.422-.176.983-.37 2.227-.425C8.415 2.176 8.80 2.16 12 2.16zm0 3.635c-3.416 0-6.174 2.758-6.174 6.174s2.758 6.174 6.174 6.174 6.174-2.758 6.174-6.174-2.758-6.174-6.174-6.174zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0-.795-.64-1.435-1.435-1.435-.795 0-1.435.64-1.435 1.435 0 .795.64 1.435 1.435 1.435.795 0 1.435-.64 1.435-1.435z"></path>
+                    </svg>
+                </a>
+            </div>
+            <p class="relative z-10 mt-6 text-sm">© 2023 סבאיה. כל הזכויות שמורות.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Custom Cursor JavaScript
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+        });
+
+        // Add hover effects for interactive elements to change cursor appearance
+        document.querySelectorAll('a, button, [data-interactive]').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('active'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+        });
+
+        // Simple smooth scroll for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
