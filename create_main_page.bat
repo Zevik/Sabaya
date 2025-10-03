@@ -16,8 +16,8 @@ REM --- כתיבת החלק הראשון של קובץ ה-HTML עם CSS תקין
     echo    ^<meta charset="UTF-8"^>
     echo    ^<title^>%TITLE%^</title^>
     echo    ^<style^>
-    echo        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
-    echo        iframe { width: 100%; height: 100%; border: none; }
+    echo        body, html { margin: 0; padding: 0; height: 100%%; overflow: hidden; }
+    echo        iframe { width: 100%%; height: 100%%; border: none; }
     echo    ^</style^>
     echo ^</head^>
     echo ^<body^>
