@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(cmd /c:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(create_main_page.bat)",
+      "Bash(./create_main_page.bat)"
     ],
     "deny": [],
     "ask": []

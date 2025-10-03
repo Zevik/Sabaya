@@ -34,3 +34,22 @@
            "Vaporwave.html",
            "Voxel-Art.html",
            "Wassily-Kandinsky-Style.html",
+       ];
+       console.log('Sites array:', sites);
+       console.log('Total sites:', sites.length);
+       function loadRandomSite() {
+           console.log('loadRandomSite() called');
+           if (sites.length === 0) {
+               console.error('No sites available!');
+               return;
+           }
+           const randomIndex = Math.floor(Math.random() * sites.length);
+           const randomSiteFile = sites[randomIndex];
+           const sitePath = "sites/" + randomSiteFile;
+           console.log('Loading:', sitePath);
+           document.getElementById('content-frame').src = sitePath;
+       }
+       loadRandomSite();
+   </script>
+</body>
+</html>
