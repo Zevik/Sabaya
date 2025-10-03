@@ -6,9 +6,9 @@ SET FILENAME="index.html"
 SET SITES_FOLDER="sites"
 SET TITLE="Zevik's Project Gallery"
 
-echo Creating main page: %FILENAME%...
+echo Creating main page with corrected code...
 
-REM --- כתיבת החלק הראשון של קובץ ה-HTML ---
+REM --- כתיבת החלק הראשון של קובץ ה-HTML עם CSS תקין ---
 (
     echo ^<!DOCTYPE html^>
     echo ^<html lang="en"^>
@@ -26,9 +26,11 @@ REM --- כתיבת החלק הראשון של קובץ ה-HTML ---
     echo        const sites = [
 ) > %FILENAME%
 
-REM --- לולאה שמוסיפה את כל שמות הקבצים למערך JavaScript ---
+REM --- לולאה שמוסיפה קבצים ומוודאת ש-index.html לא נכנס לרשימה ---
 FOR %%f IN (%SITES_FOLDER%\*.html) DO (
-    (echo            "%%~nf%%~xf",) >> %FILENAME%
+    IF /I NOT "%%~nxf"=="index.html" (
+        (echo            "%%~nxf",) >> %FILENAME%
+    )
 )
 
 REM --- כתיבת סוף קובץ ה-HTML ---
@@ -49,5 +51,11 @@ REM --- כתיבת סוף קובץ ה-HTML ---
 
 echo.
 echo Main page created successfully!
-echo The file %FILENAME% is ready.
-pause
+pause```
+3.  שמור את הקובץ.
+4.  **לחץ לחיצה כפולה** על `create_main_page_FIXED.bat`. הוא ייצור לך קובץ `index.html` חדש ותקין.
+
+**שלב 3: העלאת התיקון ל-GitHub**
+*   הרץ את סקריפט ה-`upload.bat` שלך כדי להעלות את קובץ ה-`index.html` המתוקן ואת כל שאר הקבצים.
+
+לאחר שההעלאה תסתיים, המתן דקה או שתיים לעדכון של GitHub Pages, ורענן את הדף. הפעם זה יעבוד
