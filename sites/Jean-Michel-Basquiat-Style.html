@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - חוויה אמנותית</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&family=Permanent+Marker&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles and Basquiat-inspired typography/colors */
+        :root {
+            --basquiat-black: #1a1a1a;
+            --basquiat-white: #f5f5f5;
+            --basquiat-red: #cc2a36;
+            --basquiat-yellow: #f8c201;
+            --basquiat-blue: #337a9e;
+            --basquiat-brown: #5d4037;
+            --basquiat-green: #4caf50;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--basquiat-black);
+            color: var(--basquiat-white);
+            overflow-x: hidden; /* Prevent horizontal scroll from transform effects */
+            cursor: none; /* Hide default cursor */
+        }
+
+        /* Custom Cursor Styles - High Contrast */
+        #custom-cursor-dot {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background-color: transparent;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out; /* Slower for follower */
+            border: 2px solid var(--basquiat-white); /* Light border */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Dark shadow for visibility */
+        }
+        #custom-cursor-circle {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            background-color: transparent;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.15s ease-out, width 0.3s ease, height 0.3s ease; /* Slower for follower */
+            border: 2px solid var(--basquiat-yellow); /* Yellow border */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Dark shadow */
+            opacity: 0.8;
+        }
+        #custom-cursor-circle.active {
+            width: 40px;
+            height: 40px;
+            opacity: 1;
+            border-color: var(--basquiat-red);
+        }
+
+        /* Basquiat style specific classes */
+        .basquiat-title {
+            font-family: 'Permanent Marker', cursive;
+            color: var(--basquiat-yellow);
+            text-shadow: 4px 4px 0 var(--basquiat-red), 8px 8px 0 var(--basquiat-blue);
+            line-height: 0.9;
+        }
+        .basquiat-scribble {
+            position: absolute;
+            background-color: transparent;
+            border: 3px solid;
+            border-radius: 50%;
+            opacity: 0.7;
+            pointer-events: none;
+            animation: pulse 4s infinite alternate;
+        }
+        .basquiat-scribble-line {
+            position: absolute;
+            background-color: var(--basquiat-yellow);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .basquiat-block-text {
+            background-color: var(--basquiat-red);
+            color: var(--basquiat-white);
+            padding: 0.5rem 1rem;
+            display: inline-block;
+            transform: rotate(-3deg);
+            margin-bottom: 1rem;
+            box-shadow: 5px 5px 0 var(--basquiat-black);
+            font-family: 'Amatic SC', cursive;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .basquiat-crown {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            border-top: 3px solid;
+            border-left: 3px solid;
+            border-right: 3px solid;
+            transform: rotate(7deg);
+            pointer-events: none;
+            z-index: -1;
+            box-shadow: 3px 3px 0 var(--basquiat-black);
+        }
+        .basquiat-crown::before, .basquiat-crown::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 25px solid;
+            top: -25px;
+        }
+        .basquiat-crown::before { left: 5px; }
+        .basquiat-crown::after { right: 5px; }
+
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        .scroll-effect-layer-1 { transform: translateZ(-200px) scale(1.2); }
+        .scroll-effect-layer-2 { transform: translateZ(-100px) scale(1.1); }
+        .scroll-effect-layer-3 { transform: translateZ(0) scale(1); }
+        .parallax-container {
+            perspective: 1000px;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        /* Tailwind custom config for Basquiat theme */
+        :root {
+            --tw-color-primary-light: var(--basquiat-yellow);
+            --tw-color-primary-dark: var(--basquiat-red);
+        }
+
+        .bg-basquiat-texture {
+            background-image:
+                linear-gradient(rgba(0,0,0,0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.5) 1px, transparent 1px),
+                linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%),
+                linear-gradient(-45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%);
+            background-size: 100px 100px, 100px 100px, 50px 50px, 50px 50px;
+            background-color: var(--basquiat-black);
+        }
+
+        .content-section {
+            position: relative;
+            z-index: 10;
+            padding: 4rem 1rem;
+            min-height: 100vh;
+        }
+        .content-section:nth-child(even) {
+            background-color: var(--basquiat-brown); /* Alternate background for sections */
+        }
+        .content-section:nth-child(odd) {
+            background-color: var(--basquiat-black);
+        }
+
+        /* Additional scroll-based class toggling for menu items */
+        .menu-item-hidden { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
+        .menu-item-visible { opacity: 1; transform: translateY(0); }
+
+        /* General link styling */
+        a {
+            text-decoration: none;
+            color: var(--basquiat-yellow);
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: inline-block;
+        }
+        a:hover {
+            color: var(--basquiat-red);
+            transform: scale(1.05);
+        }
+
+        /* RTL specific adjustments */
+        .text-right-on-rtl {
+            text-align: right;
+        }
+        .text-left-on-rtl {
+            text-align: left;
+        }
+    </style>
+</head>
+<body class="bg-basquiat-texture relative text-white font-heebo leading-relaxed" dir="rtl">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor-dot"></div>
+    <div id="custom-cursor-circle"></div>
+
+    <!-- Background Art Layers - Fixed, low z-index -->
+    <div class="fixed inset-0 z-0 opacity-20 bg-gradient-to-br from-basquiat-black to-stone-900" style="z-index: -1;"></div>
+    <div class="fixed inset-0 z-0 opacity-10 bg-yellow-400 mix-blend-multiply" style="z-index: -2; filter: blur(50px);"></div>
+    <div class="fixed inset-0 z-0 opacity-10 bg-red-600 mix-blend-multiply" style="z-index: -3; filter: blur(70px);"></div>
+
+    <!-- Main Content Wrapper -->
+    <div id="main-content" class="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+
+        <!-- Navigation - Top Left (or Top Right in RTL) -->
+        <nav class="fixed top-4 right-4 z-50 flex flex-col space-y-2 lg:right-8 lg:top-8">
+            <a href="#home" class="basquiat-block-text text-lg hover:text-white">בית</a>
+            <a href="#menu" class="basquiat-block-text text-lg hover:text-white">תפריט</a>
+            <a href="#wood-spoon" class="basquiat-block-text text-lg hover:text-white">כפית עץ</a>
+            <a href="#ceramics" class="basquiat-block-text text-lg hover:text-white">מוצרי קרמיקה</a>
+        </nav>
+
+        <!-- Home Section -->
+        <section id="home" class="content-section flex flex-col items-center justify-center text-center">
+            <div class="basquiat-scribble border-basquiat-blue w-24 h-24 top-1/4 left-1/4 transform rotate-12"></div>
+            <div class="basquiat-scribble border-basquiat-red w-32 h-32 bottom-1/4 right-1/4 transform -rotate-24"></div>
+
+            <h1 class="text-6xl sm:text-7xl lg:text-8xl font-black basquiat-title mb-8">
+                <span class="block">סבאיה</span>
+                <span class="block text-4xl sm:text-5xl lg:text-6xl text-white mt-4" style="text-shadow: 2px 2px 0 var(--basquiat-blue);">מקום שבו הנפש פורחת</span>
+            </h1>
+
+            <p class="text-xl sm:text-2xl max-w-2xl mx-auto mb-12 relative z-20">
+                <span class="basquiat-block-text text-basquiat-white text-base sm:text-xl">ברוכים הבאים</span>
+                לסבאיה-בית קפה במשתלה. כאן, בין עלי כותרת וגוונים ירוקים, נרקמת חוויה אחרת. אנו מזמינים אתכם למסע של טעמים ורוגע, בחיבור עמוק לאדמה ולשקט שבטבע. כל כוס קפה, כל חפץ עץ, כל יצירת קרמיקה-היא סיפור.
+            </p>
+
+            <a href="#menu" class="text-2xl sm:text-3xl font-bold basquiat-block-text px-8 py-4 hover:bg-basquiat-yellow hover:text-basquiat-black">
+                גלו את סבאיה
+            </a>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="content-section relative overflow-hidden">
+            <div class="basquiat-crown border-basquiat-yellow right-1/3 top-12 z-20"></div>
+            <div class="basquiat-crown border-basquiat-red left-1/4 bottom-1/4 transform -rotate-15 z-20"></div>
+            <div class="basquiat-scribble border-basquiat-yellow w-40 h-40 top-1/2 -left-10 transform -translate-y-1/2 rotate-45 opacity-50"></div>
+            <div class="basquiat-scribble border-basquiat-blue w-52 h-52 bottom-1/3 -right-20 transform translate-x-1/4 -rotate-30 opacity-40"></div>
+
+
+            <h2 class="text-5xl sm:text-6xl basquiat-title mb-12 text-center relative z-20">
+                התפריט שלנו
+                <span class="block text-xl text-basquiat-white mt-2">פיסות טעם, רגעים של השראה</span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12 relative z-20">
+                <!-- אוכל ומתוקים -->
+                <div class="col-span-full md:col-span-1 lg:col-span-1 p-6 bg-stone-800 bg-opacity-80 rounded-lg shadow-lg border-2 border-basquiat-red transform -rotate-2 md:rotate-1 hover:rotate-0 transition-transform duration-300">
+                    <h3 class="text-3xl basquiat-title text-basquiat-yellow mb-4 text-center">אוכל</h3>
+                    <div class="space-y-6">
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">כריך סבביח <span class="float-left text-basquiat-yellow">₪36</span></p>
+                            <p class="text-sm text-gray-300">ביצה קשה, טונה, חציל, מטבוחה, מלפפון חמוץ ולימון כבוש, מוגש עם זיתים וסלט אישי.</p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">כריך פנסיבאיה <span class="float-left text-basquiat-yellow">₪45</span></p>
+                            <p class="text-sm text-gray-300">פטריות מוקפצות עם כמהין, גבינות שמנת וגראנה פדאנו, רוקט ובלסמי, מוגש עם זיתים וסלט אישי.</p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">כריך טבעוני <span class="float-left text-basquiat-yellow">₪45</span></p>
+                            <p class="text-sm text-gray-300">ממרח חציל שחור, גבינת סויה, עגבניות מיובשות ורוקט, מוגש עם זיתים וסלט אישי.</p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">פלטת גבינות ולחמים עם מטבלים <span class="float-left text-basquiat-yellow">₪68</span></p>
+                            <p class="text-sm text-gray-300">חמאה מוקצפת מתובלת, טחינה יוגורט, ריבה.</p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">סלט במבי <span class="float-left text-basquiat-yellow">₪36</span></p>
+                            <p class="text-sm text-gray-300">חסות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר.</p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">סלט חלבון <span class="float-left text-basquiat-yellow">₪32</span></p>
+                            <p class="text-sm text-gray-300">עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון.</p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">מוזלי מור <span class="float-left text-basquiat-yellow">₪42</span></p>
+                            <p class="text-sm text-gray-300">יוגורט פרו, חצילים קלויים, ביצה קשה, טחינה, וגרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש, מוגש עם פיתה קראנץ'.</p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">קערת אסאי <span class="float-left text-basquiat-yellow">₪39</span></p>
+                            <p class="text-sm text-gray-300">עם גרנולה, שבבי קוקוס ופרי העונה.</p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">קיש ברוקולי/פטריות/בצל ויין לבן <span class="float-left text-basquiat-yellow">₪37</span></p>
+                            <p class="text-sm text-gray-300">מוגש עם סלט אישי ושמנת חמוצה.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-span-full md:col-span-1 lg:col-span-1 p-6 bg-stone-800 bg-opacity-80 rounded-lg shadow-lg border-2 border-basquiat-blue transform rotate-3 md:-rotate-1 hover:rotate-0 transition-transform duration-300">
+                    <h3 class="text-3xl basquiat-title text-basquiat-red mb-4 text-center">מתוקים</h3>
+                    <div class="space-y-6">
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">קוראסון שוקולד גדול <span class="float-left text-basquiat-yellow">₪19</span></p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">קוראסון שקדים/פיסטוק גדול <span class="float-left text-basquiat-yellow">₪22</span></p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">עוגה בחושה בננה ושוקולד <span class="float-left text-basquiat-yellow">₪15</span></p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">פאי תפוחים קרמבל <span class="float-left text-basquiat-yellow">₪44</span></p>
+                            <p class="text-sm text-gray-300">מוגש עם כדור גלידה.</p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">פאי מרנג לימון <span class="float-left text-basquiat-yellow">₪31</span></p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">אוראו צ'יז קייק <span class="float-left text-basquiat-yellow">₪38</span></p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">קראנץ' סניקרס <span class="float-left text-basquiat-yellow">₪23</span></p>
+                        </div>
+                        <div class="menu-item-hidden">
+                            <p class="text-xl font-bold text-basquiat-white">עוגת שילה <span class="float-left text-basquiat-yellow">₪44</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-span-full md:col-span-2 lg:col-span-1 p-6 bg-stone-800 bg-opacity-80 rounded-lg shadow-lg border-2 border-basquiat-yellow transform rotate-2 md:rotate-0 hover:rotate-1 transition-transform duration-300">
+                    <h3 class="text-3xl basquiat-title text-basquiat-blue mb-4 text-center">שתיה</h3>
+                    <p class="text-xl font-bold text-basquiat-white mb-2">קפה חם וקר</p>
+                    <p class="text-sm text-gray-300 mb-4">אספרסו, מקיאטו, קפוצ'ינו, אמריקנו, לאטה, קרמל מקיאטו, שוקו חם, אייס קפה, שוקו קר. כל קפה-יצירת אמנות משלו. המחיר משתנה לפי סוג וגודל.</p>
+
+                    <p class="text-xl font-bold text-basquiat-white mb-2">משקאות קרים</p>
+                    <p class="text-sm text-gray-300 mb-4">מיצים טבעיים, לימונדה, תפוזים, סיידר, מים מינרליים, סודה. רענון טהור מהטבע.</p>
+
+                    <p class="text-xl font-bold text-basquiat-white mb-2">חליטות תה</p>
+                    <p class="text-sm text-gray-300">מגוון חליטות צמחים מרגיעות, תה ירוק, תה שחור. חוויה חושית המרגיעה את הנפש.</p>
+                </div>
+            </div>
+            <p class="text-sm text-gray-400 mt-12 text-center relative z-20">לשאלות והזמנות, אנא פנו אלינו בבית הקפה. כל המחירים בשקלים חדשים ועשויים להשתנות.</p>
+        </section>
+
+        <!-- Wooden Spoon Section -->
+        <section id="wood-spoon" class="content-section flex flex-col items-center justify-center text-center relative">
+            <div class="basquiat-scribble border-basquiat-green w-28 h-28 top-1/3 left-1/4 transform rotate-6"></div>
+            <div class="basquiat-scribble border-basquiat-blue w-36 h-36 bottom-1/3 right-1/3 transform -rotate-18"></div>
+            <div class="basquiat-scribble-line w-40 h-2 bg-basquiat-red transform rotate-10 top-1/4 right-1/4"></div>
+            <div class="basquiat-scribble-line w-60 h-3 bg-basquiat-yellow transform -rotate-20 bottom-1/4 left-1/4"></div>
+
+            <h2 class="text-5xl sm:text-6xl basquiat-title mb-8 relative z-20">
+                כפית עץ - אמנות הטבע
+                <span class="block text-xl text-basquiat-white mt-2">החיים שבין הסיבים</span>
+            </h2>
+
+            <p class="text-xl sm:text-2xl max-w-2xl mx-auto mb-12 relative z-20">
+                כפיות עץ הן לא רק כלי, הן סמל. כל כפית מגולפת ביד אמן, נושאת בתוכה את נשמת העץ ממנו נוצרה. זוהי עדות לכוחו של הטבע, לפשטות ולחיבור העמוק שלנו לאדמה.
+                מוצרי עץ איכותיים בעבודת יד, מתאימים לשימוש יומיומי ולמתנה מיוחדת. כל מוצר עשוי מחומרים טבעיים וידידותיים לסביבה.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-20">
+                <div class="product-card p-6 bg-stone-800 bg-opacity-80 rounded-lg shadow-lg border-2 border-basquiat-yellow transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <div class="w-full h-48 bg-stone-700 rounded-md mb-4 flex items-center justify-center relative overflow-hidden">
+                        <span class="text-4xl font-permanent-marker text-basquiat-white opacity-20 transform rotate-45">WOOD</span>
+                        <div class="w-24 h-48 bg-brown-600 rounded-full shadow-lg absolute transform rotate-12" style="background-image: linear-gradient(to right, #6b4c3e, #8c6a5b, #6b4c3e);"></div>
+                    </div>
+                    <p class="text-xl font-bold text-basquiat-white">בקבוקי שתיה <span class="float-left text-basquiat-yellow">₪89</span></p>
+                    <p class="text-sm text-gray-300">עשויים מעץ במבוק טבעי, שומרים על טמפרטורה ומוסיפים חוויה אקולוגית לכל לגימה.</p>
+                </div>
+                <div class="product-card p-6 bg-stone-800 bg-opacity-80 rounded-lg shadow-lg border-2 border-basquiat-red transform -rotate-2 hover:rotate-0 transition-transform duration-300">
+                    <div class="w-full h-48 bg-stone-700 rounded-md mb-4 flex items-center justify-center relative overflow-hidden">
+                        <span class="text-4xl font-permanent-marker text-basquiat-white opacity-20 transform -rotate-30">JAR</span>
+                        <div class="w-24 h-24 bg-brown-600 rounded-t-full shadow-lg absolute bottom-0 transform scale-y-120" style="background-image: linear-gradient(to bottom, #8c6a5b, #6b4c3e);"></div>
+                        <div class="w-16 h-4 bg-brown-800 absolute top-0 rounded-md"></div>
+                    </div>
+                    <p class="text-xl font-bold text-basquiat-white">צנצנות קטנות <span class="float-left text-basquiat-yellow">₪45</span></p>
+                    <p class="text-sm text-gray-300">לאחסון תבלינים או סודות קטנים מהטבע.</p>
+                </div>
+                <div class="product-card p-6 bg-stone-800 bg-opacity-80 rounded-lg shadow-lg border-2 border-basquiat-blue transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                    <div class="w-full h-48 bg-stone-700 rounded-md mb-4 flex items-center justify-center relative overflow-hidden">
+                        <span class="text-4xl font-permanent-marker text-basquiat-white opacity-20 transform rotate-15">BIG</span>
+                        <div class="w-32 h-32 bg-brown-600 rounded-t-full shadow-lg absolute bottom-0 transform scale-y-120" style="background-image: linear-gradient(to bottom, #8c6a5b, #6b4c3e);"></div>
+                        <div class="w-20 h-5 bg-brown-800 absolute top-0 rounded-md"></div>
+                    </div>
+                    <p class="text-xl font-bold text-basquiat-white">צנצנות גדולות <span class="float-left text-basquiat-yellow">₪75</span></p>
+                    <p class="text-sm text-gray-300">לדגנים, קפה, או אוצרות מהמשתלה.</p>
+                </div>
+            </div>
+            <p class="text-sm text-gray-400 mt-12 text-center relative z-20">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.</p>
+        </section>
+
+        <!-- Ceramics Section -->
+        <section id="ceramics" class="content-section flex flex-col items-center justify-center text-center relative">
+            <div class="basquiat-crown border-basquiat-blue right-1/4 top-1/4 transform rotate-10 z-20"></div>
+            <div class="basquiat-scribble border-basquiat-red w-36 h-36 top-1/4 left-1/4 transform rotate-15"></div>
+            <div class="basquiat-scribble border-basquiat-yellow w-48 h-48 bottom-1/4 right-1/4 transform -rotate-25"></div>
+
+            <h2 class="text-5xl sm:text-6xl basquiat-title mb-8 relative z-20">
+                מוצרי קרמיקה - לגעת באדמה
+                <span class="block text-xl text-basquiat-white mt-2">צורות מן החומר</span>
+            </h2>
+
+            <p class="text-xl sm:text-2xl max-w-2xl mx-auto mb-12 relative z-20">
+                מוצרי הקרמיקה שלנו הם שיח שקט עם האדמה. כל כלי נוצר מתוך כבוד לחומר, עם ציפויים טבעיים בגווני אדמה חמים המביאים אופי ונוכחות לכל בית.
+                מוצרי קרמיקה בעבודת יד איכותית, מתאימים לשימוש יומיומי ומוסיפים אווירה חמה לכל בית.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-20">
+                <div class="product-card p-6 bg-stone-800 bg-opacity-80 rounded-lg shadow-lg border-2 border-basquiat-red transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                    <div class="w-full h-48 bg-stone-700 rounded-md mb-4 flex items-center justify-center relative overflow-hidden">
+                        <span class="text-4xl font-permanent-marker text-basquiat-white opacity-20 transform -rotate-12">CUP</span>
+                        <div class="w-32 h-36 bg-gray-500 rounded-b-full shadow-lg absolute bottom-0" style="background-image: linear-gradient(to bottom, #a0a0a0, #707070);"></div>
+                        <div class="w-8 h-12 bg-gray-600 rounded-r-full absolute left-1/4 bottom-1/3 transform -rotate-15"></div>
+                    </div>
+                    <p class="text-xl font-bold text-basquiat-white">כוס גדולה <span class="float-left text-basquiat-yellow">₪65</span></p>
+                    <p class="text-sm text-gray-300">לשפע של קפה, או תה מהביל באווירה רגועה.</p>
+                </div>
+                <div class="product-card p-6 bg-stone-800 bg-opacity-80 rounded-lg shadow-lg border-2 border-basquiat-blue transform rotate-2 hover:rotate-0 transition-transform duration-300">
+                    <div class="w-full h-48 bg-stone-700 rounded-md mb-4 flex items-center justify-center relative overflow-hidden">
+                        <span class="text-4xl font-permanent-marker text-basquiat-white opacity-20 transform rotate-20">SMALL</span>
+                        <div class="w-24 h-28 bg-gray-500 rounded-b-full shadow-lg absolute bottom-0" style="background-image: linear-gradient(to bottom, #a0a0a0, #707070);"></div>
+                        <div class="w-6 h-9 bg-gray-600 rounded-r-full absolute left-1/4 bottom-1/4 transform -rotate-10"></div>
+                    </div>
+                    <p class="text-xl font-bold text-basquiat-white">כוס קטנה <span class="float-left text-basquiat-yellow">₪45</span></p>
+                    <p class="text-sm text-gray-300">לאספרסו חזק או לטיפות של תה עדין.</p>
+                </div>
+                <div class="product-card p-6 bg-stone-800 bg-opacity-80 rounded-lg shadow-lg border-2 border-basquiat-yellow transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <div class="w-full h-48 bg-stone-700 rounded-md mb-4 flex items-center justify-center relative overflow-hidden">
+                        <span class="text-4xl font-permanent-marker text-basquiat-white opacity-20 transform rotate-5">JUG</span>
+                        <div class="w-40 h-40 bg-gray-500 rounded-b-full shadow-lg absolute bottom-0" style="background-image: linear-gradient(to bottom, #a0a0a0, #707070);"></div>
+                        <div class="w-10 h-16 bg-gray-600 rounded-r-full absolute left-1/3 bottom-1/4 transform -rotate-20"></div>
+                        <div class="w-12 h-6 bg-gray-700 rounded-t-lg absolute top-1/4 right-1/4 transform rotate-10"></div>
+                    </div>
+                    <p class="text-xl font-bold text-basquiat-white">קנקן <span class="float-left text-basquiat-yellow">₪120</span></p>
+                    <p class="text-sm text-gray-300">למים צוננים מהמעיין, או לחליטת תה ירוק.</p>
+                </div>
+            </div>
+            <p class="text-sm text-gray-400 mt-12 text-center relative z-20">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.</p>
+        </section>
+
+        <!-- Footer Section -->
+        <footer class="content-section text-center py-16 bg-stone-900 bg-opacity-90 relative">
+            <div class="basquiat-scribble border-basquiat-yellow w-20 h-20 top-1/4 left-1/4 transform rotate-8"></div>
+            <p class="text-2xl font-bold text-basquiat-white mb-4">
+                <span class="basquiat-block-text text-basquiat-white text-base sm:text-2xl">סבאיה - איפה שהאדמה פוגשת את הנפש.</span>
+            </p>
+            <p class="text-lg text-gray-400">
+                כל הזכויות שמורות &copy; 2023. עיצוב בהשראת יצירותיו של ז'אן-מישל בסקיאט.
+            </p>
+        </footer>
+
+    </div> <!-- End Main Content Wrapper -->
+
+    <script>
+        // Custom Cursor Logic
+        const cursorDot = document.getElementById('custom-cursor-dot');
+        const cursorCircle = document.getElementById('custom-cursor-circle');
+        const interactiveElements = document.querySelectorAll('a, button, .product-card, .basquiat-block-text');
+
+        let mouseX = 0, mouseY = 0;
+        let dotX = 0, dotY = 0;
+        let circleX = 0, circleY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorDot.style.left = `${mouseX}px`;
+            cursorDot.style.top = `${mouseY}px`;
+        });
+
+        function animateCursor() {
+            dotX += (mouseX - dotX) * 0.2; // Slower follow for dot
+            dotY += (mouseY - dotY) * 0.2;
+            cursorDot.style.transform = `translate3d(${dotX - mouseX}px, ${dotY - mouseY}px, 0)`; // Keep relative to instant mouse position
+
+            circleX += (mouseX - circleX) * 0.1; // Even slower for circle
+            circleY += (mouseY - circleY) * 0.1;
+            cursorCircle.style.transform = `translate3d(${circleX - mouseX}px, ${circleY - mouseY}px, 0)`; // Keep relative to instant mouse position
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursorCircle.classList.add('active'));
+            el.addEventListener('mouseleave', () => cursorCircle.classList.remove('active'));
+        });
+
+        // Text scramble/reveal for menu items on scroll
+        const menuItems = document.querySelectorAll('#menu .menu-item-hidden');
+
+        const observerOptions = {
+            root: null, // viewport
+            rootMargin: '0px',
+            threshold: 0.1 // 10% of item visible
+        };
+
+        const menuObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.remove('menu-item-hidden');
+                    entry.target.classList.add('menu-item-visible');
+                    observer.unobserve(entry.target); // Stop observing once visible
+                }
+            });
+        }, observerOptions);
+
+        menuItems.forEach(item => {
+            menuObserver.observe(item);
+        });
+
+        // Basic scroll to section logic for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>

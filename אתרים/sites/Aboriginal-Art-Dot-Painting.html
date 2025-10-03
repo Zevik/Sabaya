@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה – אדמה, קפה, נשמה</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=David+Libre:wght@400;700&family=Noto+Sans+Hebrew:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sabaya-ochre': '#D2691E', // Warm, deep ochre
+                        'sabaya-sand': '#F5DEB3',  // Light sandy tone
+                        'sabaya-charcoal': '#36454F', // Deep charcoal
+                        'sabaya-terracotta': '#E2725B', // Earthy red
+                        'sabaya-cream': '#FCF5E5', // Soft off-white
+                        'sabaya-olive': '#6B8E23', // Muted olive green
+                        'sabaya-forest': '#22402A', // Deep forest green
+                    },
+                    fontFamily: {
+                        'hebrew-heading': ['David Libre', 'serif'],
+                        'hebrew-body': ['Noto Sans Hebrew', 'sans-serif'],
+                    },
+                    // Custom keyframes for dot animations
+                    keyframes: {
+                        pulseDot: {
+                            '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
+                            '50%': { transform: 'scale(1.2)', opacity: '1' },
+                        },
+                        flowDot: {
+                            '0%': { transform: 'translateY(0) scale(1)' },
+                            '100%': { transform: 'translateY(20px) scale(0.9)' },
+                        },
+                        spinDot: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' },
+                        }
+                    },
+                    animation: {
+                        pulseDot: 'pulseDot 4s infinite ease-in-out',
+                        flowDot: 'flowDot 5s infinite alternate ease-in-out',
+                        spinDotSlow: 'spinDot 60s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Base styles for the "dot painting" aesthetic */
+        body {
+            background-color: #36454F; /* sabaya-charcoal */
+            cursor: none; /* Hide default cursor */
+            overflow-x: hidden; /* Prevent horizontal scroll from animation */
+            font-family: 'Noto Sans Hebrew', sans-serif;
+            color: #FCF5E5; /* sabaya-cream */
+            line-height: 1.6;
+        }
+
+        /* Custom cursor styling */
+        .custom-cursor {
+            position: fixed;
+            pointer-events: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #FFFFFF; /* High contrast white border */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* High contrast black shadow */
+            mix-blend-mode: normal; /* Ensure normal blending, not `mix-blend-mode` */
+            z-index: 9999;
+            transition: transform 0.1s ease-out; /* Smooth movement */
+            transform: translate(-50%, -50%); /* Center cursor */
+        }
+
+        /* Dot background for sections */
+        .dot-pattern-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: currentColor; /* Inherit color from parent */
+            opacity: 0.7;
+            animation: pulseDot 4s infinite ease-in-out; /* Default animation */
+        }
+
+        /* Specific section styling and background patterns */
+        .section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 1rem;
+            position: relative;
+            z-index: 10; /* Ensure content is above background dots */
+            text-align: right; /* RTL */
+        }
+
+        .section-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(54, 69, 79, 0.9); /* sabaya-charcoal with transparency */
+            border-radius: 1.5rem;
+            padding: 3rem;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 20;
+            border: 2px solid #D2691E; /* sabaya-ochre border */
+        }
+
+        h1, h2 {
+            font-family: 'David Libre', serif;
+            color: #F5DEB3; /* sabaya-sand */
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-link {
+            transition: color 0.3s ease, transform 0.3s ease;
+            position: relative;
+            display: inline-block;
+            padding: 0.5rem 0.75rem;
+            color: #FCF5E5;
+        }
+        .nav-link:hover {
+            color: #D2691E;
+            transform: translateY(-3px);
+        }
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #E2725B; /* sabaya-terracotta */
+            bottom: -5px;
+            right: 0;
+            transform: translateX(50%);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .nav-link:hover::before {
+            opacity: 1;
+            transform: translateX(50%) scale(1.2);
+        }
+
+        /* Specific list item styling for menu/products */
+        .item-card {
+            background-color: rgba(245, 222, 179, 0.1); /* sabaya-sand subtle transparent */
+            border-right: 3px solid #D2691E; /* sabaya-ochre */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .item-card:hover {
+            transform: translateX(-5px);
+            background-color: rgba(245, 222, 179, 0.2);
+        }
+        .item-card::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #6B8E23; /* sabaya-olive */
+            animation: pulseDot 2s infinite alternate ease-in-out;
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #F5DEB3;
+            animation: flowDot 2s infinite alternate ease-in-out;
+            pointer-events: none; /* Don't interfere with clicks */
+        }
+        .scroll-indicator::before {
+            content: '•';
+            font-size: 2rem;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .scroll-indicator::after {
+            content: '•••';
+            font-size: 0.8rem;
+            letter-spacing: 0.2rem;
+        }
+
+
+        /* Overlay for section transitions */
+        .section-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #36454F; /* sabaya-charcoal */
+            z-index: 9000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+        .section-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Dot animation variation for background */
+        @keyframes ripple {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .ripple-dot {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(245, 222, 179, 0.3); /* sabaya-sand transparent */
+            animation: ripple 2s infinite ease-out;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+    </style>
+</head>
+<body class="font-hebrew-body text-sabaya-cream bg-sabaya-charcoal overflow-y-scroll relative">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor" class="custom-cursor"></div>
+
+    <!-- Background dots container -->
+    <div id="background-dots" class="fixed top-0 left-0 w-full h-full z-[-1] overflow-hidden"></div>
+
+    <!-- Section Overlay for transitions -->
+    <div id="section-overlay" class="section-overlay flex justify-center items-center text-3xl font-hebrew-heading text-sabaya-sand">
+        <div class="relative w-24 h-24 flex justify-center items-center">
+            <div class="absolute w-full h-full border-4 border-sabaya-ochre rounded-full animate-spin-slow"></div>
+            <div class="absolute w-1/2 h-1/2 border-4 border-sabaya-terracotta rounded-full animate-spin-slow animation-delay-500"></div>
+            <span class="absolute text-xl">...</span>
+        </div>
+    </div>
+
+    <!-- Navigation Dots -->
+    <nav class="fixed top-1/2 left-4 transform -translate-y-1/2 flex flex-col space-y-4 z-50 p-4 bg-sabaya-charcoal bg-opacity-70 rounded-lg shadow-lg">
+        <a href="#home" class="nav-link text-xl" data-section="home">בית</a>
+        <a href="#menu" class="nav-link text-xl" data-section="menu">תפריט</a>
+        <a href="#wood-products" class="nav-link text-xl" data-section="wood-products">כפית עץ</a>
+        <a href="#ceramic-products" class="nav-link text-xl" data-section="ceramic-products">מוצרי קרמיקה</a>
+    </nav>
+
+    <!-- Scroll Indicator -->
+    <div id="scroll-indicator" class="scroll-indicator">גלול למטה</div>
+
+    <!-- Home Section -->
+    <section id="home" class="section bg-gradient-to-br from-sabaya-charcoal to-sabaya-forest text-center">
+        <div class="section-inner">
+            <h1 class="text-6xl md:text-8xl font-hebrew-heading mb-6 text-sabaya-sand leading-tight">סבאיה</h1>
+            <h2 class="text-3xl md:text-5xl font-hebrew-heading mb-8 text-sabaya-ochre">אדמה, קפה, נשמה</h2>
+            <p class="text-xl md:text-2xl mb-8 leading-relaxed font-hebrew-body max-w-lg mx-auto">
+                ברוכים הבאים לסבאיה – מקום שבו האדמה מספרת סיפור, והקפה הטעים מפגש עם נשימת הטבע. כאן, כל נקודה על הקרקע מחוברת למעגל החיים, וכל לגימה היא מסע אל השורשים. תיהנו מאווירה חמה ונעימה, בין צללים וגוונים של צמיחה, בסביבה טבעית מדהימה המהדהדת את אמנות הבריאה.
+            </p>
+            <div class="mt-12 flex justify-center space-x-4 space-x-reverse">
+                <a href="#menu" class="text-2xl text-sabaya-cream hover:text-sabaya-ochre transition-colors duration-300 relative group">
+                    <span class="relative z-10">לגלות את התפריט</span>
+                    <span class="absolute -bottom-2 right-0 w-full h-1 bg-sabaya-terracotta transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-right"></span>
+                </a>
+            </div>
+        </div>
+        <div class="dot-pattern-bg"></div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="section bg-gradient-to-tl from-sabaya-forest to-sabaya-charcoal">
+        <div class="section-inner w-full">
+            <h2 class="text-5xl font-hebrew-heading mb-10 text-sabaya-sand text-center">מעגל הטעמים – מזין את הגוף והרוח</h2>
+
+            <h3 class="text-3xl font-hebrew-heading text-sabaya-ochre mb-6 border-b border-sabaya-terracotta pb-2">מאכלים ומתוקים</h3>
+            <div class="grid md:grid-cols-2 gap-8 mb-10">
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">כריך סבביח</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">ביצה קשה, טונה, חציל, מטבוחה, מלפפון חמוץ ולימון כבוש – לחם אדמה עשיר המוגש עם זיתים וסלט אישי. מסע של טעמים מהשדה לצלחת.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪36</p>
+                </div>
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">כריך פנסיבאיה</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">פטריות מוקפצות עם כמהין, גבינות שמנת וגראנה פדאנו, רוקט ובלסמי – חוויה יוקרתית של יער וטעם, מוגש עם זיתים וסלט אישי.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪45</p>
+                </div>
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">כריך טבעוני</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">ממרח חציל שחור, גבינת סויה, עגבניות מיובשות ורוקט – טבע במלוא הדרו, מוגש עם זיתים וסלט אישי.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪45</p>
+                </div>
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">פלטת גבינות ולחמים עם מטבלים</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">חמאה מוקצפת מתובלת, טחינה יוגורט, ריבה – שפע של טעמים המעוררים את החושים.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪68</p>
+                </div>
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">סלט במבי</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">חסות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר – טריות הגן בצלחת אחת.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪36</p>
+                </div>
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">סלט חלבון</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון – אנרגיה מהאדמה.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪32</p>
+                </div>
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">מוזלי מור</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">יוגורט פרו, חצילים קלויים, ביצה קשה, טחינה, וגרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש, מוגש עם פיתה קראנץ' – שילוב מפתיע של מתוק ומלוח.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪42</p>
+                </div>
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">קערת אסאי</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">עם גרנולה, שבבי קוקוס ופרי העונה – רעננות טרופית לבוקר מושלם.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪39</p>
+                </div>
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">קיש ברוקולי/פטריות/בצל ויין לבן</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">מוגש עם סלט אישי ושמנת חמוצה – מאפה פריך וריחני, חום ומנחם.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪37</p>
+                </div>
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">קוראסון שוקולד גדול</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">שכבות פריכות של בצק, עוטפות מילוי שוקולד עשיר – פינוק מתוק לכל רגע.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪19</p>
+                </div>
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">פאי תפוחים קרמבל</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">מוגש עם כדור גלידה – חום וקור נפגשים בריקוד של טעמים.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪44</p>
+                </div>
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">פאי מרנג לימון</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">חמצמץ ומתוק, קליל ומרענן – נשיקת שמש בתוך קינוח.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪31</p>
+                </div>
+                <div class="item-card">
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">עוגת שילה</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">סוד המתוקים של סבאיה – עוגה מיוחדת במינה, רק בבית הקפה.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪44</p>
+                </div>
+            </div>
+            <p class="text-lg text-sabaya-cream text-center mt-10">לשאלות והזמנות, אנא פנו אלינו בבית הקפה.</p>
+            <p class="text-sm text-sabaya-sand text-center">כל המחירים בשקלים חדשים ועשויים להשתנות.</p>
+        </div>
+        <div class="dot-pattern-bg"></div>
+    </section>
+
+    <!-- Wood Products Section -->
+    <section id="wood-products" class="section bg-gradient-to-br from-sabaya-charcoal to-sabaya-ochre">
+        <div class="section-inner w-full">
+            <h2 class="text-5xl font-hebrew-heading mb-10 text-sabaya-sand text-center">קולות היער – עץ טבעי, צורות נצחיות</h2>
+            <p class="text-xl md:text-2xl mb-12 leading-relaxed font-hebrew-body max-w-lg mx-auto text-center">
+                מוצרי עץ איכותיים בעבודת יד, כל אחד נושא את סיפורו של העץ ממנו נוצר. מתאימים לשימוש יומיומי ולמתנה מיוחדת, מחומרים טבעיים וידידותיים לסביבה, המביאים את חום היער אל ביתכם.
+            </p>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="item-card text-center">
+                    <div class="w-40 h-40 bg-sabaya-olive mx-auto rounded-full flex items-center justify-center mb-4 text-sabaya-cream text-3xl font-hebrew-heading">בקבוק</div>
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">בקבוקי שתיה</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">חיבור למקור – בקבוקי עץ טבעיים, לשמירה על טוהר המים והנפש. כל בקבוק הוא יצירה ייחודית, הנושאת את טביעות הזמן והטבע.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪89</p>
+                </div>
+                <div class="item-card text-center">
+                    <div class="w-40 h-40 bg-sabaya-terracotta mx-auto rounded-full flex items-center justify-center mb-4 text-sabaya-cream text-3xl font-hebrew-heading">צנצנת</div>
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">צנצנות קטנות</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">אוצרות קטנים – צנצנות עץ מיניאטוריות, לשמירת סודות קטנים או תבלינים יקרים. פיסת יער על מדף.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪45</p>
+                </div>
+                <div class="item-card text-center">
+                    <div class="w-40 h-40 bg-sabaya-ochre mx-auto rounded-full flex items-center justify-center mb-4 text-sabaya-cream text-3xl font-hebrew-heading">צנצנת</div>
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">צנצנות גדולות</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">כלי של שפע – צנצנות עץ גדולות, לאגירת קפה, תה או כל דבר יקר ערך. מביאות את ארומת הטבע למטבח.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪75</p>
+                </div>
+            </div>
+            <p class="text-lg text-sabaya-cream text-center mt-10">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.</p>
+        </div>
+        <div class="dot-pattern-bg"></div>
+    </section>
+
+    <!-- Ceramic Products Section -->
+    <section id="ceramic-products" class="section bg-gradient-to-tl from-sabaya-ochre to-sabaya-forest">
+        <div class="section-inner w-full">
+            <h2 class="text-5xl font-hebrew-heading mb-10 text-sabaya-sand text-center">נשימת האדמה – חימר שקם לתחייה</h2>
+            <p class="text-xl md:text-2xl mb-12 leading-relaxed font-hebrew-body max-w-lg mx-auto text-center">
+                מוצרי קרמיקה בעבודת יד איכותית, עם ציפוי טבעי בגוני אדמה חמים. כל כלי נוצר בתנועת ידיים עתיקה, נושא עמו את חום האש ורוח האדמה, ומוסיף אווירה חמה ומרגיעה לכל בית.
+            </p>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="item-card text-center">
+                    <div class="w-40 h-40 bg-sabaya-terracotta mx-auto rounded-full flex items-center justify-center mb-4 text-sabaya-cream text-3xl font-hebrew-heading">כוס</div>
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">כוס גדולה</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">מעגל חם בכפות הידיים – כוס חימר גדולה, אוצרת את חום הקפה ומרגיעה את הנשמה. כל לגימה היא חיבור לאדמה.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪65</p>
+                </div>
+                <div class="item-card text-center">
+                    <div class="w-40 h-40 bg-sabaya-sand mx-auto rounded-full flex items-center justify-center mb-4 text-sabaya-charcoal text-3xl font-hebrew-heading">כוס</div>
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">כוס קטנה</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">פינת חמד של טעם – כוס חימר קטנה, מושלמת לאספרסו או לתה צמחים. רגע של שקט וחיבור.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪45</p>
+                </div>
+                <div class="item-card text-center">
+                    <div class="w-40 h-40 bg-sabaya-ochre mx-auto rounded-full flex items-center justify-center mb-4 text-sabaya-cream text-3xl font-hebrew-heading">קנקן</div>
+                    <h4 class="text-2xl font-hebrew-heading text-sabaya-sand mb-2">קנקן</h4>
+                    <p class="text-lg text-sabaya-cream mb-4">זרם חיים – קנקן חימר יפהפה, לשמירת מים קרים או להגשת משקאות חמים. מביא את נדיבות הטבע אל השולחן.</p>
+                    <p class="text-xl font-bold text-sabaya-terracotta">₪120</p>
+                </div>
+            </div>
+            <p class="text-lg text-sabaya-cream text-center mt-10">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.</p>
+        </div>
+        <div class="dot-pattern-bg"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-sabaya-charcoal text-sabaya-sand text-center py-12 px-4 border-t border-sabaya-ochre">
+        <p class="text-lg mb-4">סבאיה – אמנות החיים, קפה וטבע.</p>
+        <p class="text-md">&copy; 2023 כל הזכויות שמורות. נבנה באהבה מהאדמה.</p>
+    </footer>
+
+    <script>
+        const customCursor = document.getElementById('custom-cursor');
+        const backgroundDotsContainer = document.getElementById('background-dots');
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sectionOverlay = document.getElementById('section-overlay');
+        const scrollIndicator = document.getElementById('scroll-indicator');
+
+        // --- Custom Cursor Logic ---
+        document.addEventListener('mousemove', (e) => {
+            customCursor.style.left = `${e.clientX}px`;
+            customCursor.style.top = `${e.clientY}px`;
+        });
+
+        // --- Background Generative Dots Logic ---
+        const colors = ['sabaya-ochre', 'sabaya-sand', 'sabaya-charcoal', 'sabaya-terracotta', 'sabaya-cream', 'sabaya-olive', 'sabaya-forest'];
+        const tailwindColors = tailwind.config.theme.extend.colors; // Access defined colors
+
+        function getRandomTailwindColor() {
+            const randomColorName = colors[Math.floor(Math.random() * colors.length)];
+            return tailwindColors[randomColorName];
+        }
+
+        function createBackgroundDots(count = 100) {
+            for (let i = 0; i < count; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('dot', 'absolute', 'rounded-full');
+                dot.style.width = `${Math.random() * 8 + 4}px`; // 4-12px
+                dot.style.height = dot.style.width;
+                dot.style.backgroundColor = getRandomTailwindColor();
+                dot.style.opacity = `${Math.random() * 0.6 + 0.2}`; // 0.2 - 0.8 opacity
+                dot.style.left = `${Math.random() * 100}%`;
+                dot.style.top = `${Math.random() * 100}%`;
+                dot.style.animationDelay = `${Math.random() * 5}s`;
+                dot.style.animationDuration = `${Math.random() * 6 + 3}s`; // 3-9s
+
+                // Add different animation variations
+                const animations = ['pulseDot', 'flowDot', 'spinDotSlow'];
+                const randomAnim = animations[Math.floor(Math.random() * animations.length)];
+                if (randomAnim === 'spinDotSlow') {
+                    dot.style.animationName = 'spinDot'; // Use base keyframe, not the slow one
+                    dot.style.animationDuration = `${Math.random() * 90 + 30}s`; // Slower spin
+                } else {
+                    dot.style.animationName = randomAnim;
+                }
+
+                backgroundDotsContainer.appendChild(dot);
+            }
+        }
+        createBackgroundDots(); // Populate background initially
+
+        // --- Section Navigation and Transition Logic ---
+        let currentSectionIndex = 0;
+        const sectionIds = Array.from(sections).map(section => section.id);
+
+        function scrollToSection(index) {
+            if (index < 0 || index >= sections.length) return;
+
+            sectionOverlay.classList.add('active'); // Activate overlay
+            setTimeout(() => {
+                sections[index].scrollIntoView({ behavior: 'smooth' });
+                currentSectionIndex = index;
+                updateNavActiveState();
+                sectionOverlay.classList.remove('active'); // Deactivate overlay after scroll
+                updateScrollIndicator();
+            }, 600); // Match CSS transition duration
+        }
+
+        function updateNavActiveState() {
+            navLinks.forEach(link => {
+                link.classList.remove('text-sabaya-ochre', 'font-bold');
+                link.classList.add('text-sabaya-cream');
+                if (link.getAttribute('data-section') === sectionIds[currentSectionIndex]) {
+                    link.classList.add('text-sabaya-ochre', 'font-bold');
+                    link.classList.remove('text-sabaya-cream');
+                }
+            });
+        }
+
+        function updateScrollIndicator() {
+            if (currentSectionIndex === sections.length - 1) {
+                scrollIndicator.style.display = 'none';
+            } else {
+                scrollIndicator.style.display = 'flex';
+            }
+        }
+
+        // Initial state
+        updateNavActiveState();
+        updateScrollIndicator();
+
+        // Nav link click handler
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('data-section');
+                const targetIndex = sectionIds.indexOf(targetId);
+                scrollToSection(targetIndex);
+            });
+        });
+
+        // Scroll wheel navigation (with debounce)
+        let isScrolling = false;
+        document.addEventListener('wheel', (e) => {
+            if (isScrolling) return;
+
+            isScrolling = true;
+            if (e.deltaY > 0) { // Scroll down
+                scrollToSection(currentSectionIndex + 1);
+            } else { // Scroll up
+                scrollToSection(currentSectionIndex - 1);
+            }
+
+            setTimeout(() => {
+                isScrolling = false;
+            }, 1000); // Debounce time
+        }, { passive: false }); // Use passive: false to allow preventDefault if needed, though scrollIntoView handles it
+
+        // Intersection Observer for updating active nav state on manual scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    currentSectionIndex = sectionIds.indexOf(id);
+                    updateNavActiveState();
+                    updateScrollIndicator();
+                }
+            });
+        }, {
+            threshold: 0.7 // Section is considered 'active' when 70% is visible
+        });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Initial scroll to home section to handle page load scenarios
+        window.addEventListener('load', () => {
+            scrollToSection(0);
+        });
+
+    </script>
+</body>
+</html>

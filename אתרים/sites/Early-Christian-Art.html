@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה: משתלת נשמה ובית קפה של עונג</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Noto+Sans+Hebrew:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary-bg: #2C3E50; /* Dark Blue-Grey, like deep ancient stone */
+            --color-secondary-bg: #34495E; /* Slightly darker Blue-Grey */
+            --color-accent-gold: #D4AF37; /* Rich Gold, like illuminated manuscripts */
+            --color-accent-crimson: #A52A2A; /* Deep Crimson, like Byzantine mosaics */
+            --color-text-light: #FDF5E6; /* Off-white/Parchment, for readability */
+            --color-text-dark: #4B3621; /* Dark Brown, for contrast on light areas (if any) */
+            --color-border-light: #F5F5DC; /* Off-white for cursor */
+            --color-border-dark: rgba(0,0,0,0.8); /* Dark for cursor shadow */
+        }
+
+        body {
+            font-family: 'Noto Sans Hebrew', sans-serif;
+            color: var(--color-text-light);
+            background-color: var(--color-primary-bg);
+            overflow-x: hidden;
+            cursor: none; /* Hide default cursor to use custom one */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Frank Ruhl Libre', serif;
+            color: var(--color-accent-gold);
+        }
+
+        /* Custom Cursor - High contrast as required */
+        .custom-cursor {
+            position: fixed;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid var(--color-border-light); /* Visible on dark backgrounds */
+            box-shadow: 0 0 0 2px var(--color-border-dark); /* Visible on light backgrounds */
+            pointer-events: none; /* Allows clicks to pass through */
+            transform: translate(-50%, -50%); /* Centers the cursor */
+            z-index: 9999; /* Always on top */
+            transition: transform 0.1s ease-out, width 0.1s ease-out, height 0.1s ease-out, background-color 0.1s ease-out;
+            will-change: transform, width, height, background-color; /* Optimize animations */
+        }
+        .custom-cursor.hovered {
+            width: 30px;
+            height: 30px;
+            background-color: rgba(212, 175, 55, 0.2); /* Semi-transparent gold on hover */
+            border-color: var(--color-accent-gold);
+        }
+
+        /* Background elements for parallax effect */
+        .background-element {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2; /* Deep background layer */
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Abstract patterns for artistic texture */
+        .bg-pattern-1 {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23636B76' fill-opacity='0.08'%3E%3Cpath d='M30 15V0l-5 2.5v10L30 15zM45 45V30l-5 2.5v10L45 45zM30 45V30l-5 2.5v10L30 45zM45 15V0l-5 2.5v10L45 15zM60 45V30l-5 2.5v10L60 45zM0 45V30l-5 2.5v10L0 45zM60 15V0l-5 2.5v10L60 15zM0 15V0l-5 2.5v10L0 15zM15 45V30l-5 2.5v10L15 45zM30 30V15l-5 2.5v10L30 30zM15 15V0l-5 2.5v10L15 15zM45 30V15l-5 2.5v10L45 30zM0 30V15l-5 2.5v10L0 30zM15 30V15l-5 2.5v10L15 30zM30 0l-5 2.5v10L30 15V0z'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1;
+            transform: scale(1.1); /* Slightly larger for parallax effect */
+        }
+        .bg-pattern-2 {
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23636B76' fill-opacity='0.05'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.08;
+            transform: scale(1.05);
+        }
+
+        /* Main scroll container with scroll-snap for "page-turn" effect */
+        .scroll-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            perspective: 1px; /* Required for some parallax techniques */
+        }
+
+        /* Each full-screen section */
+        .scroll-section {
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1; /* Ensures content is above fixed backgrounds */
+            padding: 2rem;
+            box-sizing: border-box;
+            opacity: 0; /* Hidden by default, revealed by JS */
+            transition: opacity 1s ease-in-out;
+        }
+
+        .scroll-section.active {
+            opacity: 1;
+        }
+
+        /* Artistic frame for content blocks */
+        .art-frame {
+            border: 4px solid var(--color-accent-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); /* Gold glow effect */
+            background-color: rgba(44, 62, 80, 0.7); /* Semi-transparent main bg */
+            padding: 2rem;
+            max-width: 90%;
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 50vh;
+        }
+
+        /* Decorative corners for the art frame, inspired by manuscript art */
+        .art-frame::before, .art-frame::after {
+            content: '';
+            position: absolute;
+            background: var(--color-accent-gold);
+            opacity: 0.8;
+            width: 20px;
+            height: 20px;
+            transition: all 0.3s ease;
+        }
+        .art-frame::before { top: -10px; right: -10px; }
+        .art-frame::after { bottom: -10px; left: -10px; }
+        .art-frame:hover::before { transform: translate(5px, 5px); }
+        .art-frame:hover::after { transform: translate(-5px, -5px); }
+
+
+        /* Styling for menu items */
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--color-accent-crimson);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: rgba(52, 73, 94, 0.8); /* Slightly lighter background for items */
+            transition: background-color 0.3s ease, transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            cursor: none; /* Managed by custom cursor */
+        }
+
+        .menu-item:hover {
+            background-color: rgba(212, 175, 55, 0.15); /* Soft gold tint on hover */
+            transform: scale(1.02);
+            border-color: var(--color-accent-gold);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+        }
+
+        .menu-item h3 {
+            color: var(--color-accent-gold);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Styling for product cards */
+        .product-card {
+            border: 2px solid var(--color-accent-crimson);
+            background-color: rgba(52, 73, 94, 0.7);
+            padding: 1rem;
+            text-align: center;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            cursor: none; /* Managed by custom cursor */
+        }
+
+        .product-card:hover {
+            border-color: var(--color-accent-gold);
+            box-shadow: 0 0 12px var(--color-accent-gold);
+            transform: translateY(-5px);
+        }
+
+        /* Placeholder for images, styled as symbolic icons */
+        .product-placeholder {
+            width: 100px;
+            height: 100px;
+            background-color: var(--color-accent-crimson); /* Default for product cards */
+            margin: 1rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--color-text-light);
+            border: 2px solid var(--color-text-light);
+            border-radius: 50%; /* Rounded for softer feel */
+        }
+        /* Specific styling for 'About' section placeholders */
+        .about-placeholder-bg {
+             background-color: rgba(212, 175, 55, 0.2); /* Light gold transparent */
+        }
+
+
+        /* Navigation dots for visual progress and direct access */
+        .nav-dots {
+            position: fixed;
+            left: 20px; /* Aligned to the right in RTL layout */
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            margin: 0.5rem 0;
+            cursor: none; /* Managed by custom cursor */
+            transition: background-color 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .nav-dot.active {
+            background-color: var(--color-accent-gold);
+            transform: scale(1.2);
+            border-color: var(--color-text-light);
+        }
+        .nav-dot:hover {
+            background-color: var(--color-accent-gold);
+            transform: scale(1.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .art-frame {
+                padding: 1rem;
+                max-width: 95%;
+            }
+            .nav-dots {
+                flex-direction: row; /* Dots become horizontal on smaller screens */
+                top: auto;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: auto;
+            }
+            .nav-dot {
+                margin: 0 0.5rem;
+            }
+            h1 { font-size: 4rem; }
+            h2 { font-size: 2.5rem; }
+            h3 { font-size: 2rem; }
+            .menu-item h3 { font-size: 1.2rem; }
+            .text-lg, .text-xl { font-size: 1rem; }
+            .grid-cols-2 { grid-template-columns: 1fr; }
+            .md\:grid-cols-3 { grid-template-columns: 1fr; }
+            .md\:grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
+            .md\:col-span-1 { grid-column: auto; }
+            .menu-item.col-span-full { grid-column: span 1 / span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fixed Background Layers (for subtle parallax) -->
+    <div class="background-element bg-cover bg-center" style="background-image: linear-gradient(to bottom right, var(--color-primary-bg), var(--color-secondary-bg)); z-index: -3;"></div>
+    <div class="background-element bg-pattern-1" data-parallax-speed="0.05"></div>
+    <div class="background-element bg-pattern-2" data-parallax-speed="0.1"></div>
+    <!-- Subtle radial gradient overlay for depth and glow effect -->
+    <div class="background-element bg-cover bg-center" style="background-image: url('data:image/svg+xml,%3Csvg width=\'100%25\' height=\'100%25\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cdefs%3E%3CradialGradient id=\'g\' cx=\'50%25\' cy=\'50%25\' r=\'50%25\' fx=\'50%25\' fy=\'50%25\'%3E%3Cstop offset=\'0%25\' stop-color=\'rgb(212, 175, 55)\' stop-opacity=\'0.05\'/%3E%3Cstop offset=\'100%25\' stop-color=\'rgb(44, 62, 80)\' stop-opacity=\'0.0\'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect x=\'0\' y=\'0\' width=\'100\' height=\'100\' fill=\'url(%23g)\'/%3E%3C/svg%3E'); opacity: 0.15; z-index: -1;" data-parallax-speed="0.2"></div>
+
+
+    <!-- Navigation Dots -->
+    <div class="nav-dots">
+        <div class="nav-dot" data-target-section="0" title="בית"></div>
+        <div class="nav-dot" data-target-section="1" title="על סבאיה"></div>
+        <div class="nav-dot" data-target-section="2" title="התפריט"></div>
+        <div class="nav-dot" data-target-section="3" title="מוצרי עץ"></div>
+        <div class="nav-dot" data-target-section="4" title="מוצרי קרמיקה"></div>
+    </div>
+
+    <!-- Main Scroll Container -->
+    <div class="scroll-container">
+
+        <!-- Section 1: Hero -->
+        <section id="section-0" class="scroll-section active">
+            <div class="art-frame w-full max-w-5xl text-center">
+                <h1 class="text-6xl md:text-8xl font-bold mb-4 leading-tight text-accent-gold">סבאיה</h1>
+                <h2 class="text-3xl md:text-5xl font-light mb-8 text-text-light">משתלת נשמה ובית קפה של עונג</h2>
+                <p class="text-lg md:text-xl leading-relaxed max-w-2xl mx-auto text-text-light">
+                    ברוכים הבאים למקדש סבאיה - שער לעולם שבו עת העתיק נפגש עם היומיום, והנשמה מוצאת מנוחה בין ירוק עד וניחוחות ארציים. כאן, הקפה הוא נסך, הטבע הוא מורה, והאומנות היא דרך חיים. אנו מזמינים אתכם למסע של טעם, שלווה וגילוי.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 2: About / Unique Experience -->
+        <section id="section-1" class="scroll-section">
+            <div class="art-frame w-full max-w-5xl">
+                <h2 class="text-5xl md:text-7xl font-bold mb-8 text-accent-gold">גן עדן של קפה ורוגע נשגב</h2>
+                <div class="grid md:grid-cols-3 gap-8 text-center text-lg md:text-xl">
+                    <div>
+                        <div class="product-placeholder about-placeholder-bg text-accent-gold rounded-full w-24 h-24 mx-auto mb-4 text-3xl flex items-center justify-center border-2 border-text-light">☕</div>
+                        <h3 class="text-3xl font-semibold mb-2 text-accent-gold">קפה אציל</h3>
+                        <p>גרגירים שנבחרו בקפידה מאדמות קדושות, נקלו באהבה ומוגשים כהבטחה לרגע של טוהר.</p>
+                    </div>
+                    <div>
+                        <div class="product-placeholder about-placeholder-bg text-accent-gold rounded-full w-24 h-24 mx-auto mb-4 text-3xl flex items-center justify-center border-2 border-text-light">🌳</div>
+                        <h3 class="text-3xl font-semibold mb-2 text-accent-gold">מקלט טבעי</h3>
+                        <p>התיישבו תחת עצי התפארת, הקיפו את עצמכם בלחש הצמחים, ותנו לזמן להתמוסס.</p>
+                    </div>
+                    <div>
+                        <div class="product-placeholder about-placeholder-bg text-accent-gold rounded-full w-24 h-24 mx-auto mb-4 text-3xl flex items-center justify-center border-2 border-text-light">✋</div>
+                        <h3 class="text-3xl font-semibold mb-2 text-accent-gold">יצירות רוחניות</h3>
+                        <p>אוסף נדיר של עבודות יד - עץ וחרס - מעשה אומן, נוצרו להאיר את השגרה.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Menu -->
+        <section id="section-2" class="scroll-section">
+            <div class="art-frame w-full max-w-5xl">
+                <h2 class="text-5xl md:text-7xl font-bold mb-8 text-accent-gold">נסך הארץ: משתה לנפש ולגוף</h2>
+                <p class="text-lg md:text-xl mb-8 max-w-3xl text-center">
+                    כל מנה בסבאיה היא יצירה, משתה חם ומרגיע, שמזין את הגוף ומרווה את הנפש, בהשראת מסורות עתיקות וטעמי הגן.
+                </p>
+                
+                <h3 class="text-4xl font-semibold mb-6 text-accent-crimson border-b-2 border-accent-crimson pb-2">מנות ארץ ומתיקות רוחנית</h3>
+                <div class="grid md:grid-cols-2 gap-6 w-full max-w-4xl">
+                    <div class="menu-item">
+                        <h3>כריך סבביח: לחם יום יום</h3>
+                        <p class="text-sm">ביצה, טונה, חציל קלוי, מטבוחה עשירה, מלפפון כבוש ולימון מאיר - מוגש עם זיתים וסלט ירוק, כמנחת פשוטה.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-2">₪36</span>
+                    </div>
+                    <div class="menu-item">
+                        <h3>כריך פנסיבאיה: מנת העשירים</h3>
+                        <p class="text-sm">פטריות בר מוקפצות בטעם כמהין, גבינות שמנת וגרנה פדאנו, רוקט טרי וטיפות בלסמי - מוגש עם זיתים וסלט קטן.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-2">₪45</span>
+                    </div>
+                    <div class="menu-item">
+                        <h3>כריך טבעוני: מתנת הטבע</h3>
+                        <p class="text-sm">ממרח חציל עמוק, גבינת סויה, עגבניות שמש ורוקט - מוגש עם זיתים וירק טרי.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-2">₪45</span>
+                    </div>
+                    <div class="menu-item">
+                        <h3>פלטת גבינות ולחמים: סודות האדמה</h3>
+                        <p class="text-sm">חמאה מוקצפת ומתובלת בעדינות, טחינה יוגורט מעודנת, וריבת פרי עונה - מוגשים עם מבחר גבינות ולחמים.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-2">₪68</span>
+                    </div>
+                    <div class="menu-item">
+                        <h3>סלט במבי: גן הירקות הקסום</h3>
+                        <p class="text-sm">חסה, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מתוק עם גבינת פטה ורוטב סודי, מן המתכונים הקדומים.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-2">₪36</span>
+                    </div>
+                    <div class="menu-item">
+                        <h3>סלט חלבון: כוח האדמה</h3>
+                        <p class="text-sm">עדשים שחורות, קינואה, בטטה אפויה, חומוסים, תרד חי, ביצה קשה, גרעיני דלעת ונגיעת לימון, לאנרגיה וחידוש.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-2">₪32</span>
+                    </div>
+                    <div class="menu-item">
+                        <h3>מוזלי מור: מתכון הבוקר</h3>
+                        <p class="text-sm">יוגורט פרו עשיר, חצילים קלויים, ביצה קשה, טחינה, וגרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש, מוגש עם פיתה פריכה.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-2">₪42</span>
+                    </div>
+                    <div class="menu-item">
+                        <h3>קערת אסאי: קערת השפע</h3>
+                        <p class="text-sm">עם גרנולה פריכה, שבבי קוקוס ופירות העונה, מנה מרעננת ומזינה.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-2">₪39</span>
+                    </div>
+                    <div class="menu-item col-span-full md:col-span-1 mx-auto w-full md:w-3/4">
+                        <h3>קיש ברוקולי/פטריות/בצל: פשטידת המנזר</h3>
+                        <p class="text-sm">לבחירתכם, מוגש עם סלט אישי ושמנת חמוצה.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-2">₪37</span>
+                    </div>
+                </div>
+
+                <h3 class="text-4xl font-semibold mt-12 mb-6 text-accent-crimson border-b-2 border-accent-crimson pb-2">מתוקים: פינוק הנשמה</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl text-center">
+                    <div class="menu-item py-4"><h3>קוראסון שוקולד גדול</h3><span class="text-lg font-bold text-accent-gold">₪19</span></div>
+                    <div class="menu-item py-4"><h3>קוראסון שקדים/פיסטוק גדול</h3><span class="text-lg font-bold text-accent-gold">₪22</span></div>
+                    <div class="menu-item py-4"><h3>עוגה בחושה בננה ושוקולד</h3><span class="text-lg font-bold text-accent-gold">₪15</span></div>
+                    <div class="menu-item py-4"><h3>פאי תפוחים קרמבל</h3><p class="text-sm">עם כדור גלידה</p><span class="text-lg font-bold text-accent-gold">₪44</span></div>
+                    <div class="menu-item py-4"><h3>פאי מרנג לימון</h3><span class="text-lg font-bold text-accent-gold">₪31</span></div>
+                    <div class="menu-item py-4"><h3>אוראו צ'יז קייק</h3><span class="text-lg font-bold text-accent-gold">₪38</span></div>
+                    <div class="menu-item py-4"><h3>קראנץ' סניקרס</h3><span class="text-lg font-bold text-accent-gold">₪23</span></div>
+                    <div class="menu-item py-4"><h3>עוגת שילה</h3><span class="text-lg font-bold text-accent-gold">₪44</span></div>
+                </div>
+                <p class="text-sm mt-8 text-text-light opacity-80">לשאלות והזמנות, אנא פנו אלינו בבית הקפה. כל המחירים בשקלים חדשים ועשויים להשתנות.</p>
+            </div>
+        </section>
+
+        <!-- Section 4: Wood Products -->
+        <section id="section-3" class="scroll-section">
+            <div class="art-frame w-full max-w-5xl">
+                <h2 class="text-5xl md:text-7xl font-bold mb-8 text-accent-gold">אומנות העץ: עמל הידיים, חום הטבע</h2>
+                <p class="text-lg md:text-xl mb-8 max-w-3xl text-center">
+                    כל כפית וכל כלי עץ נוצרו ביד אומן, מעץ טבעי, נועדו להאיר את השולחן ולהזין את הנשמה בפשטותם ובאצילותם. מתאימים לשימוש יומיומי ולמתנה יקרת ערך.
+                </p>
+                <div class="grid md:grid-cols-3 gap-8 w-full max-w-4xl">
+                    <div class="product-card">
+                        <div class="product-placeholder">🥄</div>
+                        <h3 class="text-2xl font-semibold mb-2 text-accent-gold">בקבוקי שתיה: כלי המים החיים</h3>
+                        <p class="text-sm">בקבוקי עץ טבעיים, לשאת את משקה החיים.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-4 block">₪89</span>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-placeholder">🏺</div>
+                        <h3 class="text-2xl font-semibold mb-2 text-accent-gold">צנצנות קטנות: אוצרות קטנים</h3>
+                        <p class="text-sm">צנצנות עץ עדינות, לשמור על תבלינים או סודות קטנים.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-4 block">₪45</span>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-placeholder">🏺</div>
+                        <h3 class="text-2xl font-semibold mb-2 text-accent-gold">צנצנות גדולות: כלי שפע</h3>
+                        <p class="text-sm">צנצנות עץ גדולות, לאגור את נכסי האדמה.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-4 block">₪75</span>
+                    </div>
+                </div>
+                <p class="text-sm mt-8 text-text-light opacity-80">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.</p>
+            </div>
+        </section>
+
+        <!-- Section 5: Ceramic Products -->
+        <section id="section-4" class="scroll-section">
+            <div class="art-frame w-full max-w-5xl">
+                <h2 class="text-5xl md:text-7xl font-bold mb-8 text-accent-gold">מוצרי קרמיקה: אדמה ורוח, צורות של חום</h2>
+                <p class="text-lg md:text-xl mb-8 max-w-3xl text-center">
+                    כלי חרס, מעוצבים באהבה ובכישרון, נוצרו מן האדמה וקיבלו חיים באש. ציפויים טבעיים וגווני אדמה חמים יעניקו לכל בית נגיעה של קדמוניות ויופי שקט.
+                </p>
+                <div class="grid md:grid-cols-3 gap-8 w-full max-w-4xl">
+                    <div class="product-card">
+                        <div class="product-placeholder">🍵</div>
+                        <h3 class="text-2xl font-semibold mb-2 text-accent-gold">כוס גדולה: כוס הברכה</h3>
+                        <p class="text-sm">למשקה חם או קר, למלא את היום באור.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-4 block">₪65</span>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-placeholder">☕</div>
+                        <h3 class="text-2xl font-semibold mb-2 text-accent-gold">כוס קטנה: גביע השירה</h3>
+                        <p class="text-sm">קטנה ועדינה, ללגימות של שלווה.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-4 block">₪45</span>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-placeholder">🍷</div>
+                        <h3 class="text-2xl font-semibold mb-2 text-accent-gold">קנקן: כלי האירוח</h3>
+                        <p class="text-sm">לשתיה, למים, או ככלי נוי המזכיר ימים עברו.</p>
+                        <span class="text-xl font-bold text-accent-gold mt-4 block">₪120</span>
+                    </div>
+                </div>
+                <p class="text-sm mt-8 text-text-light opacity-80">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Custom Cursor Element -->
+    <div class="custom-cursor"></div>
+
+    <script>
+        const scrollContainer = document.querySelector('.scroll-container');
+        const sections = document.querySelectorAll('.scroll-section');
+        const navDots = document.querySelectorAll('.nav-dot');
+        const customCursor = document.querySelector('.custom-cursor');
+        const parallaxElements = document.querySelectorAll('[data-parallax-speed]');
+
+        let currentSectionIndex = 0;
+        let isScrolling = false; // Debounce flag for scroll events
+
+        // --- Custom Cursor Logic ---
+        document.addEventListener('mousemove', e => {
+            customCursor.style.left = `${e.clientX}px`;
+            customCursor.style.top = `${e.clientY}px`;
+        });
+
+        // Add 'hovered' class to cursor when over interactive elements
+        document.addEventListener('mouseover', e => {
+            if (e.target.closest('a, button, .nav-dot, .menu-item, .product-card')) {
+                customCursor.classList.add('hovered');
+            }
+        });
+
+        document.addEventListener('mouseout', e => {
+            if (e.target.closest('a, button, .nav-dot, .menu-item, .product-card')) {
+                customCursor.classList.remove('hovered');
+            }
+        });
+
+        // --- Parallax Logic ---
+        function applyParallax() {
+            const scrollTop = scrollContainer.scrollTop;
+            parallaxElements.forEach(el => {
+                const speed = parseFloat(el.dataset.parallaxSpeed);
+                el.style.transform = `translateY(${scrollTop * speed}px)`;
+            });
+        }
+        scrollContainer.addEventListener('scroll', applyParallax);
+        applyParallax(); // Apply parallax on initial load
+
+        // --- Section Activation & Navigation ---
+        // Function to smoothly scroll to a specific section
+        function scrollToSection(index) {
+            if (isScrolling || index < 0 || index >= sections.length) return;
+            isScrolling = true;
+            const targetSection = sections[index];
+            if (targetSection) {
+                scrollContainer.scrollTo({
+                    top: targetSection.offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+            // Debounce scroll for a duration
+            setTimeout(() => { isScrolling = false; }, 1000); // Adjust duration as needed
+        }
+
+        // Add click listeners to navigation dots
+        navDots.forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                const targetIndex = parseInt(e.target.dataset.targetSection);
+                scrollToSection(targetIndex);
+            });
+        });
+
+        // Initialize first section as active
+        sections[currentSectionIndex].classList.add('active');
+        navDots[currentSectionIndex].classList.add('active');
+
+        // Intersection Observer for detecting visible sections and updating navigation
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const index = Array.from(sections).indexOf(entry.target);
+                    if (index !== -1 && index !== currentSectionIndex) {
+                        // Deactivate previous
+                        sections[currentSectionIndex].classList.remove('active');
+                        navDots[currentSectionIndex].classList.remove('active');
+                        // Activate new
+                        currentSectionIndex = index;
+                        sections[currentSectionIndex].classList.add('active');
+                        navDots[currentSectionIndex].classList.add('active');
+                    }
+                }
+            });
+        }, {
+            threshold: 0.7 // Section is considered active when 70% visible
+        });
+
+        // Observe each section
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

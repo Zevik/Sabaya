@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - ציור חי של טעם וטבע</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'uki-dark': '#1a1a1a', // Deep charcoal/black
+                        'uki-brown': '#4a3a2a', // Rich, earthy brown
+                        'uki-green': '#2e4a2e', // Deep forest green
+                        'uki-gold': '#b58e4d',  // Muted gold/ochre
+                        'uki-cream': '#f8f4e1', // Off-white/cream
+                        'uki-red': '#8e2e2e',   // Deep, muted red
+                    },
+                    fontFamily: {
+                        display: ['"Frank Ruhl Libre"', 'serif'],
+                        body: ['Rubik', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                        'slide-up': 'slideUp 0.8s ease-out forwards',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            cursor: none; /* Hide default cursor */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Frank Ruhl Libre', serif;
+        }
+
+        /* Custom Cursor */
+        #custom-cursor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999; /* Higher than anything else */
+            border: 2px solid #FFFFFF; /* Visible on dark */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Visible on light */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s ease, height 0.2s ease, border-width 0.2s ease;
+        }
+        a:hover ~ #custom-cursor, button:hover ~ #custom-cursor, .interactive:hover ~ #custom-cursor {
+            width: 32px;
+            height: 32px;
+            border-width: 3px;
+        }
+
+        /* Parallax Background Layers - Ukiyo-e inspired abstract shapes */
+        .parallax-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-size: cover;
+            background-position: center;
+            will-change: transform;
+        }
+        /* Specific layers */
+        .layer-1 { z-index: -5; } /* Furthest back */
+        .layer-2 { z-index: -4; }
+        .layer-3 { z-index: -3; }
+        .layer-4 { z-index: -2; } /* Closest to content */
+
+        /* Scroll to top button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem; /* Adjusted for RTL */
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            cursor: none; /* Managed by custom cursor */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .scroll-to-top.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-uki-dark text-uki-cream font-body overflow-x-hidden">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+
+    <!-- Parallax Background Layers for Hero Section -->
+    <div id="parallax-layer-1" class="parallax-layer layer-1 bg-gradient-to-br from-uki-dark to-uki-brown opacity-80" aria-hidden="true"></div>
+    <!-- Abstract mountain/hill shapes using SVG data URIs, darker for depth -->
+    <div id="parallax-layer-2" class="parallax-layer layer-2" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%232e4a2e"><path d="M0 70 L20 60 L40 75 L60 65 L80 80 L100 70 V100 H0 Z" opacity="0.4"/></svg>'); background-size: cover; opacity: 0.6;" aria-hidden="true"></div>
+    <div id="parallax-layer-3" class="parallax-layer layer-3" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%234a3a2a"><path d="M0 85 L30 70 L70 90 L100 75 V100 H0 Z" opacity="0.3"/></svg>'); background-size: cover; opacity: 0.5;" aria-hidden="true"></div>
+    <!-- Subtle abstract elements like floating circles for a "floating world" feel -->
+    <div id="parallax-layer-4" class="parallax-layer layer-4" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23b58e4d"><circle cx="10" cy="80" r="5" opacity="0.2"/><circle cx="90" cy="70" r="8" opacity="0.2"/><circle cx="50" cy="95" r="3" opacity="0.2"/></svg>'); background-size: cover; opacity: 0.4;" aria-hidden="true"></div>
+
+
+    <!-- Main Content Wrapper -->
+    <div class="relative z-10 min-h-screen">
+
+        <!-- Header - Navigation -->
+        <header class="fixed top-0 w-full bg-uki-dark bg-opacity-80 backdrop-blur-sm z-50 shadow-lg py-4 px-8 md:px-16 border-b border-uki-green">
+            <nav class="flex justify-between items-center max-w-7xl mx-auto">
+                <a href="#hero" class="text-3xl font-display text-uki-gold hover:text-uki-cream transition-colors duration-300 interactive">סבאיה</a>
+                <ul class="flex space-x-reverse space-x-6 text-lg md:text-xl font-body">
+                    <li><a href="#hero" class="hover:text-uki-gold transition-colors duration-300 interactive">בית</a></li>
+                    <li><a href="#menu" class="hover:text-uki-gold transition-colors duration-300 interactive">תפריט</a></li>
+                    <li><a href="#wood-products" class="hover:text-uki-gold transition-colors duration-300 interactive">כפית עץ</a></li>
+                    <li><a href="#ceramic-products" class="hover:text-uki-gold transition-colors duration-300 interactive">מוצרי קרמיקה</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section id="hero" class="relative flex items-center justify-center min-h-screen text-center py-24 md:py-32 px-4 overflow-hidden">
+            <div class="absolute inset-0 bg-uki-dark opacity-50 z-[-1]" aria-hidden="true"></div> <!-- Overlay for text contrast -->
+            <div class="z-10 max-w-3xl animate-fade-in delay-300">
+                <h1 class="text-5xl md:text-7xl font-display font-bold text-uki-gold mb-6 leading-tight">
+                    סבאיה - מקדש לחושים,<br> ציור חי של טעם וטבע
+                </h1>
+                <p class="text-xl md:text-2xl text-uki-cream mb-10 leading-relaxed max-w-2xl mx-auto">
+                    כאן, ריח הקפה הטרי מתערבב עם שירת העצים, וכל רגע הוא יצירה מתגלה.
+                </p>
+                <a href="#about" class="inline-block bg-uki-green text-uki-cream text-xl md:text-2xl font-display py-4 px-8 rounded-full shadow-lg hover:bg-uki-gold hover:text-uki-dark transition-all duration-300 interactive transform hover:scale-105">
+                    חקור את עולמנו
+                </a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="relative min-h-screen bg-uki-cream text-uki-dark py-20 px-8 md:px-16 flex items-center justify-center shadow-inner-lg">
+            <div class="relative z-10 max-w-4xl mx-auto text-center md:text-right animate-slide-up">
+                <h2 class="text-4xl md:text-5xl font-display text-uki-brown mb-8 relative inline-block">
+                    <span class="z-10 relative">ברוכים הבאים לסבאיה</span>
+                    <span class="absolute bottom-0 right-0 w-full h-2 bg-uki-gold opacity-50 z-0 transform translate-y-2" aria-hidden="true"></span>
+                </h2>
+                <p class="text-lg md:text-xl leading-relaxed mb-6">
+                    נמל של שלווה בלב המשתלה. כאן, בין עלי כותרת לבין ניחוחות אדמה, אנחנו יוצרים חוויה שהיא יותר מסתם כוס קפה - היא מסע. כל פינה מספרת סיפור, כל לגימה פותחת צוהר לעולם של טעם ואמנות. יופי הטבע עוטף את יצירות האדם, והשראה פורחת בכל מבט.
+                </p>
+                <div class="grid md:grid-cols-3 gap-8 mt-12 text-center">
+                    <div class="p-6 bg-white rounded-lg shadow-xl border border-uki-green transform hover:scale-105 transition-transform interactive">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-uki-gold rounded-full flex items-center justify-center text-uki-dark text-3xl" aria-hidden="true">☕</div>
+                        <h3 class="text-2xl font-display text-uki-brown mb-2">קפה איכותי</h3>
+                        <p class="text-uki-dark">פולי קפה נבחרים, נקלים באהבה. כל כוס - חוויה.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-xl border border-uki-green transform hover:scale-105 transition-transform interactive">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-uki-green rounded-full flex items-center justify-center text-uki-cream text-3xl" aria-hidden="true">🌿</div>
+                        <h3 class="text-2xl font-display text-uki-brown mb-2">אווירה טבעית</h3>
+                        <p class="text-uki-dark">ישיבה פסטורלית בין צמחים פורחים, שלווה ירוקה.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-xl border border-uki-green transform hover:scale-105 transition-transform interactive">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-uki-red rounded-full flex items-center justify-center text-uki-cream text-3xl" aria-hidden="true">🎨</div>
+                        <h3 class="text-2xl font-display text-uki-brown mb-2">מוצרים ייחודיים</h3>
+                        <p class="text-uki-dark">פריטי עץ וקרמיקה בעבודת יד, נשמה של אמן.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Ukiyo-e styled background elements for about section -->
+            <div class="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none" aria-hidden="true" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23b58e4d"><path d="M0 0 L10 10 L0 20 Z" /><path d="M100 0 L90 10 L100 20 Z" /><path d="M50 0 L40 5 L60 5 L50 0 Z" /></svg>'); background-repeat: repeat; background-size: 50px;"></div>
+            <div class="absolute bottom-[-50px] left-0 w-full h-32 bg-gradient-to-t from-uki-dark to-transparent" aria-hidden="true"></div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="relative bg-uki-dark text-uki-cream py-20 px-8 md:px-16">
+            <div class="max-w-6xl mx-auto animate-fade-in delay-500">
+                <h2 class="text-4xl md:text-5xl font-display text-uki-gold text-center mb-12 relative">
+                    <span class="z-10 relative">התפריט שלנו</span>
+                    <span class="absolute bottom-0 right-1/2 translate-x-1/2 w-full max-w-[200px] h-2 bg-uki-green opacity-50 z-0 transform translate-y-2" aria-hidden="true"></span>
+                </h2>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+
+                    <!-- אוכל -->
+                    <div class="col-span-full mb-8 text-center">
+                        <h3 class="text-3xl font-display text-uki-red mb-4 mt-8 relative inline-block">
+                            <span class="z-10 relative">מנות מיוחדות</span>
+                            <span class="absolute bottom-0 right-0 w-full h-1 bg-uki-gold opacity-50 z-0 transform translate-y-1" aria-hidden="true"></span>
+                        </h3>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">כריך סבביח - מסע טעמים ים-תיכוני</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">ביצה קשה, טונה עסיסית, חציל קלוי, מטבוחה ביתית, מלפפון חמוץ ולימון כבוש. מוגש עם זיתים וסלט אישי – נשמה של שוק.</p>
+                        <span class="text-xl font-body text-uki-gold">₪36</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-100">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">כריך פנסיבאיה - יוקרה טבעונית</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">פטריות מוקפצות עם כמהין, גבינות שמנת וגראנה פדאנו, רוקט ובלסמי. מוגש עם זיתים וסלט אישי – חוויה קולינרית.</p>
+                        <span class="text-xl font-body text-uki-gold">₪45</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-200">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">כריך טבעוני - הרמוניה של טבע</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">ממרח חציל שחור, גבינת סויה, עגבניות מיובשות ורוקט. מוגש עם זיתים וסלט אישי – טעם של בריאות.</p>
+                        <span class="text-xl font-body text-uki-gold">₪45</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-300">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">פלטת גבינות ולחמים - יצירת אמנות כפרית</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">מבחר גבינות בוטיק, לחמים חמים, חמאה מוקצפת, טחינה יוגורט וריבה עשירה. חגיגה לעיניים ולחיך.</p>
+                        <span class="text-xl font-body text-uki-gold">₪68</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-400">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">סלט במבי - סיפור יער קסום</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">חסות רעננות, בצל סגול, תפוח ירוק פריך, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר – טעם של הפתעה.</p>
+                        <span class="text-xl font-body text-uki-gold">₪36</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-500">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">סלט חלבון - אנרגיה מהטבע</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון – מזין וטעים.</p>
+                        <span class="text-xl font-body text-uki-gold">₪32</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-600">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">מוזלי מור - בוקר של פינוק</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">יוגורט פרו עשיר, חצילים קלויים, ביצה קשה, טחינה, גרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש. מוגש עם פיתה קראנץ' – חוויה ייחודית.</p>
+                        <span class="text-xl font-body text-uki-gold">₪42</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-700">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">קערת אסאי - רעננות טרופית</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">עם גרנולה פריכה, שבבי קוקוס עדינים ופרי העונה הטרי ביותר – בריאות וטעם בביס אחד.</p>
+                        <span class="text-xl font-body text-uki-gold">₪39</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-800">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">קיש (ברוקולי/פטריות/בצל ויין לבן) - חום ביתי</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">מאפה פריך ועשיר במילויים משתנים, מוגש עם סלט אישי ושמנת חמוצה – מנחם וטעים.</p>
+                        <span class="text-xl font-body text-uki-gold">₪37</span>
+                    </div>
+
+                    <!-- מתוקים -->
+                    <div class="col-span-full mb-8 text-center">
+                        <h3 class="text-3xl font-display text-uki-red mb-4 mt-8 relative inline-block">
+                            <span class="z-10 relative">מתיקות נחבאת</span>
+                            <span class="absolute bottom-0 right-0 w-full h-1 bg-uki-gold opacity-50 z-0 transform translate-y-1" aria-hidden="true"></span>
+                        </h3>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">קוראסון שוקולד גדול</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">פריך מבחוץ, נימוח מבפנים, עשיר בשוקולד – קלאסיקה צרפתית.</p>
+                        <span class="text-xl font-body text-uki-gold">₪19</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-100">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">קוראסון שקדים/פיסטוק גדול</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">מילוי עשיר וטעם אגוזי – פינוק אמיתי לחיך.</p>
+                        <span class="text-xl font-body text-uki-gold">₪22</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-200">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">עוגה בחושה בננה ושוקולד</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">שילוב קלאסי ומושלם של מתיקות טבעית ומרירות שוקולד עדינה.</p>
+                        <span class="text-xl font-body text-uki-gold">₪15</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-300">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">פאי תפוחים קרמבל</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">תפוחים רכים ברוטב קרמל, בציפוי קרמבל פריך. מוגש עם כדור גלידה – חלום חורפי.</p>
+                        <span class="text-xl font-body text-uki-gold">₪44</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-400">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">פאי מרנג לימון</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">חמוץ-מתוק, מרנג אוורירי על בסיס לימוני מרענן – חוויה מתוקה וקלילה.</p>
+                        <span class="text-xl font-body text-uki-gold">₪31</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-500">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">אוראו צ'יז קייק</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">שילוב מנצח של עוגת גבינה עשירה עם עוגיות אוראו פריכות – התמכרות מובטחת.</p>
+                        <span class="text-xl font-body text-uki-gold">₪38</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-600">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">קראנץ' סניקרס</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">שכבות של שוקולד, בוטנים וקרמל בביס אחד – מתוק, מלוח ופריך.</p>
+                        <span class="text-xl font-body text-uki-gold">₪23</span>
+                    </div>
+
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-700">
+                        <h4 class="text-2xl font-display text-uki-cream mb-2">עוגת שילה</h4>
+                        <p class="text-uki-cream text-opacity-80 mb-4">עוגה מיוחדת ובעלת שם, מתכון סודי וטעם בלתי נשכח – הפתעה אמיתית.</p>
+                        <span class="text-xl font-body text-uki-gold">₪44</span>
+                    </div>
+
+                </div>
+
+                <p class="text-center text-uki-cream text-opacity-70 mt-12 text-sm">
+                    לשאלות והזמנות, אנא פנו אלינו בבית הקפה
+                    <br>
+                    כל המחירים בשקלים חדשים ועשויים להשתנות
+                </p>
+            </div>
+        </section>
+
+        <!-- Wood Products Section -->
+        <section id="wood-products" class="relative bg-uki-cream text-uki-dark py-20 px-8 md:px-16">
+            <div class="max-w-6xl mx-auto animate-fade-in delay-600">
+                <h2 class="text-4xl md:text-5xl font-display text-uki-brown text-center mb-12 relative">
+                    <span class="z-10 relative">כפית עץ - מגע של טבע ביד</span>
+                    <span class="absolute bottom-0 right-1/2 translate-x-1/2 w-full max-w-[250px] h-2 bg-uki-gold opacity-50 z-0 transform translate-y-2" aria-hidden="true"></span>
+                </h2>
+                <p class="text-lg md:text-xl leading-relaxed mb-12 text-center max-w-3xl mx-auto">
+                    אוסף ייחודי של כלי עץ, מגולפים באהבה ומחשבה. כל כפית, כל צנצנת – נושאת בתוכה את נשמת העץ והיד היוצרת. מתנות בעלות משמעות, לבית או לנפש. כל מוצר עשוי מחומרים טבעיים וידידותיים לסביבה.
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-10">
+                    <div class="bg-white p-6 rounded-lg shadow-xl border border-uki-brown transform hover:scale-105 transition-transform interactive animate-slide-up">
+                        <div class="w-full h-48 bg-uki-dark mb-4 rounded-md flex items-center justify-center text-uki-gold text-6xl" role="img" aria-label="תמונה להמחשה: בקבוקי שתיה מעץ">🌳</div>
+                        <h3 class="text-2xl font-display text-uki-brown mb-2">בקבוקי שתיה - יצירה אקולוגית</h3>
+                        <p class="text-uki-dark text-opacity-80 mb-4">חוויה של שתיה נקייה, עשויה מעץ טבעי, שומרת על טעם וטמפרטורה.</p>
+                        <span class="text-xl font-body text-uki-gold">₪89</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-xl border border-uki-brown transform hover:scale-105 transition-transform interactive animate-slide-up delay-100">
+                        <div class="w-full h-48 bg-uki-dark mb-4 rounded-md flex items-center justify-center text-uki-gold text-6xl" role="img" aria-label="תמונה להמחשה: צנצנות עץ קטנות">🌰</div>
+                        <h3 class="text-2xl font-display text-uki-brown mb-2">צנצנות קטנות - אוצרות הטבע</h3>
+                        <p class="text-uki-dark text-opacity-80 mb-4">לשמור תבלינים או סודות, בכל בית הן תוספנה חן וקסם.</p>
+                        <span class="text-xl font-body text-uki-gold">₪45</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-xl border border-uki-brown transform hover:scale-105 transition-transform interactive animate-slide-up delay-200">
+                        <div class="w-full h-48 bg-uki-dark mb-4 rounded-md flex items-center justify-center text-uki-gold text-6xl" role="img" aria-label="תמונה להמחשה: צנצנות עץ גדולות">🌳</div>
+                        <h3 class="text-2xl font-display text-uki-brown mb-2">צנצנות גדולות - יופי שימושי</h3>
+                        <p class="text-uki-dark text-opacity-80 mb-4">לאחסון יצירתי, לחמים או עוגיות, מביאות את הטבע למטבח.</p>
+                        <span class="text-xl font-body text-uki-gold">₪75</span>
+                    </div>
+                </div>
+
+                <p class="text-center text-uki-dark text-opacity-70 mt-12 text-sm">
+                    לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון
+                </p>
+            </div>
+        </section>
+
+        <!-- Ceramic Products Section -->
+        <section id="ceramic-products" class="relative bg-uki-dark text-uki-cream py-20 px-8 md:px-16">
+            <div class="max-w-6xl mx-auto animate-fade-in delay-700">
+                <h2 class="text-4xl md:text-5xl font-display text-uki-gold text-center mb-12 relative">
+                    <span class="z-10 relative">מוצרי קרמיקה - אדמה שהופכת לאמנות</span>
+                    <span class="absolute bottom-0 right-1/2 translate-x-1/2 w-full max-w-[280px] h-2 bg-uki-green opacity-50 z-0 transform translate-y-2" aria-hidden="true"></span>
+                </h2>
+                <p class="text-lg md:text-xl leading-relaxed mb-12 text-center max-w-3xl mx-auto">
+                    כלי קרמיקה בעבודת יד איכותית, עם ציפוי טבעי בגוני אדמה חמים. כל פריט – עדות לכוח היצירה, מביא חום ונועם לכל פינה בבית. מתאימים לשימוש יומיומי ומוסיפים אווירה חמה לכל בית.
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-10">
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up">
+                        <div class="w-full h-48 bg-uki-dark mb-4 rounded-md flex items-center justify-center text-uki-red text-6xl" role="img" aria-label="תמונה להמחשה: כוס קרמיקה גדולה">☕</div>
+                        <h3 class="text-2xl font-display text-uki-cream mb-2">כוס גדולה - לחווית שתיה מושלמת</h3>
+                        <p class="text-uki-cream text-opacity-80 mb-4">חזקה ועמידה, מיועדת לקפה גדול או תה צמחים, מחזיקה חום לאורך זמן.</p>
+                        <span class="text-xl font-body text-uki-gold">₪65</span>
+                    </div>
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-100">
+                        <div class="w-full h-48 bg-uki-dark mb-4 rounded-md flex items-center justify-center text-uki-red text-6xl" role="img" aria-label="תמונה להמחשה: כוס קרמיקה קטנה">🍵</div>
+                        <h3 class="text-2xl font-display text-uki-cream mb-2">כוס קטנה - לביטוי אישי</h3>
+                        <p class="text-uki-cream text-opacity-80 mb-4">אידיאלית לאספרסו, תה קטן או סתם כפריט עיצובי, משלימה כל שולחן.</p>
+                        <span class="text-xl font-body text-uki-gold">₪45</span>
+                    </div>
+                    <div class="bg-uki-brown p-6 rounded-lg shadow-xl border border-uki-gold transform hover:scale-105 transition-transform interactive animate-slide-up delay-200">
+                        <div class="w-full h-48 bg-uki-dark mb-4 rounded-md flex items-center justify-center text-uki-red text-6xl" role="img" aria-label="תמונה להמחשה: קנקן קרמיקה">🏺</div>
+                        <h3 class="text-2xl font-display text-uki-cream mb-2">קנקן - סיפור של אירוח</h3>
+                        <p class="text-uki-cream text-opacity-80 mb-4">קנקן מעוצב בקפידה, מושלם למזיגה, עם אחיזה נוחה וגימור חלק.</p>
+                        <span class="text-xl font-body text-uki-gold">₪120</span>
+                    </div>
+                </div>
+
+                <p class="text-center text-uki-cream text-opacity-70 mt-12 text-sm">
+                    לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-uki-dark text-uki-cream py-12 px-8 md:px-16 text-center border-t border-uki-green">
+            <p class="text-lg mb-4 font-display">סבאיה - איפה שהטבע והאמנות נפגשים.</p>
+            <p class="text-sm text-uki-cream text-opacity-70">כל הזכויות שמורות &copy; 2023</p>
+            <div class="mt-6 flex justify-center space-x-reverse space-x-6 text-2xl">
+                <a href="#" class="hover:text-uki-gold transition-colors duration-300 interactive" aria-label="פייסבוק">📘</a>
+                <a href="#" class="hover:text-uki-gold transition-colors duration-300 interactive" aria-label="אינסטגרם">📸</a>
+                <a href="#" class="hover:text-uki-gold transition-colors duration-300 interactive" aria-label="טלפון">📞</a>
+            </div>
+        </footer>
+
+        <!-- Scroll to top button -->
+        <button id="scrollToTopBtn" class="scroll-to-top bg-uki-gold text-uki-dark p-3 rounded-full shadow-lg interactive" aria-label="חזור למעלה">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+        </button>
+
+    </div> <!-- End Main Content Wrapper -->
+
+    <script>
+        // Custom Cursor Logic
+        const customCursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', e => {
+            customCursor.style.left = `${e.clientX}px`;
+            customCursor.style.top = `${e.clientY}px`;
+        });
+
+        // Parallax Effect Logic
+        const heroSection = document.getElementById('hero');
+        const parallaxLayers = [
+            { element: document.getElementById('parallax-layer-1'), speed: 0.1 },
+            { element: document.getElementById('parallax-layer-2'), speed: 0.2 },
+            { element: document.getElementById('parallax-layer-3'), speed: 0.3 },
+            { element: document.getElementById('parallax-layer-4'), speed: 0.4 }
+        ];
+
+        function applyParallax() {
+            const scrollPos = window.pageYOffset;
+            parallaxLayers.forEach(layer => {
+                if (layer.element) { // Ensure element exists
+                    layer.element.style.transform = `translateY(${scrollPos * layer.speed}px)`;
+                }
+            });
+        }
+
+        window.addEventListener('scroll', applyParallax);
+        window.addEventListener('resize', applyParallax); // Recalculate on resize
+        applyParallax(); // Initial call to set position
+
+        // Smooth Scrolling for Navigation Links
+        document.querySelectorAll('nav a[href^="#"], a[href^="#about"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Scroll to Top Button Logic
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) { // Show button after scrolling 300px
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>

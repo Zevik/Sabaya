@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - פואנטיליזם של טעם וטבע</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Rubik (for body and general text) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS for Pointillism Effect and general styles */
+        :root {
+            --point-color-1: rgba(181, 137, 85, 0.08); /* earthy light brown */
+            --point-color-2: rgba(94, 119, 90, 0.06); /* muted green */
+            --point-color-3: rgba(255, 250, 240, 0.1); /* very light cream */
+            --point-color-4: rgba(0, 0, 0, 0.04); /* subtle dark */
+        }
+
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #FFFDF8; /* A very light, almost off-white background */
+            color: #333;
+            overflow-x: hidden; /* Prevent horizontal scroll caused by cursor or overflow */
+            cursor: none; /* Hide default cursor */
+        }
+
+        /* The canvas for our pointillist background */
+        .pointillist-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            /* Multiple radial gradients to simulate dots of varying sizes and opacities */
+            background-image:
+                radial-gradient(circle at 20% 70%, var(--point-color-1) 1px, transparent 1px),
+                radial-gradient(circle at 80% 30%, var(--point-color-2) 1px, transparent 1px),
+                radial-gradient(circle at 50% 50%, var(--point-color-3) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 10% 10%, var(--point-color-4) 0.5px, transparent 0.5px),
+                radial-gradient(circle at 90% 90%, var(--point-color-1) 1px, transparent 1px),
+                radial-gradient(circle at 30% 60%, var(--point-color-2) 1.2px, transparent 1.2px),
+                radial-gradient(circle at 65% 15%, var(--point-color-3) 0.8px, transparent 0.8px);
+            background-size:
+                30px 30px, /* Smaller, denser dots */
+                45px 45px, /* Medium dots */
+                60px 60px, /* Larger, more spaced dots */
+                20px 20px, /* Tiny dots */
+                35px 35px,
+                50px 50px,
+                25px 25px;
+            animation: movePoints 180s linear infinite; /* Slow, continuous movement for an organic feel */
+        }
+
+        /* Keyframe animation for the background dots */
+        @keyframes movePoints {
+            from { background-position: 0 0; }
+            to { background-position: 1000vw 1000vh; } /* Very large movement for subtle, non-repeating effect */
+        }
+
+        /* High-Contrast Custom Cursor Styling */
+        .custom-cursor {
+            position: fixed;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            pointer-events: none; /* Allows clicks to pass through */
+            transition: transform 0.1s ease-out, background-color 0.1s ease-out;
+            z-index: 9999; /* Always on top */
+            /* MANDATORY high-contrast styling */
+            border: 2px solid #FFFFFF; /* Visible on dark backgrounds */
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.8); /* Visible on light backgrounds */
+            transform: translate(-50%, -50%); /* Center the cursor dot */
+        }
+
+        /* Cursor state on hover over interactive elements */
+        .custom-cursor.hovered {
+            transform: translate(-50%, -50%) scale(1.4); /* Slightly larger */
+            background-color: rgba(255, 255, 255, 0.2); /* Faint inner glow */
+            border-color: #b58955; /* Accent color for hover */
+            box-shadow: 0 0 0 2px rgba(94, 119, 90, 0.8), 0 0 15px rgba(255, 255, 255, 0.4); /* Enhanced shadow */
+        }
+
+        /* Custom Scrollbar Styling - part of the artistic expression */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #fdfaf5; /* Light cream */
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #b58955; /* Earthy brown accent */
+            border-radius: 10px;
+            border: 2px solid #fdfaf5;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a37c4c;
+        }
+
+        /* Pointillist-inspired card styling */
+        .pointillist-card {
+            background: #fdfaf5; /* Light cream background for content cards */
+            /* Layered shadows to simulate depth and a "dot" effect */
+            box-shadow: 0 0 0 2px rgba(181, 137, 85, 0.1),
+                        0 0 0 4px rgba(94, 119, 90, 0.05),
+                        0 0 0 6px rgba(255, 250, 240, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease-in-out; /* Smooth transitions */
+        }
+
+        .pointillist-card:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1),
+                        0 0 0 3px rgba(181, 137, 85, 0.2),
+                        0 0 0 6px rgba(94, 119, 90, 0.1); /* Enhanced shadow on hover */
+        }
+
+        /* Underline effect for titles, mimicking a stroke of color */
+        .pointillist-title {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+        }
+        .pointillist-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            /* Gradient for a more artistic underline */
+            background: linear-gradient(to left, #b58955, #5e775a); /* RTL: left for underline to grow from */
+            border-radius: 2px;
+            opacity: 0.7;
+        }
+        
+        /* Navigation link underline animation (RTL-aware) */
+        .nav-link-item {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link-item::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            right: 0; /* For RTL, underline grows from right */
+            width: 0%;
+            height: 2px;
+            background-color: #b58955; /* Earthy accent color */
+            transition: width 0.3s ease-out;
+        }
+        .nav-link-item:hover::after {
+            width: 100%; /* Underline expands on hover */
+        }
+
+        /* Stylized image placeholders with pointillist texture */
+        .image-placeholder {
+            width: 100%;
+            padding-bottom: 75%; /* Maintain 4:3 aspect ratio for visual consistency */
+            background-color: #e0dcd7; /* Base color for the "canvas" */
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-center: center;
+            font-size: 0.9rem;
+            color: #6d6a66;
+            text-align: center;
+            /* Pointillist texture for placeholders */
+            background-image:
+                radial-gradient(circle at 30% 40%, rgba(0,0,0,0.05) 1px, transparent 1px),
+                radial-gradient(circle at 70% 60%, rgba(255,255,255,0.1) 1px, transparent 1px),
+                radial-gradient(circle at 50% 20%, rgba(94, 119, 90, 0.03) 1px, transparent 1px);
+            background-size: 15px 15px, 20px 20px, 18px 18px;
+            animation: movePlaceholderPoints 60s linear infinite; /* Subtle movement */
+        }
+
+        @keyframes movePlaceholderPoints {
+            from { background-position: 0 0; }
+            to { background-position: 300vw 300vh; }
+        }
+
+        .image-placeholder-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            line-height: 1.4;
+        }
+
+        /* Menu item hover effect for a sense of interaction */
+        .menu-item-card {
+            transition: all 0.3s ease-in-out;
+            border-bottom: 1px solid rgba(0,0,0,0.05); /* Subtle separator */
+        }
+        .menu-item-card:hover {
+            background-color: #fdf6ed; /* Light highlight */
+            transform: scale(1.01); /* Slight zoom */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Soft shadow */
+            border-radius: 8px;
+        }
+        .menu-item-card:hover .text-lg.font-semibold {
+            color: #b58955; /* Highlight title on hover with accent color */
+        }
+    </style>
+</head>
+<body class="bg-amber-50 text-stone-800 antialiased leading-relaxed">
+    <!-- Custom Cursor Element -->
+    <div class="custom-cursor"></div>
+    <!-- Pointillist Background Effect -->
+    <div class="pointillist-background"></div>
+
+    <!-- Header Navigation - Fixed, blurring, and styled as part of the canvas -->
+    <header class="fixed top-0 left-0 w-full z-20 bg-amber-50/90 backdrop-blur-sm shadow-sm py-4 border-b border-amber-100">
+        <nav class="container mx-auto px-6 flex justify-between items-center">
+            <a href="#home" class="text-2xl font-extrabold text-emerald-800 hover:text-emerald-700 transition duration-300">סבאיה</a>
+            <ul class="flex space-x-reverse space-x-6 text-lg font-medium">
+                <li><a href="#home" class="nav-link-item text-stone-700 hover:text-stone-900">בית</a></li>
+                <li><a href="#menu" class="nav-link-item text-stone-700 hover:text-stone-900">תפריט</a></li>
+                <li><a href="#wood-products" class="nav-link-item text-stone-700 hover:text-stone-900">כפית עץ</a></li>
+                <li><a href="#ceramic-products" class="nav-link-item text-stone-700 hover:text-stone-900">מוצרי קרמיקה</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content Wrapper - Ensure it's above the background -->
+    <main class="relative z-10 pt-24 pb-12">
+        <!-- Home Section - A grand opening statement -->
+        <section id="home" class="container mx-auto px-6 py-20 min-h-screen flex items-center justify-center">
+            <div class="text-center max-w-4xl">
+                <h1 class="text-6xl md:text-7xl font-extrabold text-emerald-800 mb-8 leading-tight">
+                    <span class="pointillist-title">ברוכים הבאים לסבאיה</span><br>
+                    <span class="text-4xl md:text-5xl text-amber-800 block mt-4">פואנטיליזם של טעם וטבע</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-stone-700 leading-relaxed mb-10">
+                    בסבאיה, כל רגע הוא נקודת צבע בציור חי. בואו לגלות עולם שבו ניחוח קפה משתלב עם ירוק טרי, ויצירה אנושית פוגשת את יופיו הפשוט של הטבע. חוויה שכולה אמנות-חיים, פיקסל אחר פיקסל של אושר.
+                </p>
+                <a href="#menu" class="inline-block bg-amber-700 text-white text-xl px-10 py-4 rounded-full shadow-lg hover:bg-amber-600 transition duration-300 pointillist-card">
+                    לצפייה בתפריט האמנותי שלנו
+                </a>
+            </div>
+        </section>
+
+        <!-- About/Philosophy Section - Describing the artistic vision -->
+        <section id="about" class="container mx-auto px-6 py-20">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="pointillist-card p-8 bg-white/70 backdrop-blur-sm">
+                    <h2 class="text-5xl font-extrabold text-emerald-800 mb-6 pointillist-title">הפילוסופיה שלנו: אמנות יומיומית</h2>
+                    <p class="text-lg text-stone-700 mb-6">
+                        סבאיה אינה רק בית קפה במשתלה; היא גלריה חיה של חוויות. אנו מאמינים שכל פרט, מהפולים המשובחים שבכוס הקפה ועד לדפוס העדין במוצר הקרמיקה, הוא נקודה חיונית בסיפור שלם. אנו מזמינים אתכם להתמזג עם האווירה, לנשום את הטבע, ולטעום את היצירה.
+                    </p>
+                    <ul class="space-y-4 text-lg text-stone-600">
+                        <li class="flex items-center">
+                            <span class="text-emerald-600 text-2xl ml-3">🌿</span> קפה איכותי - כל לגימה היא גוון עשיר, תערובת מוקפדת של רגעים.
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-emerald-600 text-2xl ml-3">🌸</span> אווירה טבעית - ישיבה בחיק הטבע, פיקסלים ירוקים ופרחוניים מסביב.
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-emerald-600 text-2xl ml-3">🎨</span> מוצרים ייחודיים - יצירות עץ וקרמיקה שכל אחת מהן מספרת סיפור של צבע וצורה.
+                        </li>
+                    </ul>
+                </div>
+                <!-- Image placeholder, stylized as an art piece -->
+                <div class="image-placeholder aspect-w-4 aspect-h-3 h-auto p-4 flex flex-col items-center justify-center">
+                    <span class="text-4xl text-emerald-700 mb-2">🖼️</span>
+                    <span class="image-placeholder-text">קומפוזיציה טבעית - עציצים, שולחנות ורגעי השראה - כל אחד נקודה בציור</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section - Presenting dishes as edible art -->
+        <section id="menu" class="container mx-auto px-6 py-20">
+            <h2 class="text-5xl font-extrabold text-emerald-800 mb-12 text-center pointillist-title">התפריט שלנו: ציורי טעם</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Food Items Card -->
+                <div class="pointillist-card p-6 bg-white/70 backdrop-blur-sm col-span-full lg:col-span-2">
+                    <h3 class="text-3xl font-bold text-amber-800 mb-6 pointillist-title">אוכל ומתוקים</h3>
+                    <div class="space-y-6">
+                        <!-- Each menu item is a "stroke" or "dot" -->
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>כריך סבביח</span> <span class="text-amber-700">₪36</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                קומפוזיציה ים תיכונית: ביצה קשה, טונה, חציל, מטבוחה, מלפפון חמוץ ולימון כבוש. מוגש עם זיתים וסלט אישי - כל ביס הוא כתם צבע.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>כריך פנסיבאיה</span> <span class="text-amber-700">₪45</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                יצירת גורמה עדינה: פטריות מוקפצות עם כמהין, גבינות שמנת וגראנה פדאנו, רוקט ובלסמי. מוגש עם זיתים וסלט אישי - חוויה של טקסטורות עשירות.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>כריך טבעוני</span> <span class="text-amber-700">₪45</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                הרמוניה ירוקה: ממרח חציל שחור, גבינת סויה, עגבניות מיובשות ורוקט. מוגש עם זיתים וסלט אישי - טעמים ארציים ורעננים.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>פלטת גבינות ולחמים עם מטבלים</span> <span class="text-amber-700">₪68</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                קולאז' של גוונים וטעמים: חמאה מוקצפת מתובלת, טחינה יוגורט, ריבה - כל מטבל הוא פעימת צבע משלו.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>סלט במבי</span> <span class="text-amber-700">₪36</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                סלט צבעוני ומרענן: חסות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר - נקודות רעננות בצלחת.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>סלט חלבון</span> <span class="text-amber-700">₪32</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                מנת כוח מאוזנת: עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון - פיסול של בריאות.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>מוזלי מור</span> <span class="text-amber-700">₪42</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                קנבס יוגורט קרמי: חצילים קלויים, ביצה קשה, טחינה, וגרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש. מוגש עם פיתה קראנץ' - הפתעות בכל נקודה.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>קערת אסאי</span> <span class="text-amber-700">₪39</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                פלטת פירות טרופית: עם גרנולה פריכה, שבבי קוקוס ופרי העונה - רעננות טהורה.
+                            </p>
+                        </div>
+                         <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>קיש ברוקולי/פטריות/בצל ויין לבן</span> <span class="text-amber-700">₪37</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                מוגש עם סלט אישי ושמנת חמוצה - חמים ומנחם, כמו משיחת מכחול עדינה.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desserts Card (keeping the layout dynamic) -->
+                <div class="pointillist-card p-6 bg-white/70 backdrop-blur-sm">
+                    <h3 class="text-3xl font-bold text-amber-800 mb-6 pointillist-title">מתוקים</h3>
+                    <div class="space-y-6">
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>קוראסון שוקולד גדול</span> <span class="text-amber-700">₪19</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                שכבות פריכות ונגיעות שוקולד מריר - כל פירור הוא חוויה.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>קוראסון שקדים/פיסטוק גדול</span> <span class="text-amber-700">₪22</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                בצק עלים זהוב עם מילוי עשיר - אמנות של מאפים.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>עוגה בחושה בננה ושוקולד</span> <span class="text-amber-700">₪15</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                מתוקה ועסיסית, כמו פרי בשל בשיא יופיו.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>פאי תפוחים קרמבל</span> <span class="text-amber-700">₪44</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                מוגש עם כדור גלידה - חם וקר, פריך ורך, סימפוניה של ניגודים.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>פאי מרנג לימון</span> <span class="text-amber-700">₪31</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                חמוץ-מתוק, קליל ואוורירי - כמו ענן בשמי קיץ.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>אוראו צ'יז קייק</span> <span class="text-amber-700">₪38</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                שחור-לבן, עשיר ומפנק - קלאסיקה מודרנית.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>קראנץ' סניקרס</span> <span class="text-amber-700">₪23</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                ביסים מתוקים ומלוחים - אנרגיה טהורה.
+                            </p>
+                        </div>
+                        <div class="menu-item-card pb-4">
+                            <h4 class="text-lg font-semibold text-stone-800 flex justify-between items-baseline mb-1">
+                                <span>עוגת שילה</span> <span class="text-amber-700">₪44</span>
+                            </h4>
+                            <p class="text-sm text-stone-600">
+                                יצירה ייחודית, עשירה בטעמים ובמרקמים - סוד שף.
+                            </p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-stone-500 mt-8 text-center">
+                        לשאלות והזמנות, אנא פנו אלינו בבית הקפה. כל המחירים בשקלים חדשים ועשויים להשתנות.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wood Products Section - Wood as textured art -->
+        <section id="wood-products" class="container mx-auto px-6 py-20">
+            <h2 class="text-5xl font-extrabold text-emerald-800 mb-12 text-center pointillist-title">כפית עץ: חתיכות טבע בידכם</h2>
+            <p class="text-xl text-stone-700 mb-10 text-center max-w-3xl mx-auto">
+                מוצרי עץ איכותיים בעבודת יד, שכל אחד מהם הוא חלון לטבע. הגוונים, הטקסטורות והסיבים - כל נקודה בעץ מספרת סיפור של צמיחה, חום וחיבור לאדמה.
+            </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Wood Product 1 -->
+                <div class="pointillist-card p-6 bg-white/70 backdrop-blur-sm text-center">
+                    <div class="image-placeholder aspect-square mb-4">
+                        <span class="text-4xl text-amber-700">🌳</span>
+                        <span class="image-placeholder-text">בקבוקי שתיה - עץ מגולף</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-stone-800 mb-2">בקבוקי שתיה</h3>
+                    <p class="text-lg text-amber-700 mb-4">₪89</p>
+                    <p class="text-sm text-stone-600">
+                        קנבס טבעי למשקאות שלכם. כל בקבוק הוא יצירה יחידה במינה, נושם את סיפורו של העץ ממנו נוצר.
+                    </p>
+                </div>
+                <!-- Wood Product 2 -->
+                <div class="pointillist-card p-6 bg-white/70 backdrop-blur-sm text-center">
+                    <div class="image-placeholder aspect-square mb-4">
+                        <span class="text-4xl text-amber-700">🌿</span>
+                        <span class="image-placeholder-text">צנצנות קטנות - עץ מלוטש</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-stone-800 mb-2">צנצנות קטנות</h3>
+                    <p class="text-lg text-amber-700 mb-4">₪45</p>
+                    <p class="text-sm text-stone-600">
+                        אוסף נקודות של אחסון טבעי, קטנות וקסומות, מושלמות לתבלינים או סודות קטנים.
+                    </p>
+                </div>
+                <!-- Wood Product 3 -->
+                <div class="pointillist-card p-6 bg-white/70 backdrop-blur-sm text-center">
+                    <div class="image-placeholder aspect-square mb-4">
+                        <span class="text-4xl text-amber-700">🪵</span>
+                        <span class="image-placeholder-text">צנצנות גדולות - עץ גולמי</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-stone-800 mb-2">צנצנות גדולות</h3>
+                    <p class="text-lg text-amber-700 mb-4">₪75</p>
+                    <p class="text-sm text-stone-600">
+                        קווים ישרים וצורות עגולות, חלל נקי לשמירת אוצרות - כל צנצנת היא מיני-פסל.
+                    </p>
+                </div>
+            </div>
+            <p class="text-sm text-stone-500 mt-8 text-center">
+                לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.
+            </p>
+        </section>
+
+        <!-- Ceramic Products Section - Clay as an artistic medium -->
+        <section id="ceramic-products" class="container mx-auto px-6 py-20">
+            <h2 class="text-5xl font-extrabold text-emerald-800 mb-12 text-center pointillist-title">מוצרי קרמיקה: נקודות של אדמה</h2>
+            <p class="text-xl text-stone-700 mb-10 text-center max-w-3xl mx-auto">
+                מוצרי קרמיקה בעבודת יד, הנושאים את חתימת האדמה והיצירה האנושית. כל כלי הוא אוסף של גוונים, מגע של חום ורכות, והשתקפות של האמנות המצויה בחומר.
+            </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Ceramic Product 1 -->
+                <div class="pointillist-card p-6 bg-white/70 backdrop-blur-sm text-center">
+                    <div class="image-placeholder aspect-square mb-4">
+                        <span class="text-4xl text-emerald-700">☕</span>
+                        <span class="image-placeholder-text">כוס גדולה - גוני אדמה</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-stone-800 mb-2">כוס גדולה</h3>
+                    <p class="text-lg text-amber-700 mb-4">₪65</p>
+                    <p class="text-sm text-stone-600">
+                        קנבס לשתייה חמה או קרה, בעלת מראה ארצי חם - כל פרט בה הוא משיחת אצבע.
+                    </p>
+                </div>
+                <!-- Ceramic Product 2 -->
+                <div class="pointillist-card p-6 bg-white/70 backdrop-blur-sm text-center">
+                    <div class="image-placeholder aspect-square mb-4">
+                        <span class="text-4xl text-emerald-700">🍵</span>
+                        <span class="image-placeholder-text">כוס קטנה - מרקם עדין</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-stone-800 mb-2">כוס קטנה</h3>
+                    <p class="text-lg text-amber-700 mb-4">₪45</p>
+                    <p class="text-sm text-stone-600">
+                        פיסת אמנות קטנה, מושלמת לאספרסו או ספל תה - אוצר של רגעים.
+                    </p>
+                </div>
+                <!-- Ceramic Product 3 -->
+                <div class="pointillist-card p-6 bg-white/70 backdrop-blur-sm text-center">
+                    <div class="image-placeholder aspect-square mb-4">
+                        <span class="text-4xl text-emerald-700">🏺</span>
+                        <span class="image-placeholder-text">קנקן - יצוק באהבה</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-stone-800 mb-2">קנקן</h3>
+                    <p class="text-lg text-amber-700 mb-4">₪120</p>
+                    <p class="text-sm text-stone-600">
+                        קנקן קרמיקה אלגנטי, עם ציפוי טבעי - מוסיף נגיעת אמנות לכל שולחן.
+                    </p>
+                </div>
+            </div>
+            <p class="text-sm text-stone-500 mt-8 text-center">
+                לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.
+            </p>
+        </section>
+    </main>
+
+    <!-- Footer - A gentle closing statement -->
+    <footer class="bg-amber-100 text-stone-700 py-12 border-t border-amber-200 text-center">
+        <div class="container mx-auto px-6">
+            <p class="text-xl font-semibold mb-4">סבאיה - איפה הטבע והאמנות נפגשים.</p>
+            <p class="text-md mb-2">כתובת: המשתלה הירוקה, רחוב האמנים 10, עיר הקפה</p>
+            <p class="text-md mb-2">טלפון: 052-1234567</p>
+            <p class="text-md mb-4">שעות פתיחה: א'-ה' 08:00-18:00, ו' 08:00-14:00</p>
+            <p class="text-sm text-stone-500">
+                &copy; 2023 סבאיה. כל הזכויות שמורות. אמנות דיגיטלית מאת אמנים ללא גבולות.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Custom Cursor JavaScript for immersive interaction
+        const cursor = document.querySelector('.custom-cursor');
+        
+        // Update cursor position on mouse movement
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Add hover effect to interactive elements
+        document.querySelectorAll('a, button, .pointillist-card').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // Smooth scrolling for internal navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault(); // Prevent default anchor jump
+
+                // Scroll to the target section smoothly
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

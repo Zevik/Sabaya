@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - ציור דיגיטלי של טעם ואמנות</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Tailwind Configuration */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'IBM Plex Sans Hebrew', sans-serif;
+            cursor: none; /* Hide default cursor */
+            background-color: #0c0a09; /* Deep charcoal */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Goya-esque background */
+        .goya-bg {
+            background-image: linear-gradient(to bottom, rgba(12, 10, 9, 0.9) 0%, rgba(20, 15, 12, 0.8) 50%, rgba(12, 10, 9, 0.95) 100%), url('https://via.placeholder.com/1920x1080/1c1917/3b3b3b?text=Ancient+Landscape'); /* Dark, earthy gradient over placeholder */
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        /* High-Contrast Custom Cursor Styling - MANDATORY TECHNIQUE */
+        #custom-cursor {
+            position: fixed;
+            pointer-events: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            transition: transform 0.15s ease-out; /* Smooth movement and hover effect */
+            transform: translate(-50%, -50%); /* Center cursor on its point */
+            z-index: 9999; /* Always on top */
+            border: 2px solid #FFFFFF; /* Light border */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Dark, high-opacity shadow */
+        }
+        /* Cursor hover state for interactive elements */
+        a:hover + #custom-cursor,
+        button:hover + #custom-cursor,
+        .interactive:hover + #custom-cursor {
+            transform: translate(-50%, -50%) scale(1.5); /* Enlarge on hover */
+            border-color: #f5f5f4; /* Lighter shade */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8), 0 0 0 4px rgba(255, 255, 255, 0.2); /* Subtle glow */
+        }
+
+        /* Goya-inspired effects */
+        .goya-filter {
+            filter: grayscale(80%) sepia(30%) contrast(120%) brightness(80%);
+        }
+        .goya-shadow {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6), 0 -5px 10px rgba(0, 0, 0, 0.4);
+        }
+        .goya-text-shadow {
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+        }
+        /* Abstract brushstroke elements for parallax */
+        .goya-brushstroke {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.03); /* Very subtle light */
+            /* Add some texture/shape variability */
+            clip-path: polygon(10% 0%, 100% 10%, 90% 100%, 0% 90%);
+        }
+        .goya-brushstroke-dark {
+            background-color: rgba(0, 0, 0, 0.1);
+            clip-path: polygon(0% 20%, 80% 0%, 100% 80%, 20% 100%);
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-stone-300 antialiased overflow-x-hidden">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+
+    <!-- Background Layer (Goya-esque, fixed) -->
+    <div class="fixed inset-0 goya-bg z-[-1]"></div>
+
+    <!-- Main Content Wrapper -->
+    <div class="relative z-10 min-h-screen">
+
+        <!-- Header / Navigation -->
+        <header class="w-full py-6 px-4 md:px-8 bg-zinc-950/80 sticky top-0 z-50 goya-shadow">
+            <nav class="container mx-auto flex justify-between items-center max-w-7xl">
+                <a href="#home" class="text-3xl font-bold text-amber-600 hover:text-amber-500 transition-colors interactive goya-text-shadow">סבאיה</a>
+                <ul class="flex space-x-6 space-x-reverse text-lg">
+                    <li><a href="#home" class="text-stone-300 hover:text-amber-500 transition-colors interactive goya-text-shadow">בית</a></li>
+                    <li><a href="#menu" class="text-stone-300 hover:text-amber-500 transition-colors interactive goya-text-shadow">תפריט</a></li>
+                    <li><a href="#wood" class="text-stone-300 hover:text-amber-500 transition-colors interactive goya-text-shadow">כפית עץ</a></li>
+                    <li><a href="#ceramic" class="text-stone-300 hover:text-amber-500 transition-colors interactive goya-text-shadow">מוצרי קרמיקה</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Home Section -->
+        <section id="home" class="relative min-h-screen flex items-center justify-center text-center p-8 overflow-hidden">
+            <div class="absolute inset-0 flex flex-wrap opacity-10">
+                <!-- Goya-esque brushstroke patterns for parallax -->
+                <div class="goya-brushstroke top-1/4 left-1/4 w-32 h-20 rotate-12" data-parallax-speed="0.1"></div>
+                <div class="goya-brushstroke-dark bottom-1/3 right-1/3 w-24 h-16 -rotate-6" data-parallax-speed="0.2"></div>
+                <div class="goya-brushstroke top-1/2 left-1/2 w-48 h-32 rotate-45" data-parallax-speed="0.15"></div>
+            </div>
+
+            <div class="max-w-4xl mx-auto z-10 bg-zinc-900/60 p-12 rounded-lg goya-shadow border border-amber-800/30">
+                <h1 class="text-6xl md:text-8xl font-bold mb-6 text-amber-600 leading-tight goya-text-shadow">סבאיה: נשמת הקפה, עומק הטבע</h1>
+                <p class="text-xl md:text-2xl mb-8 text-stone-200 leading-relaxed goya-text-shadow">
+                    במקום שבו האור נשבר בין העלים הירוקים, והזמן שוקע בלחישות עתיקות, תמצאו את סבאיה - מקדש ארצי לטעמים עמוקים, אמנות חבויה, ושלווה שנרקמת בחוטים בלתי נראים. כאן, כל לגימה היא מסע, וכל יצירה מספרת סיפור.
+                </p>
+                <a href="#menu" class="inline-block bg-amber-700 hover:bg-amber-800 text-white font-bold py-4 px-8 rounded-full text-xl transition-all duration-300 transform hover:scale-105 interactive goya-shadow">
+                    חוו מסע - צפו בתפריט
+                </a>
+            </div>
+        </section>
+
+        <!-- Our Products / Philosophy Section -->
+        <section class="py-20 px-8 bg-zinc-900/70 border-t border-b border-amber-800/30 relative overflow-hidden">
+            <div class="absolute inset-0 flex flex-wrap opacity-10">
+                <div class="goya-brushstroke top-1/4 left-10 w-24 h-16 rotate-12 bg-amber-800/10" data-parallax-speed="0.1"></div>
+                <div class="goya-brushstroke-dark bottom-1/2 right-20 w-32 h-20 -rotate-6 bg-amber-800/10" data-parallax-speed="0.2"></div>
+            </div>
+            <div class="container mx-auto max-w-6xl text-center z-10">
+                <h2 class="text-5xl font-bold mb-12 text-amber-600 goya-text-shadow">צלילה לעומק: אמנות בחיים, חיים באמנות</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="bg-zinc-800/70 p-8 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <div class="text-5xl mb-4 text-amber-500">☕</div>
+                        <h3 class="text-3xl font-bold mb-4 text-stone-100 goya-text-shadow">סוד הקפה העתיק</h3>
+                        <p class="text-lg text-stone-300 leading-relaxed">
+                            פולי הקפה, נצר אדמה רחוקה, ניצלים כאן בלהט ובסבלנות, כל גרגר לוחש סיפור של מסע. משקה כהה, עמוק כליל, מעורר את הרוח ומטשטש את קווי הזמן.
+                        </p>
+                    </div>
+                    <div class="bg-zinc-800/70 p-8 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <div class="text-5xl mb-4 text-emerald-500">🌿</div>
+                        <h3 class="text-3xl font-bold mb-4 text-stone-100 goya-text-shadow">נשימת המשתלה</h3>
+                        <p class="text-lg text-stone-300 leading-relaxed">
+                            בין שתילי אדמה חיים ועלים רוחשים, מוצאת הנפש מרגוע. האוויר כאן ספוג בניחוחות של צמיחה, מבטיח מנוחה והשראה, כמו יצירה שבוראת את עצמה מחדש בכל רגע.
+                        </p>
+                    </div>
+                    <div class="bg-zinc-800/70 p-8 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <div class="text-5xl mb-4 text-amber-700">🏺</div>
+                        <h3 class="text-3xl font-bold mb-4 text-stone-100 goya-text-shadow">הנגיעה האנושית</h3>
+                        <p class="text-lg text-stone-300 leading-relaxed">
+                            מוצרי עץ וקרמיקה, עדות לחוכמת הידיים. כל כפית, כל כוס, ספוגה בזיכרון של עבודה עמלנית, שיקוף של יופי ראשוני, שביר אך נצחי, כמו קולו של האמן בתוך החומר.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="py-20 px-8 relative overflow-hidden">
+             <div class="absolute inset-0 flex flex-wrap opacity-10">
+                <div class="goya-brushstroke top-1/3 left-1/3 w-48 h-32 -rotate-15 bg-amber-800/10" data-parallax-speed="0.2"></div>
+                <div class="goya-brushstroke-dark bottom-1/4 right-1/4 w-40 h-28 rotate-10 bg-amber-800/10" data-parallax-speed="0.1"></div>
+            </div>
+            <div class="container mx-auto max-w-7xl z-10">
+                <h2 class="text-5xl font-bold text-center mb-16 text-amber-600 goya-text-shadow">התפריט: פיסות של מציאות וחלום</h2>
+
+                <!-- Tabs Navigation -->
+                <div class="flex justify-center mb-12">
+                    <button class="menu-tab text-xl md:text-2xl font-semibold px-8 py-3 mx-2 rounded-full bg-amber-700 text-white hover:bg-amber-800 transition-colors interactive goya-shadow" data-tab="food">אוכל ומתוקים</button>
+                    <button class="menu-tab text-xl md:text-2xl font-semibold px-8 py-3 mx-2 rounded-full bg-zinc-800 text-stone-300 hover:bg-amber-800 hover:text-white transition-colors interactive goya-shadow" data-tab="drinks">שתיה</button>
+                </div>
+
+                <!-- Food & Sweets Menu -->
+                <div id="food-menu" class="menu-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">כריך סבביח: זעקת האדמה</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            ביצה קשה, טונה, חציל שחום, מטבוחה לוהטת, מלפפון חמוץ ולימון כבוש - נארזים לכדי נשנוש, מוגש לצד זיתים שחורים וסלט אישי, כאילו יצאו מציור של לוחמים.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪36</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">כריך פנסיבאיה: הד לחיים</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            פטריות המוקפצות בעדינות כמהין, גבינות שמנת וגראנה פדאנו משתלבות עם רוקט חריף ובלסמי - מעדן קורן, מוגש עם זיתים וסלט קטן.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪45</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">כריך טבעוני: סוד הצומח</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            ממרח חציל שחור ועמוק, גבינת סויה, עגבניות מיובשות שנושמות שמש ורוקט רענן - טעם של טבע שאין שני לו, עם זיתים וסלט אישי.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪45</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">פלטת גבינות ולחמים: הילת הנחמה</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            גבינות נבחרות ולחמים טריים, מוגשים עם חמאה מוקצפת מתובלת, טחינה יוגורט וריבה ביתית - סעודה קטנה, כמו נחמה בעידן של חושך.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪68</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">סלט במבי: ריקוד העלים</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            חסות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר - ריקוד צבעוני של טעמים, עם פטה ורוטב נדיר, כמו יצירה בתוך הכאוס.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪36</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">סלט חלבון: כוח האדמה</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון - חוסן פנימי בצלחת, כמו עמוד תווך עתיק.
+                        </p>
+                        <span class="2xl font-semibold text-amber-500">₪32</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">מוזלי מור: המבוך הארצי</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            יוגורט פרו, חצילים קלויים, ביצה קשה, טחינה, גרעיני דלעת - מבוך של טעמים, מתובל באריסה מתוקה ולימון כבוש, מוגש עם פיתה קראנץ'.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪42</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">קערת אסאי: פרי קסום</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            אסאי קפוא, גרנולה פריכה, שבבי קוקוס מתוקים ופירות העונה - צבעוניות מתפרצת, כמו חלום בתוך יצירת אמנות כהה.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪39</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">קיש ברוקולי/פטריות/בצל: הביתה</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            מבחר קישים אפויים, מוגשים עם סלט אישי ושמנת חמוצה - חמימות ביתית, נחמה פשוטה בתוך עולם משתנה.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪37</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">קוראסון שוקולד גדול: חטא מתוק</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            הבצק הזהוב, השוקולד הנוזל - חטא קטן של תענוג, רגע מתוק המבטיח לשכוח צרות.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪19</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">קוראסון שקדים/פיסטוק גדול: נגיעת מזרח</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            פריכות שקדים או עושר פיסטוק - נגיעה מן המזרח, מפגש תרבויות בחך.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪22</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">עוגה בחושה בננה ושוקולד: תמימות כהה</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            שילוב קלאסי של בננה בשלה ושוקולד מריר - תמימות שמתגלה במתיקות עמוקה.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪15</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">פאי תפוחים קרמבל: מיתוס מתוק</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            פאי תפוחים חמים וקרמבל פריך, מוגש עם כדור גלידה - מיתוס מתוק של בית וזיכרונות.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪44</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">פאי מרנג לימון: חמיצות מעודנת</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            חמיצות הלימון, מתיקות המרנג - איזון עדין, כמו הניגודים ביצירתו של מאסטר.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪31</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">אוראו צ'יז קייק: השטן שבלבן</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            השילוב המפתה של עוגיות אוראו וגבינה - יצירה מודרנית עם מגע של מיתוס.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪38</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">קראנץ' סניקרס: הפיתוי המלוח</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            שילוב של מתוק ומלוח, קרמל ובוטנים - פיתוי שקשה לעמוד בפניו, רגע של חוסר שליטה.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪23</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">עוגת שילה: מעמקי הנפש</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            עוגה בעלת שם מסתורי, שטעמיה נשארים בנפש זמן רב - כמו יצירה שמשאירה רושם נצחי.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪44</span>
+                    </div>
+                    <div class="md:col-span-2 lg:col-span-3 text-center text-stone-400 mt-8">
+                        <p class="text-lg">לשאלות והזמנות, אנא פנו אלינו בבית הקפה - דו-שיח של נשמות.</p>
+                        <p class="text-sm mt-2">כל המחירים בשקלים חדשים ועשויים להשתנות - כפי שמשתנים חיינו.</p>
+                    </div>
+                </div>
+
+                <!-- Drinks Menu (hidden by default) -->
+                <div id="drinks-menu" class="menu-content hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">אספרסו: היקיצה המרה</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            טיפת כוח טהורה, מרירות מעוררת, תחילתו של יום חדש או סופו של לילה ארוך.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪12 / ₪14</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">קפוצ'ינו: ענן של חום</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            קפה חם עם קצף חלב עשיר, חיבוק מנחם ברגע של בדידות.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪16 / ₪18</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">לאטה: רכות מלטפת</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            שילוב הרמוני של אספרסו וחלב מאודה, כמו משי על הלשון.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪16 / ₪19</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">שוקו חם: מתיקות נשכחת</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            זיכרון ילדות עוטף, מתיקות עזה שמחזירה את הנפש למקום של שלווה.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪17</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">תה צמחים: ריפוי שקט</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            מבחר חליטות צמחים, מרפא לגוף ולנפש, לחישה מהטבע.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪15</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-amber-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">מיצים טבעיים: חיים טהורים</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            מיצים סחוטים טרי, אנרגיה טהורה מן האדמה, צבעים חיים שמבטיחים תקווה.
+                        </p>
+                        <span class="text-2xl font-semibold text-amber-500">₪18</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wood Products Section -->
+        <section id="wood" class="py-20 px-8 bg-zinc-900/70 border-t border-b border-amber-800/30 relative overflow-hidden">
+             <div class="absolute inset-0 flex flex-wrap opacity-10">
+                <div class="goya-brushstroke top-1/2 left-0 w-64 h-48 -rotate-10 bg-emerald-800/10" data-parallax-speed="0.2"></div>
+                <div class="goya-brushstroke-dark bottom-0 right-1/4 w-56 h-40 rotate-20 bg-emerald-800/10" data-parallax-speed="0.1"></div>
+            </div>
+            <div class="container mx-auto max-w-6xl text-center z-10">
+                <h2 class="text-5xl font-bold mb-12 text-emerald-600 goya-text-shadow">כפית עץ: נשמת העץ הישן</h2>
+                <p class="text-xl text-stone-300 mb-12 leading-relaxed goya-text-shadow">
+                    כל כפית עץ, כל חפץ, מספר את סיפורו של העץ ממנו נחצב. אלה אינם רק כלים, אלא עדויות אילמות לידיים שיצרו אותם, לתנועות עתיקות, לכבוד לחומר ולטבע שאינו כלה.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-emerald-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <div class="w-full h-48 bg-gray-700 mb-4 rounded-md goya-filter flex items-center justify-center text-4xl text-gray-500">
+                             <img src="" alt="בקבוקי שתיה מעץ" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">בקבוקי שתיה: סוד החיים</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            בקבוקי עץ טהורים, שומרים על טעמו של המשקה, כלי שתייה שנולד מן האדמה.
+                        </p>
+                        <span class="text-2xl font-semibold text-emerald-500">₪89</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-emerald-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <div class="w-full h-48 bg-gray-700 mb-4 rounded-md goya-filter flex items-center justify-center text-4xl text-gray-500">
+                             <img src="" alt="צנצנות עץ קטנות" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">צנצנות קטנות: שומרי סוד</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            צנצנות עץ קטנות, לאחסון תבלינים או סודות קטנים, כל אחת מהן נושאת את זכר היער.
+                        </p>
+                        <span class="text-2xl font-semibold text-emerald-500">₪45</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-emerald-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <div class="w-full h-48 bg-gray-700 mb-4 rounded-md goya-filter flex items-center justify-center text-4xl text-gray-500">
+                            <img src="" alt="צנצנות עץ גדולות" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">צנצנות גדולות: אוצרות האדמה</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            צנצנות עץ גדולות, לאוצרות יקרים או לקפה האהוב עליכם, חפץ שמשתלב בבית כמו עץ ביער.
+                        </p>
+                        <span class="text-2xl font-semibold text-emerald-500">₪75</span>
+                    </div>
+                </div>
+                <p class="text-lg text-stone-400 mt-12">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון - יצירה שנמסרת מיד ליד.</p>
+            </div>
+        </section>
+
+        <!-- Ceramic Products Section -->
+        <section id="ceramic" class="py-20 px-8 relative overflow-hidden">
+             <div class="absolute inset-0 flex flex-wrap opacity-10">
+                <div class="goya-brushstroke top-1/4 right-0 w-64 h-48 rotate-10 bg-red-800/10" data-parallax-speed="0.1"></div>
+                <div class="goya-brushstroke-dark bottom-0 left-1/4 w-56 h-40 -rotate-20 bg-red-800/10" data-parallax-speed="0.2"></div>
+            </div>
+            <div class="container mx-auto max-w-6xl text-center z-10">
+                <h2 class="text-5xl font-bold mb-12 text-red-600 goya-text-shadow">מוצרי קרמיקה: קול האדמה</h2>
+                <p class="text-xl text-stone-300 mb-12 leading-relaxed goya-text-shadow">
+                    מן האדמה הפשוטה, דרך ידי האמן, נולדת הקרמיקה. כל כלי נושא בתוכו את משקל הקיום, את חום הכבשן ואת צבעי השקיעה, יצירות שמעניקות חום וחיים לכל פינה בבית.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-red-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <div class="w-full h-48 bg-gray-700 mb-4 rounded-md goya-filter flex items-center justify-center text-4xl text-gray-500">
+                             <img src="" alt="כוס קרמיקה גדולה" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">כוס גדולה: מיכל לנשמה</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            כוס קרמיקה גדולה, לחם וחליטות, כלי שמשתלב בכף היד כמו חיבוק.
+                        </p>
+                        <span class="text-2xl font-semibold text-red-500">₪65</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-red-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <div class="w-full h-48 bg-gray-700 mb-4 rounded-md goya-filter flex items-center justify-center text-4xl text-gray-500">
+                             <img src="" alt="כוס קרמיקה קטנה" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">כוס קטנה: לגימה של סוד</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            כוס קרמיקה קטנה, לאספרסו או למים קרים, מיכל קטן לרגעים גדולים.
+                        </p>
+                        <span class="text-2xl font-semibold text-red-500">₪45</span>
+                    </div>
+                    <div class="bg-zinc-800/70 p-6 rounded-lg goya-shadow border border-red-800/20 transform hover:-translate-y-2 transition-transform interactive">
+                        <div class="w-full h-48 bg-gray-700 mb-4 rounded-md goya-filter flex items-center justify-center text-4xl text-gray-500">
+                             <img src="" alt="קנקן קרמיקה" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-3xl font-bold mb-3 text-stone-100 goya-text-shadow">קנקן: שפע נצחי</h3>
+                        <p class="text-lg text-stone-300 mb-4">
+                            קנקן קרמיקה יפהפה, להגשת משקאות או כפריט נוי, נושא את שפע האדמה.
+                        </p>
+                        <span class="text-2xl font-semibold text-red-500">₪120</span>
+                    </div>
+                </div>
+                <p class="text-lg text-stone-400 mt-12">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון - יצירות שנבראו בידי אדם.</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-12 px-8 text-center bg-zinc-950/80 border-t border-amber-800/30 goya-shadow">
+            <p class="text-stone-400 text-lg mb-4 goya-text-shadow">
+                סבאיה - היכן שהאמנות פוגשת את הטעם, והטבע מספר את סיפורו.
+            </p>
+            <p class="text-stone-500 text-sm goya-text-shadow">
+                © 2023 כל הזכויות שמורות. יצירה דיגיטלית בהשראת ימי קדם ועתיד
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- JavaScript for Custom Cursor, Parallax, and Menu Tabs -->
+    <script>
+        const customCursor = document.getElementById('custom-cursor');
+        const interactiveElements = document.querySelectorAll('a, button, .interactive');
+
+        document.addEventListener('mousemove', (e) => {
+            customCursor.style.left = `${e.clientX}px`;
+            customCursor.style.top = `${e.clientY}px`;
+        });
+
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                customCursor.classList.add('hover-active');
+            });
+            el.addEventListener('mouseleave', () => {
+                customCursor.classList.remove('hover-active');
+            });
+        });
+
+        // Parallax Effect for Brushstroke Elements
+        const brushstrokes = document.querySelectorAll('.goya-brushstroke, .goya-brushstroke-dark');
+
+        document.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+
+            brushstrokes.forEach((stroke) => {
+                const speed = parseFloat(stroke.dataset.parallaxSpeed) || 0.1; // Default speed if not specified
+                stroke.style.transform = `translateY(${scrollY * speed}px) translateX(${scrollY * speed * 0.5}px)`; // X movement too
+            });
+        });
+
+
+        // Menu Tabs functionality
+        const menuTabs = document.querySelectorAll('.menu-tab');
+        const menuContents = document.querySelectorAll('.menu-content');
+
+        menuTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active styles from all tabs
+                menuTabs.forEach(t => {
+                    t.classList.remove('bg-amber-700', 'text-white');
+                    t.classList.add('bg-zinc-800', 'text-stone-300');
+                });
+
+                // Add active styles to clicked tab
+                tab.classList.remove('bg-zinc-800', 'text-stone-300');
+                tab.classList.add('bg-amber-700', 'text-white');
+
+                // Hide all menu contents
+                menuContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+
+                // Show the corresponding content
+                const targetTab = tab.dataset.tab;
+                document.getElementById(`${targetTab}-menu`).classList.remove('hidden');
+            });
+        });
+
+        // Initialize first tab as active on page load
+        document.querySelector('.menu-tab[data-tab="food"]').click();
+    </script>
+</body>
+</html>

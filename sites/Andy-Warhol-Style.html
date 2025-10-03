@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה: אמנות הקפה, טבע בסטייל פופ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&family=Rubik+Mono+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Heebo', sans-serif;
+            cursor: none; /* Hide default cursor */
+            overflow-x: hidden; /* Prevent horizontal scroll from overflow */
+            background-color: #000; /* Default background for initial load */
+        }
+        .font-heebo {
+            font-family: 'Heebo', sans-serif;
+        }
+        .font-rubik-mono-one {
+            font-family: 'Rubik Mono One', monospace;
+        }
+        /* Custom Pop-Art Shadow for elements */
+        .shadow-pop-art {
+            box-shadow: 10px 10px 0px 0px #000, 15px 15px 0px 0px #FFF;
+        }
+        .shadow-xl-pop {
+             box-shadow: 10px 10px 0px 0px #000, 20px 20px 0px 0px #FFF;
+        }
+        /* Custom Cursor */
+        #custom-cursor {
+            pointer-events: none;
+            position: fixed;
+            z-index: 9999;
+            width: 2rem; /* w-8 */
+            height: 2rem; /* h-8 */
+            border-radius: 9999px; /* rounded-full */
+            border: 2px solid #FFFFFF; /* White border */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Dark shadow for visibility */
+            transition: transform 0.1s ease-out; /* Smooth movement */
+            transform: translate(-50%, -50%); /* Center the cursor on its coordinates */
+            will-change: transform; /* Optimize for animation */
+        }
+        /* Repeating SABAIA Background */
+        .sabaya-repeat-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            /* Using SVG as Data URI to embed "Sabaya" text */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Heebo' font-weight='900' font-size='40' fill='%23333333' opacity='0.08'%3Eסבאיה%3C/text%3E%3C/svg%3E");
+            background-size: 200px 100px; /* Size of each repeated "Sabaya" */
+            z-index: -10; /* Keep it behind all content */
+            animation: moveSabayaBg 120s linear infinite; /* Subtle, endless movement */
+        }
+        @keyframes moveSabayaBg {
+            from { background-position: 0 0; }
+            to { background-position: 2000px 1000px; } /* Large enough to seem endless */
+        }
+        /* Background Color Transition on scroll */
+        .bg-scroll-transition {
+            transition: background-color 0.8s ease-in-out;
+        }
+        /* Scroll Reveal Animations */
+        .scroll-reveal {
+            opacity: 0;
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .scroll-reveal-left {
+            transform: translateX(-100px);
+        }
+        .scroll-reveal-right {
+            transform: translateX(100px);
+        }
+        .scroll-reveal-up {
+            transform: translateY(50px);
+        }
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+
+        /* Adjust hover effects for RTL by using logical properties or ensuring symmetry */
+        nav a {
+            position: relative;
+            z-index: 10;
+        }
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: currentColor; /* Use the link's current text color */
+            transform: scaleX(0);
+            transform-origin: right; /* Start expansion from right for RTL */
+            transition: transform 0.3s ease-out;
+            z-index: -1;
+            opacity: 0.15; /* Subtle overlay */
+        }
+        nav a:hover::before {
+            transform: scaleX(1);
+        }
+    </style>
+</head>
+<body class="bg-scroll-transition text-white overflow-x-hidden" style="background-color: #000;">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+
+    <!-- Repeating SABAIA Background - Fixed and low z-index -->
+    <div class="sabaya-repeat-bg"></div>
+
+    <!-- Main Navigation - Fixed and prominent -->
+    <nav class="fixed top-0 left-0 w-full bg-black bg-opacity-90 z-50 p-4 shadow-lg border-b-4 border-fuchsia-500">
+        <div class="container mx-auto flex flex-wrap justify-around items-center font-rubik-mono-one text-base md:text-xl lg:text-2xl gap-2 md:gap-4">
+            <a href="#home" class="block text-center text-lime-400 py-2 px-3 md:px-4 border-2 border-lime-400 hover:text-black hover:bg-lime-400 transition-all duration-300">סבאיה</a>
+            <a href="#home" class="block text-center text-sky-400 py-2 px-3 md:px-4 border-2 border-sky-400 hover:text-black hover:bg-sky-400 transition-all duration-300">בית</a>
+            <a href="#menu" class="block text-center text-fuchsia-500 py-2 px-3 md:px-4 border-2 border-fuchsia-500 hover:text-black hover:bg-fuchsia-500 transition-all duration-300">תפריט</a>
+            <a href="#wood-products" class="block text-center text-orange-400 py-2 px-3 md:px-4 border-2 border-orange-400 hover:text-black hover:bg-orange-400 transition-all duration-300">כפית עץ</a>
+            <a href="#ceramic-products" class="block text-center text-yellow-400 py-2 px-3 md:px-4 border-2 border-yellow-400 hover:text-black hover:bg-yellow-400 transition-all duration-300">מוצרי קרמיקה</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center p-8 pt-24 md:pt-32 bg-fuchsia-500 bg-scroll-transition">
+        <div class="container mx-auto text-center z-10 p-8 md:p-16 bg-black bg-opacity-70 border-4 border-white shadow-pop-art scroll-reveal scroll-reveal-up">
+            <h1 class="font-rubik-mono-one text-5xl md:text-7xl lg:text-8xl text-lime-400 leading-tight mb-6 uppercase tracking-wider">
+                סבאיה: אמנות הקפה. <br class="md:hidden"> טבע בסטייל פופ.
+            </h1>
+            <p class="font-heebo text-xl md:text-3xl text-sky-400 mb-8 max-w-3xl mx-auto leading-relaxed">
+                חוויה נוצצת, רגעים מבריקים. ברוכים הבאים לבמה שלנו!
+            </p>
+            <a href="#menu" class="inline-block bg-yellow-400 text-black font-rubik-mono-one text-xl md:text-3xl px-8 py-4 border-4 border-black hover:bg-white hover:text-fuchsia-500 transition-all duration-300 shadow-xl-pop">
+                צפו בתפריט, כאן ועכשיו!
+            </a>
+        </div>
+    </section>
+
+    <!-- Our Philosophy/Products Section -->
+    <section id="philosophy" class="min-h-screen flex items-center justify-center p-8 py-16 md:py-24 bg-sky-400 bg-scroll-transition">
+        <div class="container mx-auto text-center z-10">
+            <h2 class="font-rubik-mono-one text-4xl md:text-6xl text-black mb-12 uppercase scroll-reveal scroll-reveal-up">המוצרים שלנו: איקונים לחיים</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16">
+                <!-- Card 1: Coffee -->
+                <div class="p-8 bg-black border-4 border-white text-white shadow-pop-art scroll-reveal scroll-reveal-left hover:scale-105 transition-transform duration-300">
+                    <h3 class="font-rubik-mono-one text-3xl md:text-4xl text-fuchsia-500 mb-4 uppercase">קפה איכותי</h3>
+                    <p class="font-heebo text-lg md:text-xl leading-relaxed text-gray-200">
+                        כוכב בטעם, קלוי לשלמות. <br> כל לגימה – יצירת מופת יומיומית.
+                        ממקורות נבחרים, ישירות לכוס שלכם.
+                    </p>
+                    <div class="mt-6 text-fuchsia-500 text-6xl md:text-8xl">☕</div>
+                </div>
+
+                <!-- Card 2: Atmosphere -->
+                <div class="p-8 bg-yellow-400 border-4 border-black text-black shadow-pop-art scroll-reveal scroll-reveal-up hover:scale-105 transition-transform duration-300">
+                    <h3 class="font-rubik-mono-one text-3xl md:text-4xl text-lime-600 mb-4 uppercase">אווירה טבעית</h3>
+                    <p class="font-heebo text-lg md:text-xl leading-relaxed text-gray-800">
+                        ג'ונגל עירוני, צבעוני וחי. <br> המשתלה היא הגלריה החדשה שלכם, נושמת השראה.
+                    </p>
+                    <div class="mt-6 text-lime-600 text-6xl md:text-8xl">🌿</div>
+                </div>
+
+                <!-- Card 3: Unique Products -->
+                <div class="p-8 bg-lime-400 border-4 border-black text-black shadow-pop-art scroll-reveal scroll-reveal-right hover:scale-105 transition-transform duration-300">
+                    <h3 class="font-rubik-mono-one text-3xl md:text-4xl text-sky-700 mb-4 uppercase">מוצרים ייחודיים</h3>
+                    <p class="font-heebo text-lg md:text-xl leading-relaxed text-gray-800">
+                        אובייקטים אמנותיים, עץ וקרמיקה. <br> לבית, למתנה, לחיים עצמם. כל פריט – הצהרה.
+                    </p>
+                    <div class="mt-6 text-sky-700 text-6xl md:text-8xl">🏺</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="min-h-screen py-16 md:py-24 bg-black bg-scroll-transition text-white">
+        <div class="container mx-auto p-8 z-10">
+            <h2 class="font-rubik-mono-one text-4xl md:text-6xl text-orange-400 mb-12 text-center uppercase scroll-reveal scroll-reveal-up">
+                התפריט שלנו: יצירות קולינריות
+            </h2>
+
+            <!-- Food & Sweets -->
+            <div class="mb-16 scroll-reveal scroll-reveal-up">
+                <h3 class="font-rubik-mono-one text-3xl md:text-5xl text-yellow-400 mb-8 border-b-4 border-yellow-400 pb-4 text-center">אוכל ומתוקים</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    <!-- Sabich Sandwich -->
+                    <div class="p-6 bg-fuchsia-500 border-4 border-white shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-black mb-2 uppercase">כריך סבביח</h4>
+                        <p class="font-heebo text-lg text-white">איקון הטעמים: ביצה קשה, טונה, חציל, מטבוחה, מלפפון חמוץ, לימון כבוש. מוגש עם זיתים וסלט אישי. חוויה של פעם בחיים, כל פעם מחדש.</p>
+                        <p class="font-rubik-mono-one text-3xl text-black mt-4">₪36</p>
+                    </div>
+
+                    <!-- Fancy Sabaya Sandwich -->
+                    <div class="p-6 bg-lime-400 border-4 border-black text-black shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-fuchsia-700 mb-2 uppercase">כריך פנסיבאיה</h4>
+                        <p class="font-heebo text-lg text-gray-800">פטריית כמהין, גבינות שמנת וגראנה פדאנו, רוקט, בלסמי. מוגש עם זיתים וסלט אישי. יוקרה בכל ביס.</p>
+                        <p class="font-rubik-mono-one text-3xl text-fuchsia-700 mt-4">₪45</p>
+                    </div>
+
+                    <!-- Vegan Sandwich -->
+                    <div class="p-6 bg-sky-400 border-4 border-black text-black shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-white mb-2 uppercase">כריך טבעוני</h4>
+                        <p class="font-heebo text-lg text-black">ממרח חציל שחור, גבינת סויה, עגבניות מיובשות, רוקט. מוגש עם זיתים וסלט אישי. טבעי, טעים, אמנותי.</p>
+                        <p class="font-rubik-mono-one text-3xl text-white mt-4">₪45</p>
+                    </div>
+
+                    <!-- Cheese Platter -->
+                    <div class="p-6 bg-orange-400 border-4 border-white text-white shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-black mb-2 uppercase">פלטת גבינות ולחמים</h4>
+                        <p class="font-heebo text-lg text-white">חמאה מוקצפת מתובלת, טחינה יוגורט, ריבה. חגיגה של צבעים וטעמים.</p>
+                        <p class="font-rubik-mono-one text-3xl text-black mt-4">₪68</p>
+                    </div>
+
+                    <!-- Bambi Salad -->
+                    <div class="p-6 bg-fuchsia-500 border-4 border-white text-white shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-black mb-2 uppercase">סלט במבי</h4>
+                        <p class="font-heebo text-lg text-white">חסות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר. פריכות, מתיקות, חוויה.</p>
+                        <p class="font-rubik-mono-one text-3xl text-black mt-4">₪36</p>
+                    </div>
+
+                    <!-- Protein Salad -->
+                    <div class="p-6 bg-lime-400 border-4 border-black text-black shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-fuchsia-700 mb-2 uppercase">סלט חלבון</h4>
+                        <p class="font-heebo text-lg text-gray-800">עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת, גרידת לימון. מזין, מרענן, מודרני.</p>
+                        <p class="font-rubik-mono-one text-3xl text-fuchsia-700 mt-4">₪32</p>
+                    </div>
+                    
+                    <!-- Mor Muesli -->
+                    <div class="p-6 bg-sky-400 border-4 border-black text-black shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-white mb-2 uppercase">מוזלי מור</h4>
+                        <p class="font-heebo text-lg text-black">יוגורט פרו, חצילים קלויים, ביצה קשה, טחינה, גרעיני דלעת. מתובל באריסה מתוקה ולימון כבוש. מוגש עם פיתה קראנץ'. הפתעה לחיך.</p>
+                        <p class="font-rubik-mono-one text-3xl text-white mt-4">₪42</p>
+                    </div>
+
+                    <!-- Acai Bowl -->
+                    <div class="p-6 bg-orange-400 border-4 border-white text-white shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-black mb-2 uppercase">קערת אסאי</h4>
+                        <p class="font-heebo text-lg text-white">עם גרנולה, שבבי קוקוס ופרי העונה. טרופי, מרענן, אמנותי.</p>
+                        <p class="font-rubik-mono-one text-3xl text-black mt-4">₪39</p>
+                    </div>
+
+                    <!-- Quiche -->
+                    <div class="p-6 bg-fuchsia-500 border-4 border-white text-white shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-black mb-2 uppercase">קיש ברוקולי/פטריות/בצל</h4>
+                        <p class="font-heebo text-lg text-white">מוגש עם סלט אישי ושמנת חמוצה. קלאסיקה עם טוויסט פופ.</p>
+                        <p class="font-rubik-mono-one text-3xl text-black mt-4">₪37</p>
+                    </div>
+
+                    <!-- Sweets Divider -->
+                    <div class="md:col-span-full my-8 text-center scroll-reveal scroll-reveal-up">
+                        <h4 class="font-rubik-mono-one text-3xl md:text-4xl text-sky-400 border-b-4 border-sky-400 pb-4 mb-4 uppercase">מתוקים: פינוק אמנותי</h4>
+                    </div>
+
+                    <!-- Chocolate Croissant -->
+                    <div class="p-6 bg-lime-400 border-4 border-black text-black shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-fuchsia-700 mb-2 uppercase">קוראסון שוקולד</h4>
+                        <p class="font-heebo text-lg text-gray-800">גדול, עשיר, מושלם.</p>
+                        <p class="font-rubik-mono-one text-3xl text-fuchsia-700 mt-4">₪19</p>
+                    </div>
+
+                    <!-- Almond/Pistachio Croissant -->
+                    <div class="p-6 bg-sky-400 border-4 border-black text-black shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-white mb-2 uppercase">קוראסון שקדים/פיסטוק</h4>
+                        <p class="font-heebo text-lg text-black">פינוק צבעוני לכל חובב.</p>
+                        <p class="font-rubik-mono-one text-3xl text-white mt-4">₪22</p>
+                    </div>
+
+                    <!-- Banana Chocolate Cake -->
+                    <div class="p-6 bg-orange-400 border-4 border-white text-white shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-black mb-2 uppercase">עוגה בחושה בננה ושוקולד</h4>
+                        <p class="font-heebo text-lg text-white">פשטות אלגנטית, טעם עשיר.</p>
+                        <p class="font-rubik-mono-one text-3xl text-black mt-4">₪15</p>
+                    </div>
+
+                    <!-- Apple Crumble Pie -->
+                    <div class="p-6 bg-fuchsia-500 border-4 border-white text-white shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-black mb-2 uppercase">פאי תפוחים קרמבל</h4>
+                        <p class="font-heebo text-lg text-white">מוגש עם כדור גלידה. חם, קר, מושלם.</p>
+                        <p class="font-rubik-mono-one text-3xl text-black mt-4">₪44</p>
+                    </div>
+
+                    <!-- Lemon Meringue Pie -->
+                    <div class="p-6 bg-lime-400 border-4 border-black text-black shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-fuchsia-700 mb-2 uppercase">פאי מרנג לימון</h4>
+                        <p class="font-heebo text-lg text-gray-800">חמיצות מרעננת, מתיקות עדינה. פיצוץ טעמים.</p>
+                        <p class="font-rubik-mono-one text-3xl text-fuchsia-700 mt-4">₪31</p>
+                    </div>
+
+                    <!-- Oreo Cheesecake -->
+                    <div class="p-6 bg-sky-400 border-4 border-black text-black shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-white mb-2 uppercase">אוראו צ'יז קייק</h4>
+                        <p class="font-heebo text-lg text-black">קלאסיקה מודרנית, חלומה של כל עוגיה.</p>
+                        <p class="font-rubik-mono-one text-3xl text-white mt-4">₪38</p>
+                    </div>
+
+                    <!-- Snickers Crunch -->
+                    <div class="p-6 bg-orange-400 border-4 border-white text-white shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-black mb-2 uppercase">קראנץ' סניקרס</h4>
+                        <p class="font-heebo text-lg text-white">פצצת אנרגיה מתוקה, פינוק אמיתי.</p>
+                        <p class="font-rubik-mono-one text-3xl text-black mt-4">₪23</p>
+                    </div>
+
+                    <!-- Shila Cake -->
+                    <div class="p-6 bg-fuchsia-500 border-4 border-white text-white shadow-pop-art hover:scale-105 transition-transform duration-300">
+                        <h4 class="font-rubik-mono-one text-2xl text-black mb-2 uppercase">עוגת שילה</h4>
+                        <p class="font-heebo text-lg text-white">יצירת הדגל שלנו, סוד שף מתוק.</p>
+                        <p class="font-rubik-mono-one text-3xl text-black mt-4">₪44</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <p class="font-heebo text-lg text-center text-gray-400 mt-12 scroll-reveal scroll-reveal-up">
+                לשאלות והזמנות, אנא פנו אלינו בבית הקפה.<br>
+                כל המחירים בשקלים חדשים ועשויים להשתנות - אמנות דינמית!
+            </p>
+        </div>
+    </section>
+
+    <!-- Wood Products Section -->
+    <section id="wood-products" class="min-h-screen py-16 md:py-24 bg-yellow-400 bg-scroll-transition text-black">
+        <div class="container mx-auto p-8 z-10">
+            <h2 class="font-rubik-mono-one text-4xl md:text-6xl text-fuchsia-500 mb-12 text-center uppercase scroll-reveal scroll-reveal-up">
+                כפית עץ - אמנות יומיומית
+            </h2>
+            <p class="font-heebo text-xl md:text-2xl text-gray-800 mb-12 text-center max-w-3xl mx-auto scroll-reveal scroll-reveal-up">
+                מוצרי עץ איכותיים בעבודת יד, מתאימים לשימוש יומיומי ולמתנה מיוחדת. כל מוצר עשוי מחומרים טבעיים וידידותיים לסביבה – פריט אמנותי לכל רגע.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+                <!-- Wood Item 1: Bottles -->
+                <div class="p-6 bg-black border-4 border-white text-white shadow-pop-art scroll-reveal scroll-reveal-left hover:scale-105 transition-transform duration-300">
+                    <div class="w-full h-48 bg-lime-400 flex items-center justify-center mb-4 border-2 border-white text-5xl md:text-7xl">🍾</div>
+                    <h3 class="font-rubik-mono-one text-2xl text-yellow-400 mb-2 uppercase">בקבוקי שתיה</h3>
+                    <p class="font-heebo text-lg text-gray-200">עיצוב נקי, ידידותי לסביבה. לאחסון, להצגה, לשימוש.</p>
+                    <p class="font-rubik-mono-one text-3xl text-yellow-400 mt-4">₪89</p>
+                </div>
+
+                <!-- Wood Item 2: Small Jars -->
+                <div class="p-6 bg-fuchsia-500 border-4 border-white text-white shadow-pop-art scroll-reveal scroll-reveal-up hover:scale-105 transition-transform duration-300">
+                    <div class="w-full h-48 bg-sky-400 flex items-center justify-center mb-4 border-2 border-white text-5xl md:text-7xl">🏺</div>
+                    <h3 class="font-rubik-mono-one text-2xl text-black mb-2 uppercase">צנצנות קטנות</h3>
+                    <p class="font-heebo text-lg text-gray-200">לשמור סודות, תבלינים או סוכריות. אובייקט חמוד.</p>
+                    <p class="font-rubik-mono-one text-3xl text-black mt-4">₪45</p>
+                </div>
+
+                <!-- Wood Item 3: Large Jars -->
+                <div class="p-6 bg-lime-400 border-4 border-black text-black shadow-pop-art scroll-reveal scroll-reveal-right hover:scale-105 transition-transform duration-300">
+                    <div class="w-full h-48 bg-orange-400 flex items-center justify-center mb-4 border-2 border-black text-5xl md:text-7xl">🍶</div>
+                    <h3 class="font-rubik-mono-one text-2xl text-fuchsia-700 mb-2 uppercase">צנצנות גדולות</h3>
+                    <p class="font-heebo text-lg text-gray-800">להצהרה, לאחסון, לחלום. נוכחות דרמטית.</p>
+                    <p class="font-rubik-mono-one text-3xl text-fuchsia-700 mt-4">₪75</p>
+                </div>
+            </div>
+
+            <p class="font-heebo text-lg text-center text-gray-800 mt-12 scroll-reveal scroll-reveal-up">
+                לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון - יצירות מחכות לכם!
+            </p>
+        </div>
+    </section>
+
+    <!-- Ceramic Products Section -->
+    <section id="ceramic-products" class="min-h-screen py-16 md:py-24 bg-fuchsia-500 bg-scroll-transition text-white">
+        <div class="container mx-auto p-8 z-10">
+            <h2 class="font-rubik-mono-one text-4xl md:text-6xl text-lime-400 mb-12 text-center uppercase scroll-reveal scroll-reveal-up">
+                מוצרי קרמיקה - גלריה לבית
+            </h2>
+            <p class="font-heebo text-xl md:text-2xl text-gray-200 mb-12 text-center max-w-3xl mx-auto scroll-reveal scroll-reveal-up">
+                מוצרי קרמיקה בעבודת יד איכותית, עם ציפוי טבעי בגוני אדמה חמים. מתאימים לשימוש יומיומי ומוסיפים אווירה חמה לכל בית – כלים שהם פיסול.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+                <!-- Ceramic Item 1: Large Cup -->
+                <div class="p-6 bg-black border-4 border-white text-white shadow-pop-art scroll-reveal scroll-reveal-left hover:scale-105 transition-transform duration-300">
+                    <div class="w-full h-48 bg-orange-400 flex items-center justify-center mb-4 border-2 border-white text-5xl md:text-7xl">☕</div>
+                    <h3 class="font-rubik-mono-one text-2xl text-yellow-400 mb-2 uppercase">כוס גדולה</h3>
+                    <p class="font-heebo text-lg text-gray-200">לרגעים ארוכים, למחשבות עמוקות. נוכחות עוצמתית.</p>
+                    <p class="font-rubik-mono-one text-3xl text-yellow-400 mt-4">₪65</p>
+                </div>
+
+                <!-- Ceramic Item 2: Small Cup -->
+                <div class="p-6 bg-sky-400 border-4 border-black text-black shadow-pop-art scroll-reveal scroll-reveal-up hover:scale-105 transition-transform duration-300">
+                    <div class="w-full h-48 bg-lime-400 flex items-center justify-center mb-4 border-2 border-black text-5xl md:text-7xl">🍵</div>
+                    <h3 class="font-rubik-mono-one text-2xl text-white mb-2 uppercase">כוס קטנה</h3>
+                    <p class="font-heebo text-lg text-gray-800">לספל אספרסו, למנה קטנה של יופי. אלגנטיות יומיומית.</p>
+                    <p class="font-rubik-mono-one text-3xl text-white mt-4">₪45</p>
+                </div>
+
+                <!-- Ceramic Item 3: Jug -->
+                <div class="p-6 bg-lime-400 border-4 border-black text-black shadow-pop-art scroll-reveal scroll-reveal-right hover:scale-105 transition-transform duration-300">
+                    <div class="w-full h-48 bg-fuchsia-500 flex items-center justify-center mb-4 border-2 border-black text-5xl md:text-7xl">🥛</div>
+                    <h3 class="font-rubik-mono-one text-2xl text-sky-700 mb-2 uppercase">קנקן</h3>
+                    <p class="font-heebo text-lg text-gray-800">לשפוך סטייל. למים, לחלב, לאמנות נוזלית. הצהרה ויזואלית.</p>
+                    <p class="font-rubik-mono-one text-3xl text-sky-700 mt-4">₪120</p>
+                </div>
+            </div>
+
+            <p class="font-heebo text-lg text-center text-gray-200 mt-12 scroll-reveal scroll-reveal-up">
+                לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון - הפכו את ביתכם לגלריה!
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-gray-400 p-8 text-center border-t-4 border-yellow-400">
+        <div class="container mx-auto">
+            <p class="font-heebo text-lg mb-4 scroll-reveal scroll-reveal-up">
+                © 2023 סבאיה: אמנות הקפה, טבע בסטייל פופ. כל הזכויות שמורות ליצירה.
+            </p>
+            <div class="flex justify-center space-x-4 space-x-reverse scroll-reveal scroll-reveal-up">
+                <a href="#" class="text-lime-400 hover:text-white transition-colors duration-300">צור קשר</a>
+                <span class="text-gray-600">|</span>
+                <a href="#" class="text-sky-400 hover:text-white transition-colors duration-300">פרטיות</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Custom Cursor
+        const customCursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', e => {
+            customCursor.style.left = `${e.clientX}px`;
+            customCursor.style.top = `${e.clientY}px`;
+        });
+
+        // Scroll Reveal Animation
+        const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // Option to unobserve after animation:
+                    // observer.unobserve(entry.target);
+                } else {
+                    // Option to reset animation if element leaves viewport:
+                    // entry.target.classList.remove('active');
+                }
+            });
+        }, {
+            threshold: 0.1, // Element is considered active when 10% is visible
+            rootMargin: '0px 0px -100px 0px' // Start revealing a bit before it enters viewport bottom
+        });
+
+        scrollRevealElements.forEach(el => observer.observe(el));
+
+        // Background Color Change on Scroll
+        const sections = document.querySelectorAll('section');
+        const body = document.body;
+        const sectionColors = {
+            'home': '#F43F5E', /* fuchsia-500 */
+            'philosophy': '#38BDF8', /* sky-400 */
+            'menu': '#000000', /* black */
+            'wood-products': '#FACC15', /* yellow-400 */
+            'ceramic-products': '#F43F5E' /* fuchsia-500 */
+        };
+
+        const colorObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && sectionColors[entry.target.id]) {
+                    body.style.backgroundColor = sectionColors[entry.target.id];
+                }
+            });
+        }, {
+            threshold: 0.7 // Change color when 70% of the section is visible
+        });
+
+        sections.forEach(section => colorObserver.observe(section));
+
+        // Smooth Scroll for Navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

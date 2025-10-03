@@ -4,7 +4,8 @@
       "Bash(cmd /c:*)",
       "Bash(dir:*)",
       "Bash(create_main_page.bat)",
-      "Bash(./create_main_page.bat)"
+      "Bash(./create_main_page.bat)",
+      "Read(//c/**)"
     ],
     "deny": [],
     "ask": []

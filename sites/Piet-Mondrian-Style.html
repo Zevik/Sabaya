@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - אמנות הקפה והטבע</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Tailwind Configuration for Mondrian Colors */
+        :root {
+            --color-primary-red: #E10000;
+            --color-primary-blue: #0057B8;
+            --color-primary-yellow: #FFD700;
+            --color-neutral-black: #000000;
+            --color-neutral-white: #FFFFFF;
+        }
+
+        .tailwind-colors-mondrian .bg-mondrian-red { background-color: var(--color-primary-red); }
+        .tailwind-colors-mondrian .bg-mondrian-blue { background-color: var(--color-primary-blue); }
+        .tailwind-colors-mondrian .bg-mondrian-yellow { background-color: var(--color-primary-yellow); }
+        .tailwind-colors-mondrian .bg-mondrian-black { background-color: var(--color-neutral-black); }
+        .tailwind-colors-mondrian .bg-mondrian-white { background-color: var(--color-neutral-white); }
+        .tailwind-colors-mondrian .border-mondrian-black { border-color: var(--color-neutral-black); }
+        .tailwind-colors-mondrian .text-mondrian-black { color: var(--color-neutral-black); }
+        .tailwind-colors-mondrian .text-mondrian-white { color: var(--color-neutral-white); }
+
+        /* General Body Styles */
+        body {
+            font-family: 'Heebo', sans-serif;
+            cursor: none; /* Hide default cursor */
+            overflow-x: hidden;
+            background-color: var(--color-neutral-white);
+        }
+
+        /* Custom Cursor Styling */
+        #custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            transition: width 0.2s ease, height 0.2s ease;
+            mix-blend-mode: unset; /* Ensure mix-blend-mode is not used */
+            border: 2px solid var(--color-neutral-white); /* White border */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Dark shadow for contrast */
+        }
+
+        #custom-cursor.active {
+            width: 30px;
+            height: 30px;
+        }
+
+        /* Custom scroll snap for full sections */
+        .scroll-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+        .scroll-section {
+            scroll-snap-align: start;
+            min-height: 100vh;
+            display: flex; /* For centering content or distributing blocks */
+            flex-direction: column;
+            position: relative;
+            width: 100vw;
+            overflow: hidden; /* To contain absolute blocks */
+        }
+
+        /* Mondrian Block Animations */
+        .mondrian-block {
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+        .mondrian-block:not(.visible) {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .mondrian-block.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive adjustments for Mondrian blocks */
+        @media (max-width: 768px) {
+            .mondrian-block-mobile-stack {
+                position: relative !important;
+                width: auto !important;
+                height: auto !important;
+                top: auto !important;
+                left: auto !important;
+                right: auto !important;
+                bottom: auto !important;
+                margin: 1rem 0;
+                padding: 1rem;
+            }
+        }
+
+        /* Tailwind custom styles configuration */
+        .tailwind-config {
+            display: none; /* Hide this element */
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'mondrian-red': '#E10000',
+                        'mondrian-blue': '#0057B8',
+                        'mondrian-yellow': '#FFD700',
+                        'mondrian-black': '#000000',
+                        'mondrian-white': '#FFFFFF',
+                    },
+                    fontFamily: {
+                        heebo: ['Heebo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="tailwind-colors-mondrian font-heebo bg-mondrian-white text-mondrian-black">
+
+    <div id="custom-cursor"></div>
+
+    <!-- Main Navigation Blocks - Fixed -->
+    <nav class="fixed top-0 right-0 h-full w-24 md:w-32 z-50 flex flex-col justify-start items-center bg-mondrian-black border-l-4 border-mondrian-black py-8 md:py-16">
+        <a href="#home" class="nav-item w-full py-4 text-center text-mondrian-white hover:bg-mondrian-yellow hover:text-mondrian-black transition-colors duration-300 font-bold border-b-2 border-mondrian-white">בית</a>
+        <a href="#menu" class="nav-item w-full py-4 text-center text-mondrian-white hover:bg-mondrian-yellow hover:text-mondrian-black transition-colors duration-300 font-bold border-b-2 border-mondrian-white">תפריט</a>
+        <a href="#wood-products" class="nav-item w-full py-4 text-center text-mondrian-white hover:bg-mondrian-yellow hover:text-mondrian-black transition-colors duration-300 font-bold border-b-2 border-mondrian-white">כפית עץ</a>
+        <a href="#ceramic-products" class="nav-item w-full py-4 text-center text-mondrian-white hover:bg-mondrian-yellow hover:text-mondrian-black transition-colors duration-300 font-bold">מוצרי קרמיקה</a>
+    </nav>
+
+    <!-- Scroll Container for Sections -->
+    <div class="scroll-container w-full h-screen">
+
+        <!-- Home Section -->
+        <section id="home" class="scroll-section relative bg-mondrian-white pr-24 md:pr-32">
+            <div class="absolute inset-0 bg-gradient-to-br from-mondrian-white via-mondrian-white to-mondrian-yellow z-[-1]"></div>
+
+            <!-- Mondrian Blocks for Home -->
+            <div class="mondrian-block absolute top-1/4 right-[25%] md:right-[40%] w-3/5 md:w-1/3 h-64 md:h-80 bg-mondrian-red border-4 border-mondrian-black p-6 md:p-8 flex items-center justify-center text-mondrian-white text-center text-2xl md:text-4xl leading-tight font-bold z-10 shadow-lg">
+                <h1 class="drop-shadow-lg">סבאיה - קפה וטבע בתנועה מופשטת</h1>
+            </div>
+
+            <div class="mondrian-block absolute top-1/2 left-[10%] md:left-[20%] w-2/3 md:w-1/2 h-56 bg-mondrian-white border-4 border-mondrian-black p-6 md:p-8 text-mondrian-black text-lg md:text-xl font-medium leading-relaxed shadow-md -translate-y-1/2 z-20">
+                <p>ברוכים הבאים לסבאיה. כאן, הצבעים הראשוניים של הקפה והטבע נפגשים בקווי מתאר נקיים, יוצרים חוויה של הרמוניה ושלווה. כל לגימה היא פסיעה בנוף אבסטרקטי, כל רגע - קומפוזיציה ייחודית. בואו לגלות את היופי בפשטות המורכבת.</p>
+            </div>
+
+            <div class="mondrian-block absolute bottom-10 right-[35%] w-48 h-32 bg-mondrian-blue border-4 border-mondrian-black flex items-center justify-center text-mondrian-white text-base md:text-lg font-semibold z-10 shadow-sm">
+                <p>קפה איכותי בלב המשתלה</p>
+            </div>
+            <div class="mondrian-block absolute bottom-20 left-[15%] w-40 h-24 bg-mondrian-yellow border-4 border-mondrian-black flex items-center justify-center text-mondrian-black text-base md:text-lg font-semibold z-10 shadow-sm">
+                <p>יצירה בעץ וקרמיקה</p>
+            </div>
+            <div class="mondrian-block absolute top-10 right-[15%] w-32 h-24 bg-mondrian-black border-4 border-mondrian-black flex items-center justify-center text-mondrian-white text-base md:text-lg font-semibold z-10 shadow-sm">
+                <p>מפגש בין קו וטעם</p>
+            </div>
+
+            <!-- Responsive adjustments for small screens -->
+            <div class="md:hidden absolute inset-0 flex flex-col items-center justify-center p-4">
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-red border-4 border-mondrian-black p-4 text-mondrian-white text-center text-2xl font-bold shadow-lg">
+                    <h1>סבאיה - קפה וטבע בתנועה מופשטת</h1>
+                </div>
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-white border-4 border-mondrian-black p-4 text-mondrian-black text-base font-medium leading-relaxed shadow-md">
+                    <p>ברוכים הבאים לסבאיה. כאן, הצבעים הראשוניים של הקפה והטבע נפגשים בקווי מתאר נקיים, יוצרים חוויה של הרמוניה ושלווה. כל לגימה היא פסיעה בנוף אבסטרקטי, כל רגע - קומפוזיציה ייחודית. בואו לגלות את היופי בפשטות המורכבת.</p>
+                </div>
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-blue border-4 border-mondrian-black p-4 text-mondrian-white text-base font-semibold shadow-sm">
+                    <p>קפה איכותי בלב המשתלה</p>
+                </div>
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-yellow border-4 border-mondrian-black p-4 text-mondrian-black text-base font-semibold shadow-sm">
+                    <p>יצירה בעץ וקרמיקה</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="scroll-section relative bg-mondrian-black pr-24 md:pr-32">
+            <div class="absolute inset-0 bg-gradient-to-br from-mondrian-black via-mondrian-black to-mondrian-blue z-[-1]"></div>
+
+            <!-- Menu Title Block -->
+            <div class="mondrian-block absolute top-1/4 left-[10%] md:left-[25%] w-3/5 md:w-1/3 h-40 bg-mondrian-yellow border-4 border-mondrian-black p-6 md:p-8 flex items-center justify-center text-mondrian-black text-2xl md:text-4xl leading-tight font-bold z-10 shadow-lg">
+                <h2 class="drop-shadow-lg">התפריט - קומפוזיציה של טעמים</h2>
+            </div>
+
+            <!-- Food & Sweets Block -->
+            <div class="mondrian-block absolute top-1/2 right-[5%] md:right-[20%] w-4/5 md:w-1/2 h-auto bg-mondrian-white border-4 border-mondrian-black p-6 md:p-8 text-mondrian-black text-lg md:text-xl font-medium leading-relaxed shadow-md -translate-y-1/2 z-20 overflow-y-auto max-h-[60vh]">
+                <h3 class="text-2xl md:text-3xl font-bold mb-4 border-b-2 border-mondrian-black pb-2">אוכל ומתוקים</h3>
+                <div class="space-y-6">
+                    <div>
+                        <p class="font-semibold text-xl md:text-2xl">כריך סבביח <span class="float-left">₪36</span></p>
+                        <p class="text-base md:text-lg">חיתוך מדויק של טעמים - ביצה קשה, טונה, חציל שחור, מטבוחה עשירה, מלפפון כבוש ונגיעת לימון. מוגש לצד זיתים ירוקים וסלט רענן.</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-xl md:text-2xl">כריך פנסיבאיה <span class="float-left">₪45</span></p>
+                        <p class="text-base md:text-lg">פטריות מוקפצות עם כמהין, גבינות שמנת וגראנה פדאנו, רוקט ובלסמי, מוגש עם זיתים וסלט אישי.</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-xl md:text-2xl">כריך טבעוני <span class="float-left">₪45</span></p>
+                        <p class="text-base md:text-lg">ממרח חציל שחור, גבינת סויה, עגבניות מיובשות ורוקט, מוגש עם זיתים וסלט אישי.</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-xl md:text-2xl">פלטת גבינות ולחמים עם מטבלים <span class="float-left">₪68</span></p>
+                        <p class="text-base md:text-lg">חמאה מוקצפת מתובלת, טחינה יוגורט, ריבה.</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-xl md:text-2xl">סלט במבי <span class="float-left">₪36</span></p>
+                        <p class="text-base md:text-lg">משחק של צבעים ומרקמים - חסות פריכות, בצל סגול, תפוח ירוק חמצמץ, עגבניות שרי אדומות, מלפפון טרי, פקאן מסוכר וגבינת פטה. רוטב סודי משלים את היצירה.</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-xl md:text-2xl">קוראסון שוקולד גדול <span class="float-left">₪19</span></p>
+                        <p class="text-base md:text-lg">קו מתאר חם של מתיקות.</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-xl md:text-2xl">פאי תפוחים קרמבל <span class="float-left">₪44</span></p>
+                        <p class="text-base md:text-lg">מוגש עם כדור גלידה.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Responsive adjustments for small screens -->
+            <div class="md:hidden absolute inset-0 flex flex-col items-center justify-center p-4 overflow-y-auto">
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-yellow border-4 border-mondrian-black p-4 text-mondrian-black text-2xl font-bold shadow-lg">
+                    <h2>התפריט - קומפוזיציה של טעמים</h2>
+                </div>
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-white border-4 border-mondrian-black p-4 text-mondrian-black text-base font-medium leading-relaxed shadow-md">
+                    <h3 class="text-xl font-bold mb-2 border-b-2 border-mondrian-black pb-2">אוכל ומתוקים</h3>
+                    <div class="space-y-4">
+                        <div><p class="font-semibold">כריך סבביח <span class="float-left">₪36</span></p><p class="text-sm">חיתוך מדויק של טעמים...</p></div>
+                        <div><p class="font-semibold">כריך פנסיבאיה <span class="float-left">₪45</span></p><p class="text-sm">פטריות מוקפצות עם כמהין...</p></div>
+                        <div><p class="font-semibold">סלט במבי <span class="float-left">₪36</span></p><p class="text-sm">משחק של צבעים ומרקמים...</p></div>
+                        <div><p class="font-semibold">קוראסון שוקולד גדול <span class="float-left">₪19</span></p><p class="text-sm">קו מתאר חם של מתיקות.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wood Products Section -->
+        <section id="wood-products" class="scroll-section relative bg-mondrian-yellow pr-24 md:pr-32">
+            <div class="absolute inset-0 bg-gradient-to-br from-mondrian-yellow via-mondrian-yellow to-mondrian-red z-[-1]"></div>
+
+            <!-- Title Block -->
+            <div class="mondrian-block absolute top-1/4 right-[25%] md:right-[40%] w-3/5 md:w-1/3 h-40 bg-mondrian-black border-4 border-mondrian-black p-6 md:p-8 flex items-center justify-center text-mondrian-white text-2xl md:text-4xl leading-tight font-bold z-10 shadow-lg">
+                <h2 class="drop-shadow-lg">כפית עץ - אמנות השימוש</h2>
+            </div>
+
+            <!-- Intro Text Block -->
+            <div class="mondrian-block absolute top-1/2 left-[10%] md:left-[20%] w-2/3 md:w-1/2 h-56 bg-mondrian-white border-4 border-mondrian-black p-6 md:p-8 text-mondrian-black text-lg md:text-xl font-medium leading-relaxed shadow-md -translate-y-1/2 z-20">
+                <p>קווים טהורים של פונקציונליות. מוצרי עץ בעבודת יד, כל אחד מהם יצירה יחידה במינה, נושאת בתוכה את נשמת הטבע. מותאמים לשימוש יומיומי, הם מוסיפים חום וחיבור לאדמה.</p>
+            </div>
+
+            <!-- Product Blocks -->
+            <div class="mondrian-block absolute bottom-10 right-[10%] w-48 h-32 bg-mondrian-blue border-4 border-mondrian-black flex items-center justify-center flex-col text-mondrian-white text-base md:text-lg font-semibold z-10 shadow-sm">
+                <p>בקבוקי שתיה</p>
+                <p class="text-sm">₪89</p>
+            </div>
+            <div class="mondrian-block absolute bottom-20 left-[5%] w-40 h-24 bg-mondrian-black border-4 border-mondrian-black flex items-center justify-center flex-col text-mondrian-white text-base md:text-lg font-semibold z-10 shadow-sm">
+                <p>צנצנות קטנות</p>
+                <p class="text-sm">₪45</p>
+            </div>
+            <div class="mondrian-block absolute top-10 right-[10%] w-32 h-24 bg-mondrian-white border-4 border-mondrian-black flex items-center justify-center flex-col text-mondrian-black text-base md:text-lg font-semibold z-10 shadow-sm">
+                <p>צנצנות גדולות</p>
+                <p class="text-sm">₪75</p>
+            </div>
+
+            <!-- Responsive adjustments for small screens -->
+            <div class="md:hidden absolute inset-0 flex flex-col items-center justify-center p-4">
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-black border-4 border-mondrian-black p-4 text-mondrian-white text-2xl font-bold shadow-lg">
+                    <h2>כפית עץ - אמנות השימוש</h2>
+                </div>
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-white border-4 border-mondrian-black p-4 text-mondrian-black text-base font-medium leading-relaxed shadow-md">
+                    <p>קווים טהורים של פונקציונליות. מוצרי עץ בעבודת יד, כל אחד מהם יצירה יחידה במינה, נושאת בתוכה את נשמת הטבע. מותאמים לשימוש יומיומי, הם מוסיפים חום וחיבור לאדמה.</p>
+                </div>
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-blue border-4 border-mondrian-black p-4 text-mondrian-white text-base font-semibold shadow-sm">
+                    <p>בקבוקי שתיה <span class="float-left">₪89</span></p>
+                </div>
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-black border-4 border-mondrian-black p-4 text-mondrian-white text-base font-semibold shadow-sm">
+                    <p>צנצנות קטנות <span class="float-left">₪45</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ceramic Products Section -->
+        <section id="ceramic-products" class="scroll-section relative bg-mondrian-blue pr-24 md:pr-32">
+            <div class="absolute inset-0 bg-gradient-to-br from-mondrian-blue via-mondrian-blue to-mondrian-black z-[-1]"></div>
+
+            <!-- Title Block -->
+            <div class="mondrian-block absolute top-1/4 left-[10%] md:left-[25%] w-3/5 md:w-1/3 h-40 bg-mondrian-red border-4 border-mondrian-black p-6 md:p-8 flex items-center justify-center text-mondrian-white text-2xl md:text-4xl leading-tight font-bold z-10 shadow-lg">
+                <h2 class="drop-shadow-lg">מוצרי קרמיקה - גוונים של אדמה</h2>
+            </div>
+
+            <!-- Intro Text Block -->
+            <div class="mondrian-block absolute top-1/2 right-[5%] md:right-[20%] w-4/5 md:w-1/2 h-56 bg-mondrian-white border-4 border-mondrian-black p-6 md:p-8 text-mondrian-black text-lg md:text-xl font-medium leading-relaxed shadow-md -translate-y-1/2 z-20">
+                <p>פיסות אדמה שנולדו מחדש. כל כלי קרמיקה מתוכנן בקפידה, עשוי ביד אמן, ומצופה בגוונים חמים וטבעיים. הם מביאים לביתכם נגיעה של אותנטיות ואסתטיקה מודרנית.</p>
+            </div>
+
+            <!-- Product Blocks -->
+            <div class="mondrian-block absolute bottom-10 left-[10%] w-48 h-32 bg-mondrian-black border-4 border-mondrian-black flex items-center justify-center flex-col text-mondrian-white text-base md:text-lg font-semibold z-10 shadow-sm">
+                <p>כוס גדולה</p>
+                <p class="text-sm">₪65</p>
+            </div>
+            <div class="mondrian-block absolute bottom-20 right-[5%] w-40 h-24 bg-mondrian-yellow border-4 border-mondrian-black flex items-center justify-center flex-col text-mondrian-black text-base md:text-lg font-semibold z-10 shadow-sm">
+                <p>כוס קטנה</p>
+                <p class="text-sm">₪45</p>
+            </div>
+            <div class="mondrian-block absolute top-10 left-[5%] w-32 h-24 bg-mondrian-red border-4 border-mondrian-black flex items-center justify-center flex-col text-mondrian-white text-base md:text-lg font-semibold z-10 shadow-sm">
+                <p>קנקן</p>
+                <p class="text-sm">₪120</p>
+            </div>
+
+            <!-- Responsive adjustments for small screens -->
+            <div class="md:hidden absolute inset-0 flex flex-col items-center justify-center p-4">
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-red border-4 border-mondrian-black p-4 text-mondrian-white text-2xl font-bold shadow-lg">
+                    <h2>מוצרי קרמיקה - גוונים של אדמה</h2>
+                </div>
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-white border-4 border-mondrian-black p-4 text-mondrian-black text-base font-medium leading-relaxed shadow-md">
+                    <p>פיסות אדמה שנולדו מחדש. כל כלי קרמיקה מתוכנן בקפידה, עשוי ביד אמן, ומצופה בגוונים חמים וטבעיים. הם מביאים לביתכם נגיעה של אותנטיות ואסתטיקה מודרנית.</p>
+                </div>
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-black border-4 border-mondrian-black p-4 text-mondrian-white text-base font-semibold shadow-sm">
+                    <p>כוס גדולה <span class="float-left">₪65</span></p>
+                </div>
+                <div class="mondrian-block-mobile-stack w-full bg-mondrian-yellow border-4 border-mondrian-black p-4 text-mondrian-black text-base font-semibold shadow-sm">
+                    <p>כוס קטנה <span class="float-left">₪45</span></p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Custom Cursor Logic
+        const customCursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', e => {
+            customCursor.style.left = e.clientX + 'px';
+            customCursor.style.top = e.clientY + 'px';
+        });
+
+        document.addEventListener('mousedown', () => {
+            customCursor.classList.add('active');
+        });
+
+        document.addEventListener('mouseup', () => {
+            customCursor.classList.remove('active');
+        });
+
+        // Mondrian Block Animation on Scroll with Intersection Observer
+        const mondrianBlocks = document.querySelectorAll('.mondrian-block');
+        const observerOptions = {
+            root: null, // viewport
+            rootMargin: '0px',
+            threshold: 0.1 // 10% of block visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                } else {
+                    entry.target.classList.remove('visible');
+                }
+            });
+        }, observerOptions);
+
+        mondrianBlocks.forEach(block => {
+            observer.observe(block);
+        });
+
+        // Smooth Scroll for Navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                const scrollContainer = document.querySelector('.scroll-container');
+
+                if (targetElement && scrollContainer) {
+                    // Calculate scroll position relative to the scroll container
+                    const targetOffsetTop = targetElement.offsetTop;
+                    scrollContainer.scrollTo({
+                        top: targetOffsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Hide mobile blocks on larger screens
+        window.addEventListener('resize', () => {
+            const mobileBlocks = document.querySelectorAll('.mondrian-block-mobile-stack');
+            if (window.innerWidth >= 768) { // md breakpoint
+                mobileBlocks.forEach(block => block.style.display = 'none');
+            } else {
+                mobileBlocks.forEach(block => block.style.display = 'block');
+            }
+        });
+
+        // Initial check for mobile blocks visibility
+        window.dispatchEvent(new Event('resize'));
+    </script>
+</body>
+</html>

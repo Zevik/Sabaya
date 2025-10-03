@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - חוויה של טעם, טבע ורוח האדמה</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-bg: #292524; /* Stone 900 */
+            --secondary-bg: #44403C; /* Stone 800 */
+            --accent-light: #FCD34D; /* Amber 300 */
+            --accent-dark: #B45309; /* Amber 700 */
+            --text-light: #E7E5E4; /* Stone 200 */
+            --text-dark: #292524; /* Stone 900 */
+            --subtle-green: #365314; /* Lime 900 */
+            --subtle-brown: #78350F; /* Amber 900 */
+        }
+
+        html {
+            font-family: 'Assistant', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+            cursor: none; /* Hide default cursor */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Frank Ruhl Libre', serif;
+            font-weight: 700;
+        }
+
+        /* Custom Cursor Styling */
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            transition: transform 0.2s ease-out, width 0.2s ease-out, height 0.2s ease-out;
+            transform: translate(-50%, -50%); /* Center the cursor */
+            border: 2px solid var(--text-light); /* Light border */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Dark shadow */
+        }
+
+        .custom-cursor.active {
+            transform: translate(-50%, -50%) scale(1.5); /* Enlarge on hover */
+            width: 32px;
+            height: 32px;
+            border-color: var(--accent-light);
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.9), 0 0 10px rgba(252,211,77,0.5);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-dark);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
+        }
+
+        /* Parallax Backgrounds - using specific classes for layers */
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .parallax-bg-1 { /* For the general earthy texture */
+            background-image: radial-gradient(circle at 50% 120%, var(--subtle-green) 0%, transparent 40%),
+                              linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--subtle-brown) 100%);
+            opacity: 0.8;
+            transform: translateZ(-1px) scale(2); /* Further back, slower movement */
+        }
+        .parallax-bg-2 { /* For a more defined, closer texture */
+            background-image: radial-gradient(circle at 80% 20%, rgba(252,211,77,0.1) 0%, transparent 30%),
+                              linear-gradient(45deg, var(--secondary-bg) 0%, var(--primary-bg) 100%);
+            opacity: 0.6;
+            transform: translateZ(-0.5px) scale(1.5); /* Closer, faster movement */
+        }
+
+        /* Section specific background effects */
+        .hero-section {
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://picsum.photos/1920/1080?random=1'); /* Placeholder image */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Simulate parallax for main content */
+        }
+
+        /* Menu item hover effects */
+        .menu-item-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        .menu-item-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+
+        .menu-item-content {
+            backface-visibility: hidden;
+        }
+        .menu-item-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotateX(180deg);
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .menu-item-card:hover .menu-item-content {
+            transform: rotateX(-180deg);
+        }
+        .menu-item-card:hover .menu-item-back {
+            opacity: 1;
+            transform: rotateX(0deg);
+        }
+
+        /* General element animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Styling for placeholders to evoke texture/material */
+        .placeholder-wood, .placeholder-ceramic {
+            display: block;
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .placeholder-wood {
+            background-image: linear-gradient(to bottom right, #78350F, #92400E, #78350F); /* Amber 900 to Amber 800 */
+            border: 2px solid #5A2A0B; /* Darker amber for contrast */
+        }
+
+        .placeholder-ceramic {
+            background-image: linear-gradient(to bottom right, #6D28D9, #8B5CF6, #6D28D9); /* Violet tones for a different feel */
+            border: 2px solid #4C1D95; /* Darker violet */
+        }
+
+        /* Specific section background color to ensure contrast */
+        .section-bg-dark {
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+        }
+        .section-bg-light {
+            background-color: var(--text-light);
+            color: var(--primary-bg);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+
+    <!-- Main Content Wrapper -->
+    <div class="relative z-10">
+
+        <!-- Header - Navigation -->
+        <header class="fixed top-0 right-0 left-0 z-50 p-4 lg:p-6 bg-primary-bg bg-opacity-80 backdrop-blur-sm text-center">
+            <nav class="flex justify-center space-x-6 lg:space-x-10 text-xl lg:text-2xl font-frank-ruhl-libre">
+                <a href="#hero" class="text-text-light hover:text-accent-light transition duration-300">בית</a>
+                <a href="#about" class="text-text-light hover:text-accent-light transition duration-300">אודות</a>
+                <a href="#menu" class="text-text-light hover:text-accent-light transition duration-300">תפריט</a>
+                <a href="#wood" class="text-text-light hover:text-accent-light transition duration-300">כפית עץ</a>
+                <a href="#ceramic" class="text-text-light hover:text-accent-light transition duration-300">מוצרי קרמיקה</a>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section id="hero" class="hero-section relative h-screen flex items-center justify-center p-8 text-center section-bg-dark">
+            <div class="relative z-20 max-w-4xl mx-auto space-y-8 fade-in">
+                <h1 class="text-5xl lg:text-7xl font-bold leading-tight text-accent-light drop-shadow-lg">סבאיה - בית קפה במשתלה</h1>
+                <p class="text-2xl lg:text-3xl text-text-light leading-relaxed font-assistant">
+                    כאן, בין עלי ירק וריח אדמה, נפגשים סיפורים ושתיקה. קפה שנטעם כמו חיבוק, אווירה שנושמת טבע, ומוצרים שנוצרו באהבה.
+                </p>
+                <a href="#menu" class="inline-block px-8 py-4 mt-8 text-2xl font-bold bg-accent-dark text-text-light rounded-full shadow-lg hover:bg-accent-light hover:text-primary-bg transition-all duration-300">
+                    צפו בתפריט
+                </a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="relative py-20 px-8 lg:px-16 overflow-hidden section-bg-light text-primary-bg">
+            <div class="container mx-auto max-w-5xl fade-in">
+                <h2 class="text-4xl lg:text-5xl font-frank-ruhl-libre text-center mb-12 text-accent-dark">חוויה ייחודית של קפה וטבע</h2>
+                <div class="grid md:grid-cols-3 gap-12 text-center text-lg lg:text-xl font-assistant leading-relaxed">
+                    <div class="p-6 border border-primary-bg rounded-lg shadow-xl bg-accent-light bg-opacity-10 backdrop-blur-sm fade-in" style="transition-delay: 0.1s;">
+                        <h3 class="text-3xl font-bold mb-4 text-accent-dark">קפה איכותי</h3>
+                        <p>כל לגימה היא מסע. פולים שנבחרו בקפידה מכל קצוות תבל, נקלו במומחיות ונמזגים באהבה לכוס שלכם. רגע של נחמה אמיתית.</p>
+                    </div>
+                    <div class="p-6 border border-primary-bg rounded-lg shadow-xl bg-accent-light bg-opacity-10 backdrop-blur-sm fade-in" style="transition-delay: 0.2s;">
+                        <h3 class="text-3xl font-bold mb-4 text-accent-dark">אווירה טבעית</h3>
+                        <p>שבו בנחת בין ערוגות פורחות ועציצים ירוקים. האוויר צלול, הציפורים מצייצות, והזמן קופא. זו אינה סתם ישיבה, זוהי השתקעות בלב הטבע.</p>
+                    </div>
+                    <div class="p-6 border border-primary-bg rounded-lg shadow-xl bg-accent-light bg-opacity-10 backdrop-blur-sm fade-in" style="transition-delay: 0.3s;">
+                        <h3 class="text-3xl font-bold mb-4 text-accent-dark">מוצרים ייחודיים</h3>
+                        <p>מעבר לקפה, אנו מציעים יצירות עץ וקרמיקה בעבודת יד. כל פריט מספר סיפור, מגלם רוח של פשטות ויופי, מושלם לבית או למתנה מהלב.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="relative py-20 px-8 lg:px-16 section-bg-dark text-text-light overflow-hidden">
+            <div class="container mx-auto max-w-6xl fade-in">
+                <h2 class="text-4xl lg:text-5xl font-frank-ruhl-libre text-center mb-16 text-accent-light">התפריט שלנו - טעמים מהאדמה ומהנפש</h2>
+
+                <!-- Food & Sweets -->
+                <div class="mb-16 fade-in" style="transition-delay: 0.4s;">
+                    <h3 class="text-3xl lg:text-4xl font-frank-ruhl-libre mb-8 text-center text-accent-dark border-b-2 border-accent-dark pb-4">אוכל ומתוקים</h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Example Menu Item Card -->
+                        <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[250px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">כריך סבביח</h4>
+                                <p class="text-lg mb-4 text-text-light">ביצה קשה, טונה, חציל, מטבוחה, מלפפון חמוץ ולימון כבוש, מוגש עם זיתים וסלט אישי.</p>
+                                <span class="text-3xl font-bold text-accent-dark">₪36</span>
+                            </div>
+                            <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">מסע טעמים שמחזיר לשווקים הססגוניים, טעם של בית ושל שמש ים-תיכונית.</p>
+                                <p class="text-lg">שאל את המלצר על מרכיבים נוספים!</p>
+                            </div>
+                        </div>
+
+                        <!-- Add more menu items following the same structure -->
+                        <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[250px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">כריך פנסיבאיה</h4>
+                                <p class="text-lg mb-4 text-text-light">פטריות מוקפצות עם כמהין, גבינות שמנת וגראנה פדאנו, רוקט ובלסמי, מוגש עם זיתים וסלט אישי.</p>
+                                <span class="text-3xl font-bold text-accent-dark">₪45</span>
+                            </div>
+                            <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">אלגנטיות כפרית בביס אחד- פטריות אדמה טריות פוגשות את עושר הגבינות.</p>
+                                <p class="text-lg">חוויה עדינה ועשירה לחיך.</p>
+                            </div>
+                        </div>
+                        <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[250px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">כריך טבעוני</h4>
+                                <p class="text-lg mb-4 text-text-light">ממרח חציל שחור, גבינת סויה, עגבניות מיובשות ורוקט, מוגש עם זיתים וסלט אישי.</p>
+                                <span class="text-3xl font-bold text-accent-dark">₪45</span>
+                            </div>
+                            <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">הטבע במלוא הדרו, עם טעמים עזים ומרקמים מפתיעים. עושר צמחי.</p>
+                                <p class="text-lg">בריא, טעים ומזין.</p>
+                            </div>
+                        </div>
+                        <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[250px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">פלטת גבינות ולחמים</h4>
+                                <p class="text-lg mb-4 text-text-light">חמאה מוקצפת מתובלת, טחינה יוגורט, ריבה - מגוון טעמים משתנים.</p>
+                                <span class="text-3xl font-bold text-accent-dark">₪68</span>
+                            </div>
+                            <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">פלטה שנועדה לחלוק, לשיחות ארוכות ולגילוי טעמים חדשים ביחד.</p>
+                                <p class="text-lg">שפע של טריות ואיכות.</p>
+                            </div>
+                        </div>
+                        <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[250px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">סלט במבי</h4>
+                                <p class="text-lg mb-4 text-text-light">חסות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר.</p>
+                                <span class="text-3xl font-bold text-accent-dark">₪36</span>
+                            </div>
+                            <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">קערה של רעננות, צבעים וטעמים- בריאות בצלחת עם טוויסט מתוק.</p>
+                                <p class="text-lg">פריכות ורוגע בכל ביס.</p>
+                            </div>
+                        </div>
+                        <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[250px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">סלט חלבון</h4>
+                                <p class="text-lg mb-4 text-text-light">עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון.</p>
+                                <span class="text-3xl font-bold text-accent-dark">₪32</span>
+                            </div>
+                            <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">אנרגיה טובה לכל היום, עשיר ומזין, ישר מהאדמה אל הצלחת.</p>
+                                <p class="text-lg">מנה של חיוניות.</p>
+                            </div>
+                        </div>
+                         <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[250px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">מוזלי מור</h4>
+                                <p class="text-lg mb-4 text-text-light">יוגורט פרו, חצילים קלויים, ביצה קשה, טחינה, וגרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש, מוגש עם פיתה קראנץ'.</p>
+                                <span class="text-3xl font-bold text-accent-dark">₪42</span>
+                            </div>
+                            <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">שילוב מפתיע של מתוק-מלוח, חוויה קולינרית לאוהבי הגיוון והנועזות.</p>
+                                <p class="text-lg">בוקר שונה ומיוחד.</p>
+                            </div>
+                        </div>
+                         <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[250px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">קערת אסאי</h4>
+                                <p class="text-lg mb-4 text-text-light">עם גרנולה, שבבי קוקוס ופרי העונה.</p>
+                                <span class="text-3xl font-bold text-accent-dark">₪39</span>
+                            </div>
+                            <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">פרץ של טעמים טרופיים, מרענן וממריץ, כמו קרן שמש של בוקר.</p>
+                                <p class="text-lg">בחירה קלה וטעימה.</p>
+                            </div>
+                        </div>
+                        <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[250px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">קיש ברוקולי/פטריות/בצל ויין לבן</h4>
+                                <p class="text-lg mb-4 text-text-light">מוגש עם סלט אישי ושמנת חמוצה.</p>
+                                <span class="text-3xl font-bold text-accent-dark">₪37</span>
+                            </div>
+                            <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">מאפה פריך וביתי, נוטף טעם. מושלם לצהריים קלים או ארוחת בוקר מאוחרת.</p>
+                                <p class="text-lg">שאל על הקיש היומי.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sweets Section -->
+                <div class="mt-16 fade-in" style="transition-delay: 0.5s;">
+                    <h3 class="text-3xl lg:text-4xl font-frank-ruhl-libre mb-8 text-center text-accent-dark border-b-2 border-accent-dark pb-4">מתוקים</h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[200px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">קוראסון שוקולד גדול</h4>
+                                <span class="text-3xl font-bold text-accent-dark">₪19</span>
+                            </div>
+                            <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">רגע של אושר פריך ומתוק, חובה לכל חובב שוקולד.</p>
+                                <p class="text-lg">מושלם ליד הקפה.</p>
+                            </div>
+                        </div>
+                         <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[200px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">קוראסון שקדים/פיסטוק גדול</h4>
+                                <span class="text-3xl font-bold text-accent-dark">₪22</span>
+                            </div>
+                            <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">שילוב עדין של פריכות ואגוזיות. פינוק אמיתי לחיך.</p>
+                                <p class="text-lg">שאלו את המלצר על הטעם היומי.</p>
+                            </div>
+                        </div>
+                         <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[200px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">עוגה בחושה בננה ושוקולד</h4>
+                                <span class="text-3xl font-bold text-accent-dark">₪15</span>
+                            </div>
+                            <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">טעם של בית סבתא, חם ונעים, מזכיר ימים של פשטות ורוך.</p>
+                                <p class="text-lg">בדיוק כמו שאנחנו אוהבים.</p>
+                            </div>
+                        </div>
+                        <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[200px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">פאי תפוחים קרמבל</h4>
+                                <p class="text-lg mb-4 text-text-light">מוגש עם כדור גלידה.</p>
+                                <span class="text-3xl font-bold text-accent-dark">₪44</span>
+                            </div>
+                             <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">קלאסיקה שמחממת את הלב, תפוחים מתוקים-חמוצים מתחת לכיסוי פריך.</p>
+                                <p class="text-lg">שילוב מנצח.</p>
+                            </div>
+                        </div>
+                         <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[200px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">פאי מרנג לימון</h4>
+                                <span class="text-3xl font-bold text-accent-dark">₪31</span>
+                            </div>
+                             <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">חמוץ-מתוק ומרענן, כמו נשימה של אוויר צח ביום קיץ חם.</p>
+                                <p class="text-lg">קלילות מופלאה.</p>
+                            </div>
+                        </div>
+                         <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[200px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">אוראו צ'יז קייק</h4>
+                                <span class="text-3xl font-bold text-accent-dark">₪38</span>
+                            </div>
+                             <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">פינוק שוקולדי עשיר, מתאים במיוחד לאוהבי המרקמים הקרמיים והטעמים העזים.</p>
+                                <p class="text-lg">כל ביס הוא חגיגה.</p>
+                            </div>
+                        </div>
+                         <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[200px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">קראנץ' סניקרס</h4>
+                                <span class="text-3xl font-bold text-accent-dark">₪23</span>
+                            </div>
+                             <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">קראנצ'יות מפנקת עם טעם ממכר. בדיוק הקינוח שיעיר את החושים.</p>
+                                <p class="text-lg">אל תפספסו.</p>
+                            </div>
+                        </div>
+                         <div class="bg-secondary-bg p-6 rounded-lg shadow-xl menu-item-card relative h-auto min-h-[200px] flex items-center justify-center">
+                            <div class="menu-item-content text-center w-full">
+                                <h4 class="text-2xl font-bold mb-2 text-accent-light">עוגת שילה</h4>
+                                <span class="text-3xl font-bold text-accent-dark">₪44</span>
+                            </div>
+                             <div class="menu-item-back bg-accent-dark text-text-light p-6 rounded-lg text-center flex-col justify-center items-center">
+                                <p class="text-xl font-assistant italic mb-4">סוד שוקולדי אפל ונהדר, עוגה עשירה ומרגשת. תתמכרו בביס הראשון.</p>
+                                <p class="text-lg">שאל את המלצר על הטעם המיוחד של היום.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <p class="text-center text-xl mt-16 font-assistant text-text-light opacity-80 fade-in" style="transition-delay: 0.6s;">
+                    לשאלות והזמנות, אנא פנו אלינו בבית הקפה. כל המחירים בשקלים חדשים ועשויים להשתנות.
+                </p>
+            </div>
+        </section>
+
+        <!-- Wood Products Section -->
+        <section id="wood" class="relative py-20 px-8 lg:px-16 section-bg-light text-primary-bg overflow-hidden">
+            <div class="container mx-auto max-w-5xl fade-in" style="transition-delay: 0.7s;">
+                <h2 class="text-4xl lg:text-5xl font-frank-ruhl-libre text-center mb-12 text-accent-dark">כפית עץ - סיפור של חומר ורוח</h2>
+                <p class="text-xl lg:text-2xl text-center mb-12 leading-relaxed font-assistant">
+                    בידי אמן, פיסת עץ פשוטה הופכת ליצירת אמנות שימושית. כל מוצר הוא הדהוד של הטבע, חם למגע, בעל נשמה ונוכחות.
+                    פריטים אלו נועדו ללוות אתכם בחיי היומיום, להזכיר את פשטות היופי ועוצמת החומר.
+                </p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-primary-bg text-text-light p-6 rounded-lg shadow-xl fade-in" style="transition-delay: 0.8s;">
+                        <div class="placeholder-wood mb-4 relative flex items-center justify-center">
+                             <span class="text-4xl text-accent-light opacity-50 absolute">בקבוק</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2 text-accent-light">בקבוקי שתיה</h3>
+                        <p class="text-lg mb-4">בקבוקי שתיה מעוצבים מעץ טבעי, שומרים על טמפרטורה ומעניקים חוויה אקולוגית ואסתטית.</p>
+                        <span class="text-3xl font-bold text-accent-dark">₪89</span>
+                    </div>
+                    <div class="bg-primary-bg text-text-light p-6 rounded-lg shadow-xl fade-in" style="transition-delay: 0.9s;">
+                        <div class="placeholder-wood mb-4 relative flex items-center justify-center">
+                            <span class="text-4xl text-accent-light opacity-50 absolute">צנצנת קטנה</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2 text-accent-light">צנצנות קטנות</h3>
+                        <p class="text-lg mb-4">צנצנות עץ קטנות, מושלמות לתבלינים, סוכר או סתם כפריט נוי המכניס חום לבית.</p>
+                        <span class="text-3xl font-bold text-accent-dark">₪45</span>
+                    </div>
+                    <div class="bg-primary-bg text-text-light p-6 rounded-lg shadow-xl fade-in" style="transition-delay: 1.0s;">
+                        <div class="placeholder-wood mb-4 relative flex items-center justify-center">
+                            <span class="text-4xl text-accent-light opacity-50 absolute">צנצנת גדולה</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2 text-accent-light">צנצנות גדולות</h3>
+                        <p class="text-lg mb-4">צנצנות עץ גדולות לאחסון פולי קפה, תה או כל דבר שתרצו לשמור קרוב ונגיש.</p>
+                        <span class="text-3xl font-bold text-accent-dark">₪75</span>
+                    </div>
+                </div>
+                <p class="text-center text-xl mt-12 font-assistant text-primary-bg opacity-80 fade-in" style="transition-delay: 1.1s;">
+                    לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.
+                </p>
+            </div>
+        </section>
+
+        <!-- Ceramic Products Section -->
+        <section id="ceramic" class="relative py-20 px-8 lg:px-16 section-bg-dark text-text-light overflow-hidden">
+            <div class="container mx-auto max-w-5xl fade-in" style="transition-delay: 1.2s;">
+                <h2 class="text-4xl lg:text-5xl font-frank-ruhl-libre text-center mb-12 text-accent-light">מוצרי קרמיקה - יופי שנוצר באדמה</h2>
+                <p class="text-xl lg:text-2xl text-center mb-12 leading-relaxed font-assistant">
+                    מגע של חימר, חום של כבשן, ועין מיומנת יוצרים כלים שנושאים את חותם היד האנושית.
+                    גוונים טבעיים בגוני אדמה חמים, מרקמים עשירים ופשטות צורנית שהופכת כל כוס או קנקן ליצירה בפני עצמה.
+                </p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-secondary-bg text-text-light p-6 rounded-lg shadow-xl fade-in" style="transition-delay: 1.3s;">
+                        <div class="placeholder-ceramic mb-4 relative flex items-center justify-center">
+                            <span class="text-4xl text-text-light opacity-50 absolute">כוס גדולה</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2 text-accent-light">כוס גדולה</h3>
+                        <p class="text-lg mb-4">כוס קרמיקה גדולה, מושלמת לקפה של בוקר או תה מרגיע. תחושה של אדמה בכל לגימה.</p>
+                        <span class="text-3xl font-bold text-accent-dark">₪65</span>
+                    </div>
+                    <div class="bg-secondary-bg text-text-light p-6 rounded-lg shadow-xl fade-in" style="transition-delay: 1.4s;">
+                        <div class="placeholder-ceramic mb-4 relative flex items-center justify-center">
+                            <span class="text-4xl text-text-light opacity-50 absolute">כוס קטנה</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2 text-accent-light">כוס קטנה</h3>
+                        <p class="text-lg mb-4">כוס קרמיקה קטנה, מתאימה לאספרסו או לכוס מים צוננת. יופי בפשטותו.</p>
+                        <span class="text-3xl font-bold text-accent-dark">₪45</span>
+                    </div>
+                    <div class="bg-secondary-bg text-text-light p-6 rounded-lg shadow-xl fade-in" style="transition-delay: 1.5s;">
+                        <div class="placeholder-ceramic mb-4 relative flex items-center justify-center">
+                            <span class="text-4xl text-text-light opacity-50 absolute">קנקן</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2 text-accent-light">קנקן</h3>
+                        <p class="text-lg mb-4">קנקן קרמיקה אלגנטי, אידיאלי למים, מיץ או אפילו ככלי קיבול לפרחים טריים מהמשתלה.</p>
+                        <span class="text-3xl font-bold text-accent-dark">₪120</span>
+                    </div>
+                </div>
+                <p class="text-center text-xl mt-12 font-assistant text-text-light opacity-80 fade-in" style="transition-delay: 1.6s;">
+                    לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="relative py-12 px-8 lg:px-16 text-center section-bg-light text-primary-bg overflow-hidden">
+            <div class="container mx-auto max-w-4xl fade-in" style="transition-delay: 1.7s;">
+                <h2 class="text-3xl lg:text-4xl font-frank-ruhl-libre mb-6 text-accent-dark">בואו לבקר אותנו</h2>
+                <p class="text-xl lg:text-2xl mb-4 font-assistant">
+                    סבאיה - מקום שבו זמן עומד מלכת, והיופי הפשוט של הטבע מתחבר לחוויות יומיומיות.
+                </p>
+                <div class="text-lg lg:text-xl font-assistant leading-loose">
+                    <p>כתובת: רחוב הדגנים 12, עיר כלשהי, 12345</p>
+                    <p>טלפון: <a href="tel:+972-55-1234567" class="text-accent-dark hover:underline">+972-55-1234567</a></p>
+                    <p>דוא"ל: <a href="mailto:info@sabaya.co.il" class="text-accent-dark hover:underline">info@sabaya.co.il</a></p>
+                </div>
+                <p class="mt-8 text-sm opacity-70 font-assistant">
+                    &copy; 2024 סבאיה. כל הזכויות שמורות. יצירה דיגיטלית בהשראת ריאליזם חברתי.
+                </p>
+            </div>
+        </footer>
+
+    </div> <!-- End Main Content Wrapper -->
+
+    <!-- JavaScript for Custom Cursor, Parallax, and Scroll Animations -->
+    <script>
+        const cursor = document.querySelector('.custom-cursor');
+        const interactableElements = 'a, button, .menu-item-card, [role="button"]'; // Define elements that trigger cursor change
+
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+        });
+
+        document.addEventListener('mouseover', e => {
+            if (e.target.closest(interactableElements)) {
+                cursor.classList.add('active');
+            }
+        });
+
+        document.addEventListener('mouseout', e => {
+            if (e.target.closest(interactableElements)) {
+                cursor.classList.remove('active');
+            }
+        });
+
+        // Scroll-triggered animations (Fade-in effect)
+        const fadeIns = document.querySelectorAll('.fade-in');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1 // Trigger when 10% of the item is visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // Stop observing once visible
+                }
+            });
+        }, observerOptions);
+
+        fadeIns.forEach(el => observer.observe(el));
+
+        // Initial check for elements already in view on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            fadeIns.forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight) {
+                    el.classList.add('visible');
+                }
+            });
+        });
+
+        // Simple Parallax Effect (background-attachment: fixed provides a good base)
+        // For more dynamic elements:
+        const parallaxElements = document.querySelectorAll('.parallax-bg-1, .parallax-bg-2');
+
+        window.addEventListener('scroll', () => {
+            let scrollPosition = window.pageYOffset;
+
+            // Example: Move elements based on scroll, relative to their position
+            // This needs to be applied to elements with 'position: absolute' within a 'position: relative' parent
+            // For this design, background-attachment: fixed on sections already gives a strong parallax feel.
+            // If explicit parallax needed for overlay divs, they'd be separate.
+            // Keeping it simple with CSS 'fixed' for backgrounds for file size/complexity.
+        });
+
+    </script>
+</body>
+</html>

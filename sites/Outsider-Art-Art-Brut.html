@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - אמנות אאוטסיידר</title>
+    <!-- Google Fonts for Art Brut style: Rubik Doodle Shadow for headings, Assistant for body -->
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Tailwind configuration for custom theme colors and fonts */
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        :root {
+            --primary-bg: #1c1917; /* stone-900 */
+            --secondary-bg: #292524; /* stone-800 */
+            --accent-bg: #57534e; /* stone-600 */
+            --text-light: #f5f5f4; /* stone-100 */
+            --text-dark: #292524; /* stone-800 */
+            --accent-color-1: #dc2626; /* red-600 */
+            --accent-color-2: #fbbf24; /* amber-400 */
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Assistant', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            cursor: none; /* Hide default cursor */
+        }
+
+        /* High-Contrast Custom Cursor */
+        .custom-cursor {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease-out; /* Smooth follow effect */
+            transform: translate(-50%, -50%); /* Center the cursor on the mouse position */
+            border: 2px solid #FFFFFF; /* White border for contrast on dark */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Dark shadow for contrast on light */
+        }
+
+        /* Custom Scrollbar for artistic touch (Webkit browsers) */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color-2);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color-1);
+        }
+
+        /* Custom font utility class */
+        .rubik-doodle-shadow {
+            font-family: 'Rubik Doodle Shadow', sans-serif;
+        }
+
+        /* Art Brut Background: textured with SVG filter */
+        .art-brut-bg {
+            background-image:
+                linear-gradient(rgba(28, 25, 23, 0.8), rgba(28, 25, 23, 0.8)), /* Dark overlay for text contrast */
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="f1" x="-50%" y="-50%" width="200%" height="200%"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" result="noise" /><feDiffuseLighting in="noise" lighting-color="white" surfaceScale="5" result="light"><feDistantLight azimuth="225" elevation="45" /></feDiffuseLighting><feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" /></filter></defs><rect width="100" height="100" fill="%23292524" filter="url(%23f1)" /></svg>');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        /* Art Brut Text Block styling: irregular, layered shadow, slight rotation */
+        .art-brut-text-block {
+            padding: 1.5rem;
+            margin: 1rem;
+            border: 2px solid var(--accent-color-2);
+            box-shadow: 8px 8px 0px var(--accent-color-1), 16px 16px 0px rgba(0,0,0,0.5);
+            transform: rotate(-2deg) skewX(-1deg);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        .art-brut-text-block:hover {
+            transform: rotate(0deg) skewX(0deg);
+            box-shadow: 4px 4px 0px var(--accent-color-1), 8px 8px 0px rgba(0,0,0,0.3);
+        }
+
+        /* Navigation item styling: expressive underlines on hover/active */
+        .nav-item {
+            position: relative;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-decoration: none;
+            overflow: hidden;
+            transition: color 0.3s ease;
+            white-space: nowrap; /* Prevent wrapping */
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--accent-color-2);
+            transform: translateX(-100%); /* Start off-screen */
+            transition: transform 0.3s ease-out;
+        }
+
+        .nav-item:hover::before {
+            transform: translateX(0); /* Slide in */
+        }
+
+        .nav-item.active {
+            color: var(--accent-color-1);
+            transform: rotate(-3deg); /* Active item is slightly rotated */
+        }
+        .nav-item.active::before {
+            transform: translateX(0);
+            background-color: var(--accent-color-1);
+        }
+
+        /* Section Background Patterns (Subtle textured overlays via SVG data URI) */
+        .section-bg-pattern-1 {
+            background-image: url('data:image/svg+xml;utf8,<svg width="4" height="4" viewBox="0 0 4 4" xmlns="http://www.w3.org/2000/svg"><g fill="%2357534e" fill-opacity="0.4" fill-rule="evenodd"><path d="M0 0h1v1H0V0zm2 2h1v1H2V2zm0-2h1v1H2V0zM0 2h1v1H0V2z"/></g></svg>');
+        }
+        .section-bg-pattern-2 {
+            background-image: url('data:image/svg+xml;utf8,<svg width="6" height="6" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"><g fill="%2357534e" fill-opacity="0.4" fill-rule="evenodd"><path d="M5 0h1L0 6V5zm1 5v1H5zM0 0h1v1H0z"/></g></svg>');
+        }
+
+        /* Product Placeholder Styling (No external images, use styled divs) */
+        .product-placeholder {
+            min-height: 200px;
+            background-color: var(--accent-bg);
+            border: 2px dashed var(--accent-color-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-light);
+            transform: rotate(1deg) skewX(0.5deg); /* Slight artistic distortion */
+        }
+        .product-placeholder::before {
+            content: '?'; /* A simple question mark for abstraction */
+            font-size: 3em;
+            opacity: 0.5;
+            position: absolute;
+        }
+    </style>
+</head>
+<body class="bg-stone-900 text-stone-100 font-assistant relative">
+
+    <!-- Custom Cursor Element -->
+    <div class="custom-cursor"></div>
+
+    <!-- Fixed, abstract background layer with Art Brut texture -->
+    <div class="fixed inset-0 w-full h-full art-brut-bg z-[-1]"></div>
+
+    <!-- Navigation - fixed and deliberately off-kilter -->
+    <nav class="fixed top-0 right-0 p-4 z-50 flex flex-col items-end transform rotate-1 translate-x-4">
+        <a href="#home" class="nav-item active" data-section="home">בית</a>
+        <a href="#menu" class="nav-item" data-section="menu">תפריט</a>
+        <a href="#wood-products" class="nav-item" data-section="wood-products">כפית עץ</a>
+        <a href="#ceramic-products" class="nav-item" data-section="ceramic-products">מוצרי קרמיקה</a>
+    </nav>
+
+    <!-- Main Content Area - scrolls over the background -->
+    <main class="relative z-10 p-4 md:p-8 lg:p-16 max-w-7xl mx-auto mt-20">
+
+        <!-- Home Section: A fragmented, poetic welcome -->
+        <section id="home" class="section-content min-h-screen flex items-center justify-center py-20 section-bg-pattern-1">
+            <div class="max-w-4xl text-center p-8 bg-stone-800 bg-opacity-80 rounded-lg shadow-xl art-brut-text-block hover:scale-105">
+                <h1 class="text-6xl md:text-8xl rubik-doodle-shadow text-amber-400 mb-6 leading-tight transform -rotate-2">
+                    ברוכים אנו<br>לממלכה הסבוכה של <span class="text-red-600">סבאיה</span>
+                </h1>
+                <p class="text-xl md:text-2xl leading-relaxed text-stone-200 mb-8 transform rotate-1 skew-x-0.5">
+                    כאן, בין עורקים ירוקים של צמחים חסרי פשר, לוחשת קריאת הקפה.<br>
+                    לא יופי נקי, כי אם פראות חמה. לא סדר, כי אם נשמה חשופה.<br>
+                    חפשו את הקצב, את הכתם, את הלחישה העתיקה באוויר הכבד.<br>
+                    היו אורחים, היו זרים. חוו את סבאיה.
+                </p>
+                <a href="#menu" class="inline-block px-8 py-3 bg-red-600 text-stone-100 font-bold text-xl rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 rotate-3 -skew-x-2">
+                    פיתולים בתפריט
+                </a>
+            </div>
+        </section>
+
+        <!-- Menu Section: Culinary madness and fragmented descriptions -->
+        <section id="menu" class="section-content min-h-screen py-20 section-bg-pattern-2 hidden">
+            <h2 class="text-5xl md:text-7xl rubik-doodle-shadow text-amber-400 text-center mb-12 transform rotate-2">
+                רשימת הטירוף הקולינרי
+            </h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Food Items -->
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2 transform -rotate-1">הסבביח המסתורי</h3>
+                    <p class="text-stone-200 leading-relaxed mb-4">
+                        ביצה קשה, שברי טונה, חציל מעושן ללא מנוח.<br>
+                        מטבוחה אדומה כדם האדמה, מלפפון חמוץ כצחוק עתיק.<br>
+                        לימון כבוש, זיכרון חמוץ מתוק.<br>
+                        מוגש עם זיתים עיוורים וסלט אישי-בודד.
+                    </p>
+                    <p class="text-xl font-bold text-amber-400 transform rotate-2">₪36</p>
+                </div>
+
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2 transform rotate-2">פנסיבאיה - חלום מעוות</h3>
+                    <p class="text-stone-200 leading-relaxed mb-4">
+                        פטריות רוקדות בוואלס כמהין נשכח.<br>
+                        גבינות שמנת כענן סמיך, גראנה פדאנו כגרגר חול יקר.<br>
+                        רוקט זועק, בלסמי לוחש.<br>
+                        מוגש עם זיתים עיוורים וסלט אישי-בודד.
+                    </p>
+                    <p class="text-xl font-bold text-amber-400 transform -rotate-1">₪45</p>
+                </div>
+
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2 transform -rotate-3">כריך הטבעוני - לחישות אדמה</h3>
+                    <p class="text-stone-200 leading-relaxed mb-4">
+                        ממרח חציל שחור, גבינת סויה שקטה, עגבניות מיובשות כדמעות שמש.<br>
+                        רוקט זועק את שתיקתו.<br>
+                        מוגש עם זיתים עיוורים וסלט אישי-בודד.
+                    </p>
+                    <p class="text-xl font-bold text-amber-400 transform rotate-1">₪45</p>
+                </div>
+
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2 transform rotate-1">פלטת גבינות: לוח השנה העתיק</h3>
+                    <p class="text-stone-200 leading-relaxed mb-4">
+                        גבינות ולחמים מחוספסים, מלווים במטבלים: חמאה מוקצפת מתובלת כרוח רפאים.<br>
+                        טחינה יוגורט כענן צח, ריבה סמיכה כדם תותים.
+                    </p>
+                    <p class="text-xl font-bold text-amber-400 transform -rotate-2">₪68</p>
+                </div>
+                
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2 transform -rotate-2">סלט במבי: רקדנית היער</h3>
+                    <p class="text-stone-200 leading-relaxed mb-4">
+                        חסות פרועות, בצל סגול כסוד נסתר, תפוח ירוק נושך, עגבניות שרי כעיניים בוהקות, מלפפון לוחש.<br>
+                        פקאן מסוכר כנשיקת יער, עם פטה זרה ורוטב נדיר שהגיע מאין סוף.
+                    </p>
+                    <p class="text-xl font-bold text-amber-400 transform rotate-3">₪36</p>
+                </div>
+
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2 transform rotate-1">סלט חלבון: כוח האדמה</h3>
+                    <p class="text-stone-200 leading-relaxed mb-4">
+                        עדשים שחורות ככוכבים, קינואה כחולות נדודים, בטטה צלויה כזיכרון חם.<br>
+                        חומוסים לוחשים, תרד טרי כנשימת עשב, ביצה קשה כעין אחת פקוחה.<br>
+                        גרעיני דלעת וגרידת לימון ככתר קטן.
+                    </p>
+                    <p class="text-xl font-bold text-amber-400 transform -rotate-1">₪32</p>
+                </div>
+
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2 transform -rotate-1">מוזלי מור: שיר הפרא</h3>
+                    <p class="text-stone-200 leading-relaxed mb-4">
+                        יוגורט פרו כנהר קפוא, חצילים קלויים כעור נחש, ביצה קשה ככדור עין.<br>
+                        טחינה וגרעיני דלעת. מתובל באריסה מתוקה ולימון כבוש כחידה.<br>
+                        מוגש עם פיתה קראנץ' - קול שבירה.
+                    </p>
+                    <p class="text-xl font-bold text-amber-400 transform rotate-2">₪42</p>
+                </div>
+
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2 transform rotate-2">קערת אסאי: סודות הפרי העמוק</h3>
+                    <p class="text-stone-200 leading-relaxed mb-4">
+                        עם גרנולה כמפת כוכבים, שבבי קוקוס כפתיתי שלג טרופי, ופרי העונה הלוחש.
+                    </p>
+                    <p class="text-xl font-bold text-amber-400 transform -rotate-1">₪39</p>
+                </div>
+
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2 transform -rotate-3">קיש: מעגל האפלה</h3>
+                    <p class="text-stone-200 leading-relaxed mb-4">
+                        ברוקולי/פטריות/בצל ויין לבן. מוגש עם סלט אישי ושמנת חמוצה.<br>
+                        (בחר את סודך)
+                    </p>
+                    <p class="text-xl font-bold text-amber-400 transform rotate-1">₪37</p>
+                </div>
+                
+                <!-- Sweets Sub-section -->
+                <div class="col-span-full text-center my-8">
+                    <h3 class="text-4xl rubik-doodle-shadow text-amber-400 transform -rotate-2">מתוקים: עונג נסתר</h3>
+                </div>
+
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h4 class="text-2xl rubik-doodle-shadow text-red-600 mb-2">קוראסון שוקולד גדול - ליבה שחורה</h4>
+                    <p class="text-xl font-bold text-amber-400">₪19</p>
+                </div>
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h4 class="text-2xl rubik-doodle-shadow text-red-600 mb-2">קוראסון שקדים/פיסטוק גדול - נשיקה ירוקה/לבנה</h4>
+                    <p class="text-xl font-bold text-amber-400">₪22</p>
+                </div>
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h4 class="text-2xl rubik-doodle-shadow text-red-600 mb-2">עוגה בחושה בננה ושוקולד - לילות מתוקים</h4>
+                    <p class="text-xl font-bold text-amber-400">₪15</p>
+                </div>
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h4 class="text-2xl rubik-doodle-shadow text-red-600 mb-2">פאי תפוחים קרמבל - התפוררות העונג</h4>
+                    <p class="text-xl font-bold text-amber-400">₪44</p>
+                    <p class="text-sm text-stone-300 mt-1">מוגש עם כדור גלידה - קרח ונשמה</p>
+                </div>
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h4 class="text-2xl rubik-doodle-shadow text-red-600 mb-2">פאי מרנג לימון - חמיצות עליזה</h4>
+                    <p class="text-xl font-bold text-amber-400">₪31</p>
+                </div>
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h4 class="text-2xl rubik-doodle-shadow text-red-600 mb-2">אוראו צ'יז קייק - חטא שחור-לבן</h4>
+                    <p class="text-xl font-bold text-amber-400">₪38</p>
+                </div>
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h4 class="text-2xl rubik-doodle-shadow text-red-600 mb-2">קראנץ' סניקרס - רסיסי כוח</h4>
+                    <p class="text-xl font-bold text-amber-400">₪23</p>
+                </div>
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <h4 class="text-2xl rubik-doodle-shadow text-red-600 mb-2">עוגת שילה - סוד העבר</h4>
+                    <p class="text-xl font-bold text-amber-400">₪44</p>
+                </div>
+            </div>
+            <p class="text-center text-stone-400 mt-12 text-lg transform rotate-1">
+                לשאלות והזמנות, אנא פנו אלינו בבית הקפה - לחישה או זעקה.
+            </p>
+        </section>
+
+        <!-- Wood Products Section: Whispers of the wild forest -->
+        <section id="wood-products" class="section-content min-h-screen py-20 section-bg-pattern-1 hidden">
+            <h2 class="text-5xl md:text-7xl rubik-doodle-shadow text-amber-400 text-center mb-12 transform -rotate-3">
+                עץ-לחישות: חפצי היער הפראי
+            </h2>
+            <p class="max-w-3xl mx-auto text-center text-xl leading-relaxed text-stone-200 mb-16 transform rotate-1">
+                מתוך סיבי העץ העתיקים, מתוך נשמת היער שנדמה כי עברה דרכו יד גסה ועם זאת עדינה.<br>
+                מוצרים אלה הם סימנים, לא רק חפצים. עדות לחומר שחי ונשם, ועתה נוצר מחדש.<br>
+                כל עיקול, כל שריטה - סיפור. כל גוון - זיכרון.<br>
+                טבעי, גולמי, ידידותי לזכרונות העבר.
+            </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <div class="product-placeholder mb-4 text-stone-200">בקבוקי שתיה</div>
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2">כלי הקיבול של הרוח</h3>
+                    <p class="text-stone-200 mb-4">בקבוקי מים, אוגרי צמא עתיק.</p>
+                    <p class="text-xl font-bold text-amber-400 transform rotate-2">₪89</p>
+                </div>
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <div class="product-placeholder mb-4 text-stone-200">צנצנות קטנות</div>
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2">כדי הסודות הקטנים</h3>
+                    <p class="text-stone-200 mb-4">צנצנות ללחישות, לסודות, לגרעיני שתיקה.</p>
+                    <p class="text-xl font-bold text-amber-400 transform -rotate-1">₪45</p>
+                </div>
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <div class="product-placeholder mb-4 text-stone-200">צנצנות גדולות</div>
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2">מגני הזיכרון הגדולים</h3>
+                    <p class="text-stone-200 mb-4">צנצנות גדולות, אוגרות אבק כוכבים ותקוות נשכחות.</p>
+                    <p class="text-xl font-bold text-amber-400 transform rotate-3">₪75</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ceramic Products Section: Cries of the burning earth -->
+        <section id="ceramic-products" class="section-content min-h-screen py-20 section-bg-pattern-2 hidden">
+            <h2 class="text-5xl md:text-7xl rubik-doodle-shadow text-amber-400 text-center mb-12 transform rotate-2">
+                חרס-הכוכבים: קריאות האדמה הבוערת
+            </h2>
+            <p class="max-w-3xl mx-auto text-center text-xl leading-relaxed text-stone-200 mb-16 transform -rotate-1">
+                אדמה שעיצבו אותה ייסורי האש, ונגעו בה ידיים חולמניות.<br>
+                כאן, בחומר הגס, בחיפוי הטבעי המחוספס, שוכנת נשמת העולם התחתון.<br>
+                הם לא רק כלים, הם קולות. כלים עתיקים שחולמים על חום ומשמיעים אגדות אדמה.
+            </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <div class="product-placeholder mb-4 text-stone-200">כוס גדולה</div>
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2">כוס הבכי הגדולה</h3>
+                    <p class="text-stone-200 mb-4">מקום רחב, למשקאות כבדים, לגעגועים.</p>
+                    <p class="text-xl font-bold text-amber-400 transform -rotate-2">₪65</p>
+                </div>
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <div class="product-placeholder mb-4 text-stone-200">כוס קטנה</div>
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2">כוס הלחישה הקטנה</h3>
+                    <p class="text-stone-200 mb-4">ללגימות מהירות, לסודות קטנים, לשתיקה.</p>
+                    <p class="text-xl font-bold text-amber-400 transform rotate-1">₪45</p>
+                </div>
+                <div class="bg-stone-800 bg-opacity-90 p-6 rounded-lg shadow-md art-brut-text-block">
+                    <div class="product-placeholder mb-4 text-stone-200">קנקן</div>
+                    <h3 class="text-3xl rubik-doodle-shadow text-red-600 mb-2">קנקן הזיכרונות העכורים</h3>
+                    <p class="text-stone-200 mb-4">מוזג נחמה, או אולי תעלומה, בכלי חרס כבד.</p>
+                    <p class="text-xl font-bold text-amber-400 transform -rotate-3">₪120</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // JavaScript for Custom Cursor, Section Navigation, and subtle interactivity
+
+        // Custom Cursor Logic
+        const cursor = document.querySelector('.custom-cursor');
+        let mouseX = 0, mouseY = 0; // Target mouse position
+        let cursorX = 0, cursorY = 0; // Current cursor position
+        let speed = 0.2; // Adjust for slower/faster cursor follow
+
+        function animateCursor() {
+            // Lerp the cursor's position towards the mouse position
+            cursorX += (mouseX - cursorX) * speed;
+            cursorY += (mouseY - cursorY) * speed;
+            // Apply translation directly to avoid layout thrashing
+            cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+            requestAnimationFrame(animateCursor); // Loop animation
+        }
+
+        // Update target mouse position on mouse move
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // Start cursor animation loop
+        animateCursor();
+
+        // Section Navigation Logic
+        const navLinks = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('.section-content');
+        const mainContent = document.querySelector('main');
+
+        // Function to show a specific section and hide others with transition
+        function showSection(id) {
+            sections.forEach(section => {
+                if (section.id === id) {
+                    section.classList.remove('hidden');
+                    section.classList.add('animate-fadeIn'); // Apply fade-in animation
+                    section.style.pointerEvents = 'auto'; // Make content interactive
+                } else {
+                    section.classList.add('hidden');
+                    section.classList.remove('animate-fadeIn');
+                    section.style.pointerEvents = 'none'; // Prevent interaction with hidden content
+                }
+            });
+
+            // Update active state for navigation links
+            navLinks.forEach(link => {
+                if (link.getAttribute('data-section') === id) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+
+        // Add event listeners to navigation links
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent default anchor jump
+                const targetSectionId = link.getAttribute('data-section');
+                showSection(targetSectionId);
+                // Scroll to the top of the main content area for a consistent experience
+                mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Initialize section based on URL hash or default to 'home'
+        const initialHash = window.location.hash.substring(1);
+        if (initialHash && document.getElementById(initialHash)) {
+            showSection(initialHash);
+        } else {
+            showSection('home');
+        }
+
+        // Define a simple CSS keyframe animation for section transitions
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fadeIn {
+                animation: fadeIn 0.8s ease-out forwards;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Parallax-like effect for text blocks on scroll (generative subtle movement)
+        const textBlocks = document.querySelectorAll('.art-brut-text-block');
+
+        // Store original transforms and assign random parallax speeds
+        textBlocks.forEach(block => {
+            block.dataset.originalTransform = block.style.transform;
+            // Assign a random speed between -0.05 and 0.05 for varied movement
+            block.dataset.parallaxSpeed = (Math.random() * 0.1 - 0.05).toFixed(2);
+        });
+
+        mainContent.addEventListener('scroll', () => {
+            const scrollY = mainContent.scrollTop;
+            textBlocks.forEach(block => {
+                const speed = parseFloat(block.dataset.parallaxSpeed);
+                const translateY = scrollY * speed;
+                // Combine original transform with scroll-induced translation
+                block.style.transform = `translateY(${translateY}px) ${block.dataset.originalTransform}`;
+            });
+        });
+    </script>
+</body>
+</html>

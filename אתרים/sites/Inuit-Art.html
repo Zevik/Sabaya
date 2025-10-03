@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה: רוח הקפה והאבן</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS */
+        html {
+            scroll-behavior: smooth;
+            cursor: none; /* Hide default cursor to ensure custom one is prominent */
+        }
+        body {
+            font-family: 'Rubik', sans-serif; /* Default body font */
+            color: #d1d5db; /* Default light gray text for dark backgrounds */
+            background-color: #0c0a09; /* Stone-900 */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Frank Ruhl Libre', serif; /* Title font for a 'carved' feel */
+            color: #f8fafc; /* White */
+        }
+
+        /* Custom Cursor Style - MANDATORY high-contrast */
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: transparent;
+            border: 2px solid #FFFFFF; /* High contrast: White border visible on dark backgrounds */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* High contrast: Dark shadow visible on light backgrounds */
+            pointer-events: none; /* Allows clicks to pass through */
+            transform: translate(-50%, -50%); /* Centers the cursor */
+            z-index: 9999; /* Always on top */
+            transition: transform 0.1s ease-out, width 0.1s ease-out, height 0.1s ease-out, border-radius 0.1s ease-out;
+        }
+        .custom-cursor.hovered {
+            width: 30px;
+            height: 30px;
+            border-radius: 10px; /* More blocky/carved when hovered, like a tool */
+            border-color: #fcd34d; /* Amber-300 for a warm accent */
+        }
+
+        /* Full-screen background for Inuit Art feel - Layer 1 (Gradient) */
+        .inuit-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1; /* Behind content */
+            background: radial-gradient(circle at 50% 10%, #1e293b 0%, #0c0a09 70%); /* Deep blue-gray to dark stone */
+            opacity: 0.9;
+            animation: subtle-pulse 15s infinite alternate ease-in-out; /* Subtle breathing effect */
+        }
+
+        /* Background texture overlay - Layer 2 (Pattern) */
+        .inuit-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2; /* Even further behind */
+            /* Inline SVG data URI for a subtle, repeating geometric pattern */
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23222222' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1; /* Very subtle */
+        }
+
+        /* Subtle background pulse animation for .inuit-background */
+        @keyframes subtle-pulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 0.95; }
+        }
+
+        /* Custom scrollbar for aesthetic coherence */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #292524; /* Stone-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #57534e; /* Stone-600 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #78716c; /* Stone-500 */
+        }
+
+        /* Navigation item hover effect - Underline from right (RTL) */
+        .nav-link-item {
+            position: relative;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+        .nav-link-item::after {
+            content: '';
+            position: absolute;
+            right: 0; /* Starts from right for RTL */
+            bottom: -5px;
+            width: 0;
+            height: 2px;
+            background-color: #fcd34d; /* Amber-300 */
+            transition: width 0.3s ease;
+        }
+        .nav-link-item:hover::after,
+        .nav-link-item.active::after {
+            width: 100%;
+            right: 0; /* Expands across */
+        }
+
+        /* Prevent body scroll when mobile menu is open */
+        .mobile-menu-open {
+            overflow: hidden;
+        }
+
+        /* Custom animations for scroll reveal */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            transition-delay: var(--delay, 0s);
+        }
+        .animate-fade-in-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .animate-fade-in-left {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            transition-delay: var(--delay, 0s);
+        }
+        .animate-fade-in-left.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .animate-fade-in-right {
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            transition-delay: var(--delay, 0s);
+        }
+        .animate-fade-in-right.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        @keyframes pulseSlow {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+        .animate-pulse-slow {
+            animation: pulseSlow 4s infinite ease-in-out;
+        }
+
+        /* Delay utility classes for animations */
+        .delay-100 { --delay: 0.1s; }
+        .delay-200 { --delay: 0.2s; }
+        .delay-300 { --delay: 0.3s; }
+        .delay-400 { --delay: 0.4s; }
+        .delay-500 { --delay: 0.5s; }
+    </style>
+</head>
+<body class="bg-stone-900 text-gray-200 antialiased overflow-x-hidden">
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+
+    <!-- Inuit Background Layer 1 (Gradient) -->
+    <div class="inuit-background"></div>
+    <!-- Inuit Background Layer 2 (Texture) -->
+    <div class="inuit-texture"></div>
+
+    <!-- Main Application Container -->
+    <div id="app" class="relative z-[1] min-h-screen">
+
+        <!-- Header - Navigation -->
+        <header class="fixed top-0 w-full bg-stone-900 bg-opacity-80 backdrop-blur-sm z-50 shadow-lg border-b border-stone-700">
+            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#hero" class="text-3xl font-bold text-white tracking-wide hover:text-amber-300 transition-colors duration-300">
+                    <span class="sr-only">סבאיה</span>
+                    <span class="text-amber-300">ס</span>באיה <!-- Stylized first letter -->
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex space-x-8 space-x-reverse text-lg font-frank-ruhl-libre font-medium">
+                    <a href="#hero" class="nav-link-item text-white hover:text-amber-300">בית</a>
+                    <a href="#about" class="nav-link-item text-white hover:text-amber-300">הרוח</a>
+                    <a href="#menu" class="nav-link-item text-white hover:text-amber-300">המנחות</a>
+                    <a href="#wood-products" class="nav-link-item text-white hover:text-amber-300">יצירות עץ</a>
+                    <a href="#ceramic-products" class="nav-link-item text-white hover:text-amber-300">אמנות חרס</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-white focus:outline-none">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Mobile Menu Sidebar -->
+            <div id="mobile-menu" class="fixed inset-y-0 right-0 w-64 bg-stone-900 bg-opacity-95 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50 p-6 flex flex-col space-y-6 border-r border-stone-700">
+                <button id="close-mobile-menu" class="self-start text-white focus:outline-none mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                <a href="#hero" class="text-white text-2xl font-bold hover:text-amber-300 transition-colors duration-300 block py-2" onclick="closeMobileMenu()">בית</a>
+                <a href="#about" class="text-white text-2xl font-bold hover:text-amber-300 transition-colors duration-300 block py-2" onclick="closeMobileMenu()">הרוח</a>
+                <a href="#menu" class="text-white text-2xl font-bold hover:text-amber-300 transition-colors duration-300 block py-2" onclick="closeMobileMenu()">המנחות</a>
+                <a href="#wood-products" class="text-white text-2xl font-bold hover:text-amber-300 transition-colors duration-300 block py-2" onclick="closeMobileMenu()">יצירות עץ</a>
+                <a href="#ceramic-products" class="text-white text-2xl font-bold hover:text-amber-300 transition-colors duration-300 block py-2" onclick="closeMobileMenu()">אמנות חרס</a>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="pt-24 pb-16">
+
+            <!-- Hero Section -->
+            <section id="hero" class="relative min-h-screen flex items-center justify-center text-center p-8 overflow-hidden">
+                <!-- Parallax background element - abstract representation of a vast landscape -->
+                <div class="parallax-element absolute inset-0 bg-cover bg-center" style="background: linear-gradient(to top, #0c0a09 0%, #1e293b 70%); opacity: 0.2;" data-parallax-speed="0.2">
+                </div>
+
+                <div class="relative z-10 max-w-4xl mx-auto bg-stone-800/70 p-10 md:p-16 rounded-xl shadow-2xl border border-stone-700 backdrop-blur-sm">
+                    <h1 class="text-5xl md:text-7xl font-frank-ruhl-libre font-bold text-amber-300 leading-tight mb-6 animate-fade-in-up">
+                        סבאיה: רוח הקפה והאבן
+                    </h1>
+                    <p class="text-lg md:text-2xl text-gray-300 leading-relaxed mb-8 animate-fade-in-up delay-200">
+                        ברוכים הבאים לסבאיה - שם נפגשות הרוחות הקדומות עם ניחוח הקפה הטרי. מקלט חם בלב הטבע, יצוק באמנות ובהשראה אינואיטית.
+                    </p>
+                    <a href="#about" class="inline-block bg-amber-500 hover:bg-amber-600 text-stone-900 font-bold py-4 px-10 rounded-lg text-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 animate-fade-in-up delay-400">
+                        חקור את הרוח
+                        <span class="inline-block mr-2 transform -rotate-90">
+                            <!-- Simple down arrow SVG to indicate scrolling -->
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path></svg>
+                        </span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- About Section - The Spirit -->
+            <section id="about" class="py-20 md:py-32 bg-gradient-to-t from-stone-900 via-blue-950 to-stone-900 border-t border-b border-stone-700 relative overflow-hidden">
+                 <!-- Parallax background element - subtle blue hint like ice or distant mountains -->
+                <div class="parallax-element absolute inset-0 bg-stone-800/20 z-0" data-parallax-speed="0.1"></div>
+
+                <div class="container mx-auto px-6 relative z-10">
+                    <h2 class="text-4xl md:text-6xl font-frank-ruhl-libre font-bold text-center text-white mb-12 animate-fade-in-up">
+                        הרוח שביצירה
+                    </h2>
+                    <div class="max-w-4xl mx-auto text-center">
+                        <p class="text-lg md:text-xl text-gray-300 leading-loose mb-8 animate-fade-in-up delay-200">
+                            סבאיה אינה רק בית קפה, היא חוויה. בפינה שקטה זו, בין עצי המשתלה המוריקים, אנו מציעים מפגש עמוק עם מהות הטבע והאמנות.
+                            בהשראת האמנות האינואיטית, אנו רואים בכל פריט וכל כוס קפה יצירה שנוצרה עם כוונה ואהבה, מהדהדת את עוצמת האדמה והרוח הצפונית.
+                        </p>
+                        <p class="text-base md:text-lg text-gray-400 leading-relaxed animate-fade-in-up delay-400">
+                            כל לגימה היא מסע, כל נגיעה היא חיבור - לחומר, לטבע, ולסיפורים העתיקים שחרוטים בנוף הנפש.
+                        </p>
+                    </div>
+                    <!-- Abstract Inuit "spirit" graphic - a simple, iconic shape -->
+                    <div class="mt-16 flex justify-center animate-fade-in-up delay-500">
+                        <div class="w-32 h-32 md:w-48 md:h-48 rounded-full bg-stone-700 flex items-center justify-center shadow-inner border-2 border-amber-300 animate-pulse-slow">
+                            <!-- Abstract, stylized human or spirit figure -->
+                            <svg class="w-20 h-20 md:w-32 md:h-32 text-amber-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Menu Section - Offerings -->
+            <section id="menu" class="py-20 md:py-32 bg-stone-900 border-t border-b border-stone-700 relative overflow-hidden">
+                <div class="container mx-auto px-6 relative z-10">
+                    <h2 class="text-4xl md:text-6xl font-frank-ruhl-libre font-bold text-center text-white mb-12 animate-fade-in-up">
+                        המנחות שלנו: מזון הרוח והגוף
+                    </h2>
+                    
+                    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <!-- Food Category -->
+                        <div class="bg-stone-800 p-8 rounded-xl shadow-xl border border-stone-700 animate-fade-in-left">
+                            <h3 class="text-3xl font-frank-ruhl-libre font-semibold text-amber-300 mb-6 flex items-center">
+                                <span class="ml-3">
+                                    <!-- Abstract "earth" or "food" icon -->
+                                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                                    </svg>
+                                </span>
+                                מזון
+                            </h3>
+                            <div class="space-y-6">
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">כריך הציד - סבביח</h4>
+                                    <p class="text-gray-400 text-sm">ביצה קשה, טונה, חציל, מטבוחה, מלפפון חמוץ ולימון כבוש, מוגש עם זיתים וסלט אישי.</p>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪36</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">כריך החורש - פנסיבאיה</h4>
+                                    <p class="text-gray-400 text-sm">פטריות מוקפצות עם כמהין, גבינות שמנת וגראנה פדאנו, רוקט ובלסמי, מוגש עם זיתים וסלט אישי.</p>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪45</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">כריך הטבע - טבעוני</h4>
+                                    <p class="text-gray-400 text-sm">ממרח חציל שחור, גבינת סויה, עגבניות מיובשות ורוקט, מוגש עם זיתים וסלט אישי.</p>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪45</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">שפע המשתלה - פלטת גבינות ולחמים</h4>
+                                    <p class="text-gray-400 text-sm">חמאה מוקצפת מתובלת, טחינה יוגורט, ריבה.</p>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪68</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">סלט המפגש - במבי</h4>
+                                    <p class="text-gray-400 text-sm">חסות, בצל סגול, תפוח ירוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה ורוטב נדיר.</p>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪36</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">סלט החלבון - חלבון</h4>
+                                    <p class="text-gray-400 text-sm">עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון.</p>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪32</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">יוגורט הבוקר - מוזלי מור</h4>
+                                    <p class="text-gray-400 text-sm">יוגורט פרו, חצילים קלויים, ביצה קשה, טחינה, וגרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש, מוגש עם פיתה קראנץ'.</p>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪42</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">קערת הכוח - אסאי</h4>
+                                    <p class="text-gray-400 text-sm">עם גרנולה, שבבי קוקוס ופרי העונה.</p>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪39</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">מאפה המערה - קיש</h4>
+                                    <p class="text-gray-400 text-sm">ברוקולי/פטריות/בצל ויין לבן, מוגש עם סלט אישי ושמנת חמוצה.</p>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪37</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sweets Category -->
+                        <div class="bg-stone-800 p-8 rounded-xl shadow-xl border border-stone-700 animate-fade-in-right">
+                            <h3 class="text-3xl font-frank-ruhl-libre font-semibold text-amber-300 mb-6 flex items-center">
+                                <span class="ml-3">
+                                    <!-- Abstract "sweet" icon -->
+                                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                                    </svg>
+                                </span>
+                                מתוקים מהלב
+                            </h3>
+                            <div class="space-y-6">
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">קוראסון שוקולד - גדול</h4>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪19</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">קוראסון שקדים/פיסטוק - גדול</h4>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪22</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">עוגה בחושה בננה ושוקולד</h4>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪15</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">פאי תפוחים קרמבל</h4>
+                                    <p class="text-gray-400 text-sm">מוגש עם כדור גלידה.</p>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪44</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">פאי מרנג לימון</h4>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪31</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">אוראו צ'יז קייק</h4>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪38</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">קראנץ' סניקרס</h4>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪23</span>
+                                </div>
+                                <div class="menu-item">
+                                    <h4 class="text-xl font-semibold text-white mb-1">עוגת שילה</h4>
+                                    <span class="text-amber-300 font-bold text-lg mt-2 block">₪44</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center text-gray-500 text-sm mt-12 animate-fade-in-up">
+                        לשאלות והזמנות, אנא פנו אלינו בבית הקפה. כל המחירים בשקלים חדשים ועשויים להשתנות.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Wood Products Section - Carved by Hand -->
+            <section id="wood-products" class="py-20 md:py-32 bg-gradient-to-t from-stone-900 via-stone-800 to-stone-900 border-t border-b border-stone-700 relative overflow-hidden">
+                 <!-- Parallax background element - hint of wood grain or natural textures -->
+                <div class="parallax-element absolute inset-0 bg-blue-950/10 z-0" data-parallax-speed="0.15"></div>
+
+                <div class="container mx-auto px-6 relative z-10">
+                    <h2 class="text-4xl md:text-6xl font-frank-ruhl-libre font-bold text-center text-white mb-12 animate-fade-in-up">
+                        יצירות כפיים: נשמת העץ
+                    </h2>
+                    <p class="max-w-3xl mx-auto text-center text-lg md:text-xl text-gray-300 leading-loose mb-12 animate-fade-in-up delay-200">
+                        כל יצירת עץ מגולפת מספרת סיפור, מחומרים טבעיים בלבד, בהשראת מסורת האומנות האינואיטית של חיבור עמוק לטבע.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                        <!-- Wood Item: Drink Bottles -->
+                        <div class="bg-stone-800 p-6 rounded-xl shadow-xl border border-stone-700 text-center animate-fade-in-up">
+                            <div class="w-full h-48 bg-stone-700 rounded-lg mb-4 flex items-center justify-center">
+                                <span class="text-white text-5xl opacity-30 font-frank-ruhl-libre">בקבוק</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">בקבוקי שתיה - מגולפים</h3>
+                            <p class="text-gray-400 text-sm mb-4">בקבוקי מים מגולפים, לשמירה על הטבע ועל עצמך, עם נגיעות אומנותיות.</p>
+                            <span class="text-amber-300 font-bold text-xl block">₪89</span>
+                        </div>
+                        <!-- Wood Item: Small Jars -->
+                        <div class="bg-stone-800 p-6 rounded-xl shadow-xl border border-stone-700 text-center animate-fade-in-up delay-200">
+                            <div class="w-full h-48 bg-stone-700 rounded-lg mb-4 flex items-center justify-center">
+                                <span class="text-white text-5xl opacity-30 font-frank-ruhl-libre">צנצנת</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">צנצנות קטנות - אוצרות</h3>
+                            <p class="text-gray-400 text-sm mb-4">אוצרות טבע קטנים מגולפים בעץ, לשמירה על סודותיך או תבלינים יקרים.</p>
+                            <span class="text-amber-300 font-bold text-xl block">₪45</span>
+                        </div>
+                        <!-- Wood Item: Large Jars -->
+                        <div class="bg-stone-800 p-6 rounded-xl shadow-xl border border-stone-700 text-center animate-fade-in-up delay-400">
+                            <div class="w-full h-48 bg-stone-700 rounded-lg mb-4 flex items-center justify-center">
+                                <span class="text-white text-5xl opacity-30 font-frank-ruhl-libre">צנצנת</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">צנצנות גדולות - עוצמה</h3>
+                            <p class="text-gray-400 text-sm mb-4">צנצנות עץ גדולות, לאחסון ברוח המסורת והעוצמה האינואיטית.</p>
+                            <span class="text-amber-300 font-bold text-xl block">₪75</span>
+                        </div>
+                    </div>
+                    <p class="text-center text-gray-500 text-sm mt-12 animate-fade-in-up">
+                        לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Ceramic Products Section - Power of Earth -->
+            <section id="ceramic-products" class="py-20 md:py-32 bg-stone-900 border-t border-b border-stone-700 relative overflow-hidden">
+                <div class="container mx-auto px-6 relative z-10">
+                    <h2 class="text-4xl md:text-6xl font-frank-ruhl-libre font-bold text-center text-white mb-12 animate-fade-in-up">
+                        אמנות חרס: עוצמת האדמה
+                    </h2>
+                    <p class="max-w-3xl mx-auto text-center text-lg md:text-xl text-gray-300 leading-loose mb-12 animate-fade-in-up delay-200">
+                        מוצרי קרמיקה בעבודת יד, יצוקים באש, עם ציפוי טבעי בגוני אדמה חמים, מוסיפים אווירה של רוגע וחיבור.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                        <!-- Ceramic Item: Large Cup -->
+                        <div class="bg-stone-800 p-6 rounded-xl shadow-xl border border-stone-700 text-center animate-fade-in-up">
+                            <div class="w-full h-48 bg-stone-700 rounded-lg mb-4 flex items-center justify-center">
+                                <span class="text-white text-5xl opacity-30 font-frank-ruhl-libre">כוס</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">כוס גדולה - לטקס הקפה</h3>
+                            <p class="text-gray-400 text-sm mb-4">כוס קרמיקה גדולה וחזקה, לשמירה על חום וקור, ברוח האינואיטית.</p>
+                            <span class="text-amber-300 font-bold text-xl block">₪65</span>
+                        </div>
+                        <!-- Ceramic Item: Small Cup -->
+                        <div class="bg-stone-800 p-6 rounded-xl shadow-xl border border-stone-700 text-center animate-fade-in-up delay-200">
+                            <div class="w-full h-48 bg-stone-700 rounded-lg mb-4 flex items-center justify-center">
+                                <span class="text-white text-5xl opacity-30 font-frank-ruhl-libre">כוס</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">כוס קטנה - לרגעים של שקט</h3>
+                            <p class="text-gray-400 text-sm mb-4">כוס קטנה, מושלמת לרגעים של התבוננות ושקט, כמו נופי הקרח.</p>
+                            <span class="text-amber-300 font-bold text-xl block">₪45</span>
+                        </div>
+                        <!-- Ceramic Item: Pitcher -->
+                        <div class="bg-stone-800 p-6 rounded-xl shadow-xl border border-stone-700 text-center animate-fade-in-up delay-400">
+                            <div class="w-full h-48 bg-stone-700 rounded-lg mb-4 flex items-center justify-center">
+                                <span class="text-white text-5xl opacity-30 font-frank-ruhl-libre">קנקן</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">קנקן - למפגש השבט</h3>
+                            <p class="text-gray-400 text-sm mb-4">קנקן מעוצב, לטקסי יום יום של שתייה והתכנסות, במראה עתיק ומרשים.</p>
+                            <span class="text-amber-300 font-bold text-xl block">₪120</span>
+                        </div>
+                    </div>
+                    <p class="text-center text-gray-500 text-sm mt-12 animate-fade-in-up">
+                        לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.
+                    </p>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-stone-900 bg-opacity-80 backdrop-blur-sm py-12 border-t border-stone-700">
+            <div class="container mx-auto px-6 text-center">
+                <p class="text-gray-400 text-lg mb-4">
+                    סבאיה: שם הרוח והטעם נפגשים.
+                </p>
+                <div class="flex justify-center space-x-4 space-x-reverse mb-6">
+                    <a href="#" class="text-gray-400 hover:text-amber-300 transition-colors duration-300" aria-label="פייסבוק">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.505 1.492-3.89 3.776-3.89 1.094 0 2.24.195 2.24.195v2.46h-1.24c-1.209 0-1.55.755-1.55 1.538V12h2.773l-.443 2.89h-2.33V22H12c5.523 0 10-4.477 10-10z" clip-rule="evenodd"></path></svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-amber-300 transition-colors duration-300" aria-label="אינסטגרם">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 4c-2.716 0-3.056.01-4.122.06c-1.066.05-1.79.217-2.427.465a4.998 4.998 0 00-1.824 1.144 4.997 4.997 0 00-1.144 1.824c-.248.637-.415 1.361-.465 2.427C4.01 8.944 4 9.284 4 12s.01 3.056.06 4.122c.05.1066.217 1.79.465 2.427a4.998 4.998 0 001.144 1.824 4.997 4.997 0 001.824 1.144c.637.248 1.361.415 2.427.465C8.944 20.01 9.284 20 12 20s3.056-.01 4.122-.06c1.066-.05 1.79-.217 2.427-.465a4.998 4.998 0 001.824-1.144 4.997 4.997 0 001.144-1.824c.248-.637.415-1.361.465-2.427C19.99 15.056 20 14.716 20 12s-.01-3.056-.06-4.122c-.05-1.066-.217-1.79-.465-2.427a4.998 4.998 0 00-1.144-1.824 4.997 4.997 0 00-1.824-1.144c-.637-.248-1.361-.415-2.427-.465C15.056 4.01 14.716 4 12 4zm0 2c2.426 0 2.729.01 3.682.053.953.047 1.488.196 1.82.324.423.167.729.351.996.618.267.267.451.573.618.996.128.332.277.867.324 1.82.043.953.053 1.256.053 3.682s-.01 2.729-.053 3.682c-.047.953-.196 1.488-.324 1.82-.167.423-.351.729-.618.996-.267.267-.573.451-.996.618-.332.128-.867.277-1.82.324-.953.043-1.256.053-3.682.053s-2.729-.01-3.682-.053c-.953-.047-1.488-.196-1.82-.324-.423-.167-.729-.351-.996-.618-.267-.267-.451-.573-.618-.996-.128-.332-.277-.867-.324-1.82-.043-.953-.053-1.256-.053-3.682s.01-2.729.053-3.682c.047-.953.196-1.488.324-1.82.167-.423.351-.729.618-.996.267-.267.573-.451.996-.618.332-.128.867-.277 1.82-.324C9.271 6.01 9.574 6 12 6zm0 2a4 4 0 100 8 4 4 0 000-8zm0 2a2 2 0 110 4 2 2 0 010-4zm6.5-7.5a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd"></path></svg>
+                    </a>
+                </div>
+                <p class="text-gray-500 text-sm">
+                    &copy; 2023 סבאיה - כל הזכויות שמורות. יצירה בהשראת האמנות האינואיטית.
+                </p>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // Custom Cursor JS
+        const cursor = document.querySelector('.custom-cursor');
+        document.addEventListener('mousemove', e => {
+            // Use translate3d for hardware acceleration
+            cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+        });
+
+        // Add hover effect to interactive elements
+        const hoverableElements = document.querySelectorAll('a, button, .menu-item');
+        hoverableElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // Simple Parallax Effect JS
+        const parallaxElements = document.querySelectorAll('.parallax-element');
+        window.addEventListener('scroll', () => {
+            parallaxElements.forEach(el => {
+                const speed = parseFloat(el.dataset.parallaxSpeed);
+                const yPos = -(window.scrollY * speed); // Move elements slower than scroll
+                el.style.transform = `translateY(${yPos}px)`;
+            });
+        });
+
+        // Mobile Menu JS
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+
+        function openMobileMenu() {
+            mobileMenu.classList.remove('translate-x-full');
+            document.body.classList.add('mobile-menu-open'); // Prevent body scroll
+        }
+
+        function closeMobileMenu() {
+            mobileMenu.classList.add('translate-x-full');
+            document.body.classList.remove('mobile-menu-open'); // Allow body scroll
+        }
+
+        mobileMenuButton.addEventListener('click', openMobileMenu);
+        closeMobileMenuButton.addEventListener('click', closeMobileMenu);
+
+        // Close mobile menu when clicking outside (improved UX)
+        document.addEventListener('click', (event) => {
+            if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target) && !mobileMenu.classList.contains('translate-x-full')) {
+                closeMobileMenu();
+            }
+        });
+
+        // Smooth scroll for navigation (built-in HTML behavior but this ensures header offset)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const offset = document.querySelector('header').offsetHeight; // Account for fixed header height
+                    window.scrollTo({
+                        top: targetElement.offsetTop - offset,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for scroll animations (fade-in-up, fade-in-left, fade-in-right)
+        const animateOnScrollElements = document.querySelectorAll('.animate-fade-in-up, .animate-fade-in-left, .animate-fade-in-right');
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                } else {
+                    // Optionally remove 'is-visible' to allow re-animation on scroll back
+                    // entry.target.classList.remove('is-visible');
+                }
+            });
+        }, {
+            threshold: 0.1, // Trigger when 10% of the element is visible
+            rootMargin: '0px 0px -50px 0px' // Start animation slightly before element enters view
+        });
+
+        animateOnScrollElements.forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

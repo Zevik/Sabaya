@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סבאיה - ציור חי של טעם וטבע</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&family=Frank+Ruhl+Libre:wght@300..900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Tailwind Configuration for specific colors/fonts */
+        :root {
+            --sabaya-green-light: 200, 230, 201; /* Soft, natural green */
+            --sabaya-green-dark: 107, 142, 35;  /* Olive Green */
+            --sabaya-brown-light: 210, 180, 140; /* Tan, coffee-like */
+            --sabaya-brown-dark: 139, 69, 19;  /* Saddle Brown */
+            --sabaya-cream: 245, 245, 220;      /* Beige */
+            --sabaya-terracotta: 205, 92, 92;  /* Indian Red, earthy */
+            --sabaya-blue-sky: 176, 224, 230;    /* Powder Blue */
+        }
+
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            cursor: none; /* Hide default cursor */
+        }
+
+        body {
+            font-family: 'Assistant', sans-serif;
+            color: rgb(var(--sabaya-brown-dark));
+            background-color: rgb(var(--sabaya-cream)); /* Base background */
+            position: relative;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Frank Ruhl Libre', serif;
+            color: rgb(var(--sabaya-brown-dark));
+            direction: rtl; /* Ensure headings are RTL */
+        }
+
+        /* Divisionism-inspired background */
+        .divisionism-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1; /* Behind all content */
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .divisionism-layer {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            border-radius: 50%;
+            filter: blur(80px); /* Soften the edges */
+            opacity: 0.2;
+            animation: moveColors 40s infinite alternate ease-in-out;
+            will-change: transform, opacity; /* Optimize animations */
+        }
+
+        .layer-1 {
+            background: radial-gradient(circle at top right, rgba(var(--sabaya-green-light), 0.7) 0%, transparent 70%);
+            top: -20%;
+            left: -20%;
+            animation-delay: 0s;
+            transform: scale(0.8);
+        }
+        .layer-2 {
+            background: radial-gradient(circle at bottom left, rgba(var(--sabaya-brown-light), 0.7) 0%, transparent 70%);
+            bottom: -20%;
+            right: -20%;
+            animation-delay: 10s;
+            transform: scale(1.1);
+        }
+        .layer-3 {
+            background: radial-gradient(circle at center, rgba(var(--sabaya-blue-sky), 0.7) 0%, transparent 70%);
+            top: 25%;
+            left: 25%;
+            animation-delay: 20s;
+            transform: scale(0.9);
+        }
+        .layer-4 {
+            background: radial-gradient(circle at top left, rgba(var(--sabaya-terracotta), 0.7) 0%, transparent 70%);
+            top: -5%;
+            left: 60%;
+            animation-delay: 30s;
+            transform: scale(1.0);
+        }
+
+        @keyframes moveColors {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+            25% { transform: translate(5%, -5%) scale(1.05); opacity: 0.25; }
+            50% { transform: translate(-5%, 5%) scale(0.95); opacity: 0.2; }
+            75% { transform: translate(10%, 10%) scale(1.1); opacity: 0.3; }
+            100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+        }
+
+        /* Custom Cursor Styling - MANDATORY High Contrast */
+        #custom-cursor {
+            position: fixed;
+            pointer-events: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            transition: transform 0.1s ease-out, width 0.2s ease-out, height 0.2s ease-out, background-color 0.2s ease-out;
+            border: 2px solid #FFFFFF; /* Visible on dark backgrounds */
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.8); /* Visible on light backgrounds */
+        }
+
+        #custom-cursor.hovered {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(0,0,0,0.8); /* Invert border for hover clarity */
+            box-shadow: 0 0 0 2px #FFFFFF; /* Invert shadow for hover clarity */
+        }
+
+        /* Scroll indicator styles */
+        #scroll-indicator {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(rgb(var(--sabaya-cream)), 0.7); /* Semi-transparent */
+            color: rgb(var(--sabaya-brown-dark));
+            font-size: 1rem;
+            font-weight: bold;
+            font-family: 'Assistant', sans-serif;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            pointer-events: none; /* Make it not clickable */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Navigation Overlay */
+        #nav-overlay {
+            position: fixed;
+            top: 0;
+            right: 0; /* RTL alignment */
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(var(--sabaya-cream), 0.95), rgba(var(--sabaya-green-light), 0.95));
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(100%); /* Start off-screen to the right */
+            transition: transform 0.6s cubic-bezier(0.86, 0, 0.07, 1);
+            direction: rtl;
+            text-align: center;
+        }
+
+        #nav-overlay.open {
+            transform: translateX(0);
+        }
+
+        #nav-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 2rem; /* RTL alignment */
+            z-index: 100;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px;
+            background-color: rgba(var(--sabaya-brown-dark), 0.7);
+            border-radius: 50%;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        #nav-toggle:hover {
+            background-color: rgba(var(--sabaya-brown-dark), 0.9);
+            transform: scale(1.05);
+        }
+
+        #nav-toggle span {
+            display: block;
+            width: 80%;
+            height: 3px;
+            background-color: rgb(var(--sabaya-cream));
+            border-radius: 2px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        #nav-toggle.open span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        #nav-toggle.open span:nth-child(2) {
+            opacity: 0;
+        }
+        #nav-toggle.open span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        .nav-link-item {
+            font-family: 'Frank Ruhl Libre', serif;
+            font-size: 3rem;
+            color: rgb(var(--sabaya-brown-dark));
+            margin: 1rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-link-item:hover {
+            color: rgb(var(--sabaya-terracotta));
+            text-shadow: 2px 2px 6px rgba(var(--sabaya-terracotta),0.3);
+        }
+        #nav-overlay.open .nav-link-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #nav-overlay.open .nav-link-item:nth-child(1) { transition-delay: 0.1s; }
+        #nav-overlay.open .nav-link-item:nth-child(2) { transition-delay: 0.2s; }
+        #nav-overlay.open .nav-link-item:nth-child(3) { transition-delay: 0.3s; }
+        #nav-overlay.open .nav-link-item:nth-child(4) { transition-delay: 0.4s; }
+        #nav-overlay.open .nav-link-item:nth-child(5) { transition-delay: 0.5s; }
+
+        /* General content styling */
+        .section-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 10; /* Ensure content is above background */
+            background-color: rgba(var(--sabaya-cream), 0.7); /* Soft background for readability */
+            margin-bottom: 2rem;
+            box-shadow: 0 0 50px rgba(0,0,0,0.1) inset; /* Soft inner shadow for depth */
+        }
+        @media (min-width: 768px) {
+            .section-container {
+                padding: 6rem 4rem;
+            }
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: 1px solid rgba(var(--sabaya-brown-light), 0.3);
+            direction: rtl;
+            text-align: right;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .product-image-placeholder {
+            width: 100%;
+            padding-bottom: 100%; /* For aspect ratio 1:1 */
+            background: linear-gradient(45deg, rgba(var(--sabaya-brown-light), 1), rgba(var(--sabaya-cream), 1), rgba(var(--sabaya-terracotta), 1));
+            background-size: 200% 200%;
+            animation: gradientShift 10s ease infinite alternate;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Frank Ruhl Libre', serif;
+            color: rgb(var(--sabaya-brown-dark));
+            font-size: 1.5rem;
+            text-align: center;
+            opacity: 0.9;
+        }
+        .product-image-placeholder span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Responsive typography adjustments */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.8rem; }
+            h2 { font-size: 2rem; }
+            h3 { font-size: 1.5rem; }
+            .nav-link-item { font-size: 2rem; }
+            .card { padding: 1.5rem; }
+            .section-container { padding: 3rem 1rem; }
+        }
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.8rem; }
+            .nav-link-item { font-size: 1.5rem; }
+            #nav-toggle { top: 1rem; right: 1rem; width: 40px; height: 40px; }
+            #nav-toggle span { height: 2px; }
+            #nav-toggle.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+            #nav-toggle.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+            #scroll-indicator { bottom: 1rem; right: 1rem; width: 30px; height: 30px; font-size: 0.8rem;}
+        }
+
+        /* Section Visibility Animations */
+        .section-container.is-visible {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+
+    <!-- Divisionism Background Layers -->
+    <div class="divisionism-bg">
+        <div class="divisionism-layer layer-1"></div>
+        <div class="divisionism-layer layer-2"></div>
+        <div class="divisionism-layer layer-3"></div>
+        <div class="divisionism-layer layer-4"></div>
+    </div>
+
+    <!-- Navigation Toggle (Hamburger Icon) -->
+    <div id="nav-toggle" aria-label="תפריט ניווט">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- Navigation Overlay -->
+    <div id="nav-overlay" class="nav-overlay">
+        <nav class="flex flex-col items-center">
+            <a href="#home" class="nav-link-item" data-section="home">בית</a>
+            <a href="#menu" class="nav-link-item" data-section="menu">תפריט</a>
+            <a href="#wood-products" class="nav-link-item" data-section="wood-products">כפית עץ - מוצרים</a>
+            <a href="#ceramic-products" class="nav-link-item" data-section="ceramic-products">מוצרי קרמיקה</a>
+            <a href="#contact" class="nav-link-item" data-section="contact">צרו קשר</a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main class="relative z-10">
+
+        <!-- Home Section -->
+        <section id="home" class="section-container text-center px-4 md:px-8 bg-gradient-to-t from-transparent via-[rgba(var(--sabaya-cream),0.7)] to-[rgba(var(--sabaya-cream),0.7)]">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 text-[rgb(var(--sabaya-brown-dark))] drop-shadow-lg">סבאיה - ציור חי של טעם וטבע</h1>
+            <p class="text-xl md:text-2xl leading-relaxed max-w-4xl text-[rgba(var(--sabaya-brown-dark),0.9)] mb-8 drop-shadow-md">
+                ברוכים הבאים לסבאיה, מקום שבו הארומה העדינה של קפה איכותי מתמזגת עם הצבעוניות העשירה של הטבע הפורח. כל פינה כאן היא משיחת מכחול, כל רגע - חוויה דיוויזיוניסטית של אור, צבע ורוגע. בואו לגלות את השלווה שבתנועת הגוונים, את הטעם העמוק שבהשתקפות הקפה.
+            </p>
+            <p class="text-lg md:text-xl leading-relaxed max-w-3xl text-gray-700/90 drop-shadow-sm">
+                אנו מזמינים אתכם להפוגה אמנותית, בין עלי כותרת לגרגירי קפה, ליצור זיכרונות חדשים באווירה שליווה ומעוררת השראה. כאן, הזמן מאט, והיופי מתגלה בכל פרט קטן.
+            </p>
+            <a href="#menu" class="mt-12 inline-block px-8 py-3 bg-[rgb(var(--sabaya-brown-dark))] text-[rgb(var(--sabaya-cream))] text-lg font-bold rounded-full shadow-lg hover:bg-[rgb(var(--sabaya-terracotta))] transition duration-300">
+                צפייה בתפריט אמנותי
+            </a>
+        </section>
+
+        <!-- Our Products / Experience Section -->
+        <section class="section-container bg-gradient-to-b from-transparent via-[rgba(var(--sabaya-green-light),0.7)] to-[rgba(var(--sabaya-green-light),0.7)]">
+            <h2 class="text-4xl md:text-6xl font-bold mb-12 text-[rgb(var(--sabaya-brown-dark))] drop-shadow-lg">הבנת הסונטה: קפה, טבע, אמנות</h2>
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto text-right">
+                <div class="card flex flex-col items-start">
+                    <h3 class="text-3xl font-bold text-[rgb(var(--sabaya-green-dark))] mb-4">גווני הקפה המשובח</h3>
+                    <p class="text-lg text-gray-800 leading-relaxed">
+                        גרגירים שנבחרו בקפידה, נקלויים באהבה, ומוגשים כנוזל עשיר בגוונים – משחור עמוק ועד חום-אגוז מבריק. כל לגימה היא פסיפס של טעמים, עשיר ומורכב כמו יצירת אמנות דיוויזיוניסטית, המתגלה בשכבות של ארומה ועידון.
+                    </p>
+                </div>
+                <div class="card flex flex-col items-start">
+                    <h3 class="text-3xl font-bold text-[rgb(var(--sabaya-green-dark))] mb-4">נשימת הטבע סביבנו</h3>
+                    <p class="text-lg text-gray-800 leading-relaxed">
+                        בליבה של משתלה פורחת, סבאיה היא גן עדן ירוק. האוויר רווי בניחוחות פרחים ואדמה, האור מסתנן דרך העלווה בצורת כתמים מוארים, רוקדים על השולחנות. זוהי הזמנה לטבול בנוף של צבעים חיים וצלילים מרגיעים, להרגיש את דופק הטבע.
+                    </p>
+                </div>
+                <div class="card flex flex-col items-start">
+                    <h3 class="text-3xl font-bold text-[rgb(var(--sabaya-green-dark))] mb-4">מלאכת יד עם נשמה</h3>
+                    <p class="text-lg text-gray-800 leading-relaxed">
+                        מעבר לקפה ולטבע, אנו מציגים אוסף של יצירות אמנות שימושיות: כפיות עץ מגולפות ומוצרי קרמיקה בגווני אדמה. כל פריט נוצר ביד אמן, נושא בתוכו את המגע האנושי והחום, ומשלים את חווית סבאיה הייחודית בנגיעה של יופי ופונקציונליות.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="section-container bg-gradient-to-t from-transparent via-[rgba(var(--sabaya-terracotta),0.5)] to-transparent">
+            <h2 class="text-4xl md:text-6xl font-bold mb-12 text-[rgb(var(--sabaya-brown-dark))] drop-shadow-lg">קונצרט של טעמים בתפריט סבאיה</h2>
+            <p class="text-xl md:text-2xl leading-relaxed max-w-4xl text-gray-700/90 mb-12 text-center drop-shadow-md">
+                כל מנה בתפריט שלנו היא יצירה קולינרית, פסיפס של טעמים, צבעים ומרקמים. אנו מזמינים אתכם למסע של תגליות, המשלב מסורת עם חדשנות, בדיוק כמו הזרמים האמנותיים הגדולים.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto text-right">
+                <!-- אוכל -->
+                <div class="card col-span-2">
+                    <h3 class="text-3xl font-bold text-[rgb(var(--sabaya-terracotta))] mb-6 text-center">אוכל ומתוקים</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-2xl font-bold text-[rgb(var(--sabaya-brown-dark))] mb-4">מנות עיקריות</h4>
+                            <!-- Item 1 -->
+                            <div class="mb-6 border-b pb-4 border-gray-200">
+                                <h5 class="text-xl font-bold text-gray-800 mb-1">כריך סבביח אמנותי <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪36</span></h5>
+                                <p class="text-gray-600 text-sm">ביצה קשה, טונה, חציל קלוי, מטבוחה עשירה, מלפפון חמוץ ולימון כבוש - מגדל טעמים מזרח-תיכוני, מוגש עם זיתים וסלט אישי. כל ביס חושף שכבה חדשה.</p>
+                            </div>
+                            <!-- Item 2 -->
+                            <div class="mb-6 border-b pb-4 border-gray-200">
+                                <h5 class="text-xl font-bold text-gray-800 mb-1">כריך פנסיבאיה - סימפוניה ירוקה <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪45</span></h5>
+                                <p class="text-gray-600 text-sm">פטריות מוקפצות בניחוח כמהין, גבינות שמנת וגראנה פדאנו, רוקט טרי ובלסמי מודגש. חוויה גסטרונומית אלגנטית, מוגש עם זיתים וסלט אישי.</p>
+                            </div>
+                            <!-- Item 3 -->
+                            <div class="mb-6 border-b pb-4 border-gray-200">
+                                <h5 class="text-xl font-bold text-gray-800 mb-1">כריך טבעוני - גוונים ירוקים <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪45</span></h5>
+                                <p class="text-gray-600 text-sm">ממרח חציל שחור עמוק, גבינת סויה עדינה, עגבניות מיובשות מרוכזות ורוקט פריך. טעם טבעי עשיר, מוגש עם זיתים וסלט אישי.</p>
+                            </div>
+                            <!-- Item 4 -->
+                            <div class="mb-6 border-b pb-4 border-gray-200">
+                                <h5 class="text-xl font-bold text-gray-800 mb-1">פלטת גבינות ולחמים - פנורמת טעמים <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪68</span></h5>
+                                <p class="text-gray-600 text-sm">מבחר גבינות בוטיק, מלווה בלחמים טריים, חמאה מוקצפת מתובלת, טחינה יוגורט וריבה ביתית. חגיגה של מרקמים וטעמים.</p>
+                            </div>
+                             <!-- Item 5 -->
+                             <div class="mb-6 border-b pb-4 border-gray-200">
+                                <h5 class="text-xl font-bold text-gray-800 mb-1">סלט במבי - רעננות אביבית <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪36</span></h5>
+                                <p class="text-gray-600 text-sm">חסות פריכות, בצל סגול, תפוח ירוק חמוץ-מתוק, עגבניות שרי, מלפפון, פקאן מסוכר עם פטה עדינה ורוטב נדיר. סלט קליל וצבעוני.</p>
+                            </div>
+                             <!-- Item 6 -->
+                             <div class="mb-6 border-b pb-4 border-gray-200">
+                                <h5 class="text-xl font-bold text-gray-800 mb-1">סלט חלבון - אנרגיה טבעית <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪32</span></h5>
+                                <p class="text-gray-600 text-sm">עדשים שחורות, קינואה, בטטה צלויה, חומוסים, תרד טרי, ביצה קשה, גרעיני דלעת וגרידת לימון מרעננת. ארוחה מזינה ומלאה.</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-2xl font-bold text-[rgb(var(--sabaya-brown-dark))] mb-4">מנות בוקר וקינוחים</h4>
+                            <!-- Item 7 -->
+                            <div class="mb-6 border-b pb-4 border-gray-200">
+                                <h5 class="text-xl font-bold text-gray-800 mb-1">מוזלי מור - חוויה מזרחית <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪42</span></h5>
+                                <p class="text-gray-600 text-sm">יוגורט פרו, חצילים קלויים, ביצה קשה, טחינה עשירה, וגרעיני דלעת, מתובל באריסה מתוקה ולימון כבוש, מוגש עם פיתה קראנץ'. שילוב מפתיע של מתוק ומלוח.</p>
+                            </div>
+                            <!-- Item 8 -->
+                            <div class="mb-6 border-b pb-4 border-gray-200">
+                                <h5 class="text-xl font-bold text-gray-800 mb-1">קערת אסאי - גן עדן טרופי <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪39</span></h5>
+                                <p class="text-gray-600 text-sm">עם גרנולה פריכה, שבבי קוקוס ועסיס הפרי העונתי. פרץ של רעננות ובריאות, צבעוני כמו טרפטיך טרופי.</p>
+                            </div>
+                             <!-- Item 9 -->
+                             <div class="mb-6 border-b pb-4 border-gray-200">
+                                <h5 class="text-xl font-bold text-gray-800 mb-1">קיש ירקות משתנה <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪37</span></h5>
+                                <p class="text-gray-600 text-sm">קיש ברוקולי/פטריות/בצל ויין לבן - מוגש עם סלט אישי ושמנת חמוצה. נוחות וטעם בכל ביס.</p>
+                            </div>
+                            <h4 class="text-2xl font-bold text-[rgb(var(--sabaya-brown-dark))] mb-4 mt-8">מתוקים - פלטת האושר</h4>
+                            <!-- Desserts -->
+                            <div class="mb-6 border-b pb-4 border-gray-200"><h5 class="text-xl font-bold text-gray-800">קוראסון שוקולד גדול <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪19</span></h5></div>
+                            <div class="mb-6 border-b pb-4 border-gray-200"><h5 class="text-xl font-bold text-gray-800">קוראסון שקדים/פיסטוק גדול <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪22</span></h5></div>
+                            <div class="mb-6 border-b pb-4 border-gray-200"><h5 class="text-xl font-bold text-gray-800">עוגה בחושה בננה ושוקולד <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪15</span></h5></div>
+                            <div class="mb-6 border-b pb-4 border-gray-200"><h5 class="text-xl font-bold text-gray-800">פאי תפוחים קרמבל <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪44</span></h5></div>
+                            <div class="mb-6 border-b pb-4 border-gray-200"><h5 class="text-xl font-bold text-gray-800">פאי מרנג לימון <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪31</span></h5></div>
+                            <div class="mb-6 border-b pb-4 border-gray-200"><h5 class="text-xl font-bold text-gray-800">אוראו צ'יז קייק <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪38</span></h5></div>
+                            <div class="mb-6 border-b pb-4 border-gray-200"><h5 class="text-xl font-bold text-gray-800">קראנץ' סניקרס <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪23</span></h5></div>
+                            <div class="mb-6 border-b pb-4 border-gray-200"><h5 class="text-xl font-bold text-gray-800">עוגת שילה <span class="float-left text-[rgb(var(--sabaya-green-dark))]">₪44</span></h5></div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-8 text-center">לשאלות והזמנות, אנא פנו אלינו בבית הקפה. כל המחירים בשקלים חדשים ועשויים להשתנות.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wood Products Section -->
+        <section id="wood-products" class="section-container bg-gradient-to-b from-transparent via-[rgba(var(--sabaya-brown-light),0.5)] to-transparent">
+            <h2 class="text-4xl md:text-6xl font-bold mb-12 text-[rgb(var(--sabaya-brown-dark))] drop-shadow-lg">כפית עץ - אמנות הטבע</h2>
+            <p class="text-xl md:text-2xl leading-relaxed max-w-4xl text-gray-700/90 mb-12 text-center drop-shadow-md">
+                כל כפית, כל פריט עץ, הוא סיפור של הטבע המתורגם ליצירה שימושית. עשויים בעבודת יד מוקפדת, מוצרים אלו נושאים את חום העץ ואת יופיו הטבעי, משלימים את חווית סבאיה בנגיעה של ארציות ואותנטיות.
+            </p>
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div class="card flex flex-col items-center p-6 text-center">
+                    <div class="product-image-placeholder h-48 w-48 mb-4 rounded-lg shadow-md"><span>בקבוקי שתיה מעץ</span></div>
+                    <h3 class="text-2xl font-bold text-[rgb(var(--sabaya-green-dark))] mb-2">בקבוקי שתיה מעץ</h3>
+                    <p class="text-lg text-gray-800 mb-4">עיצוב אלגנטי וטבעי, שומרים על טמפרטורה ומוסיפים סטייל. מושלמים לדרך או למשרד.</p>
+                    <span class="text-2xl font-bold text-[rgb(var(--sabaya-terracotta))]">₪89</span>
+                </div>
+                <div class="card flex flex-col items-center p-6 text-center">
+                    <div class="product-image-placeholder h-48 w-48 mb-4 rounded-lg shadow-md"><span>צנצנות עץ קטנות</span></div>
+                    <h3 class="text-2xl font-bold text-[rgb(var(--sabaya-green-dark))] mb-2">צנצנות עץ קטנות</h3>
+                    <p class="text-lg text-gray-800 mb-4">לאחסון תבלינים, סוכר או פשוט כפריט נוי ייחודי.</p>
+                    <span class="text-2xl font-bold text-[rgb(var(--sabaya-terracotta))]">₪45</span>
+                </div>
+                <div class="card flex flex-col items-center p-6 text-center">
+                    <div class="product-image-placeholder h-48 w-48 mb-4 rounded-lg shadow-md"><span>צנצנות עץ גדולות</span></div>
+                    <h3 class="text-2xl font-bold text-[rgb(var(--sabaya-green-dark))] mb-2">צנצנות עץ גדולות</h3>
+                    <p class="text-lg text-gray-800 mb-4">לשימוש רב-גוני, מוסיפות חום ויופי לכל מטבח או פינה בבית.</p>
+                    <span class="text-2xl font-bold text-[rgb(var(--sabaya-terracotta))]">₪75</span>
+                </div>
+            </div>
+            <p class="text-lg text-gray-700 mt-12 text-center drop-shadow-sm">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.</p>
+        </section>
+
+        <!-- Ceramic Products Section -->
+        <section id="ceramic-products" class="section-container bg-gradient-to-t from-transparent via-[rgba(var(--sabaya-terracotta),0.5)] to-transparent">
+            <h2 class="text-4xl md:text-6xl font-bold mb-12 text-[rgb(var(--sabaya-brown-dark))] drop-shadow-lg">מוצרי קרמיקה - אדמה וצבע</h2>
+            <p class="text-xl md:text-2xl leading-relaxed max-w-4xl text-gray-700/90 mb-12 text-center drop-shadow-md">
+                יצירות קרמיקה מעבודת יד, שכל אחת מהן מספרת סיפור של אדמה, מים ואש. בגווני אדמה חמים, הן מוסיפות אווירה ביתית ומזמינה, ומביאות את הנגיעה האמנותית של סבאיה לכל שולחן.
+            </p>
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div class="card flex flex-col items-center p-6 text-center">
+                    <div class="product-image-placeholder h-48 w-48 mb-4 rounded-lg shadow-md" style="background: linear-gradient(135deg, rgba(var(--sabaya-terracotta),1), rgba(var(--sabaya-brown-light),1), rgba(var(--sabaya-cream),1));"><span>כוס קרמיקה גדולה</span></div>
+                    <h3 class="text-2xl font-bold text-[rgb(var(--sabaya-green-dark))] mb-2">כוס קרמיקה גדולה</h3>
+                    <p class="text-lg text-gray-800 mb-4">מושלמת לקפה או תה גדול, עם אחיזה נוחה ועיצוב ייחודי.</p>
+                    <span class="text-2xl font-bold text-[rgb(var(--sabaya-terracotta))]">₪65</span>
+                </div>
+                <div class="card flex flex-col items-center p-6 text-center">
+                    <div class="product-image-placeholder h-48 w-48 mb-4 rounded-lg shadow-md" style="background: linear-gradient(135deg, rgba(var(--sabaya-brown-light),1), rgba(var(--sabaya-terracotta),1), rgba(var(--sabaya-cream),1));"><span>כוס קרמיקה קטנה</span></div>
+                    <h3 class="text-2xl font-bold text-[rgb(var(--sabaya-green-dark))] mb-2">כוס קרמיקה קטנה</h3>
+                    <p class="text-lg text-gray-800 mb-4">לשתיית אספרסו או מקיאטו, נגיעה של יופי בכל לגימה.</p>
+                    <span class="text-2xl font-bold text-[rgb(var(--sabaya-terracotta))]">₪45</span>
+                </div>
+                <div class="card flex flex-col items-center p-6 text-center">
+                    <div class="product-image-placeholder h-48 w-48 mb-4 rounded-lg shadow-md" style="background: linear-gradient(135deg, rgba(var(--sabaya-cream),1), rgba(var(--sabaya-brown-light),1), rgba(var(--sabaya-terracotta),1));"><span>קנקן קרמיקה</span></div>
+                    <h3 class="text-2xl font-bold text-[rgb(var(--sabaya-green-dark))] mb-2">קנקן קרמיקה</h3>
+                    <p class="text-lg text-gray-800 mb-4">קנקן אלגנטי להגשת שתיה קרה או חמה, פיסול שימושי.</p>
+                    <span class="text-2xl font-bold text-[rgb(var(--sabaya-terracotta))]">₪120</span>
+                </div>
+            </div>
+            <p class="text-lg text-gray-700 mt-12 text-center drop-shadow-sm">לרכישה ופרטים נוספים, פנו אלינו בבית הקפה או בטלפון.</p>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section-container bg-gradient-to-b from-transparent via-[rgba(var(--sabaya-green-light),0.7)] to-[rgba(var(--sabaya-cream),0.7)]">
+            <h2 class="text-4xl md:text-6xl font-bold mb-12 text-[rgb(var(--sabaya-brown-dark))] drop-shadow-lg">צרו קשר - הצטרפו לגלריה</h2>
+            <p class="text-xl md:text-2xl leading-relaxed max-w-3xl text-gray-700/90 mb-8 text-center drop-shadow-md">
+                נשמח לראות אתכם בסבאיה, או לשמוע מכם בטלפון. בואו לחוות את האווירה, לטעום מהטעמים, ולגלות את האמנות שבחיים.
+            </p>
+            <div class="flex flex-col md:flex-row gap-8 mt-8">
+                <a href="tel:+972501234567" class="px-8 py-4 bg-[rgb(var(--sabaya-brown-dark))] text-[rgb(var(--sabaya-cream))] text-xl font-bold rounded-full shadow-lg hover:bg-[rgb(var(--sabaya-terracotta))] transition duration-300">
+                    התקשרו אלינו
+                </a>
+                <a href="https://maps.app.goo.gl/YourCafeLocation" target="_blank" class="px-8 py-4 bg-[rgb(var(--sabaya-green-dark))] text-[rgb(var(--sabaya-cream))] text-xl font-bold rounded-full shadow-lg hover:bg-[rgb(var(--sabaya-blue-sky))] transition duration-300">
+                    נווטו אלינו
+                </a>
+            </div>
+            <p class="text-sm text-gray-600 mt-12 text-center">
+                © 2024 סבאיה - כל הזכויות שמורות. אמנות חיה, טעם מתמשך.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- Scroll Indicator -->
+    <div id="scroll-indicator">0%</div>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sabaya-green-light': `rgb(var(--sabaya-green-light))`,
+                        'sabaya-green-dark': `rgb(var(--sabaya-green-dark))`,
+                        'sabaya-brown-light': `rgb(var(--sabaya-brown-light))`,
+                        'sabaya-brown-dark': `rgb(var(--sabaya-brown-dark))`,
+                        'sabaya-cream': `rgb(var(--sabaya-cream))`,
+                        'sabaya-terracotta': `rgb(var(--sabaya-terracotta))`,
+                        'sabaya-blue-sky': `rgb(var(--sabaya-blue-sky))`,
+                    },
+                    fontFamily: {
+                        sans: ['Assistant', 'sans-serif'],
+                        serif: ['Frank Ruhl Libre', 'serif'],
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursor = document.getElementById('custom-cursor');
+            const navToggle = document.getElementById('nav-toggle');
+            const navOverlay = document.getElementById('nav-overlay');
+            const navLinks = navOverlay.querySelectorAll('.nav-link-item');
+            const scrollIndicator = document.getElementById('scroll-indicator');
+            const sections = document.querySelectorAll('section');
+            let isNavOpen = false;
+
+            // --- Custom Cursor ---
+            const updateCursor = (e) => {
+                requestAnimationFrame(() => {
+                    cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+                });
+            };
+
+            document.addEventListener('mousemove', updateCursor);
+
+            // Add hover effect for clickable elements
+            document.querySelectorAll('a, button, input[type="submit"], [role="button"], #nav-toggle').forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+            });
+
+            // --- Navigation Overlay ---
+            const toggleNav = () => {
+                isNavOpen = !isNavOpen;
+                navOverlay.classList.toggle('open', isNavOpen);
+                navToggle.classList.toggle('open', isNavOpen);
+                document.body.style.overflow = isNavOpen ? 'hidden' : 'auto'; // Prevent scrolling when nav is open
+            };
+
+            navToggle.addEventListener('click', toggleNav);
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    toggleNav(); // Close nav after clicking a link
+                });
+            });
+
+            // --- Scroll Indicator ---
+            const updateScrollIndicator = () => {
+                const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+                if (scrollableHeight === 0) { // Handle case for very short content
+                    scrollIndicator.textContent = '100%';
+                    return;
+                }
+                const scrolled = window.scrollY;
+                const scrollPercent = (scrolled / scrollableHeight) * 100;
+                scrollIndicator.textContent = `${Math.round(scrollPercent)}%`;
+            };
+
+            window.addEventListener('scroll', updateScrollIndicator);
+            updateScrollIndicator(); // Initial update
+
+            // --- Section Visibility Animations (IntersectionObserver) ---
+            const observerOptions = {
+                root: null, // viewport
+                rootMargin: '0px',
+                threshold: 0.2 // Trigger when 20% of the section is visible
+            };
+
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        // Optional: remove class when out of view if you want re-trigger on scroll back
+                        entry.target.classList.remove('is-visible');
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                section.style.opacity = '0'; // Hide initially for animation
+                section.style.transform = 'translateY(50px)'; // Start slightly off-screen
+                section.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+                sectionObserver.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
