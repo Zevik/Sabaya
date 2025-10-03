@@ -1,76 +1,119 @@
 <DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <title>"Zevik's Project Gallery"</title>
-   <style>
-       body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
-       iframe { width: 100%; height: 100%; border: none; }
-   </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Styles Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .art-button {
+            background: white;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-decoration: none;
+            display: block;
+            color: #333;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-align: center;
+        }
+        .art-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .art-button:active {
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
-   <iframe id="content-frame" title="Randomly loaded content"></iframe>
-   <script>
-       const sites = [
-           "80s-Anime-Style.html",
-           "Aboriginal-Art-Dot-Painting.html",
-           "African-Art-Masks-Sculptures.html",
-           "Ancient-Roman-Art-Frescoes.html",
-           "Andy-Warhol-Style.html",
-           "Arte-Povera.html",
-           "Charcoal-Drawing.html",
-           "Chibi-Style.html",
-           "Conceptual-Art.html",
-           "Divisionism.html",
-           "Early-Christian-Art.html",
-           "Early-Italian-Renaissance.html",
-           "Edward-Hopper-Style.html",
-           "Fashion-Illustration.html",
-           "Francisco-de-Goya-Style.html",
-           "Giotto-Style.html",
-           "Glass-Painting.html",
-           "Grisaille-Gray-Tones.html",
-           "Henri-Matisse-Style.html",
-           "Impasto.html",
-           "Ink-Drawing.html",
-           "Inuit-Art.html",
-           "Jan-Vermeer-Style.html",
-           "Jean-Michel-Basquiat-Style.html",
-           "Keith-Haring-Style.html",
-           "Ligne-Claire-Style.html",
-           "Lomography-Effect.html",
-           "Marcel-Duchamp-Style.html",
-           "Mesopotamian-Art.html",
-           "Neoclassicism.html",
-           "Oil-Painting.html",
-           "Op-Art.html",
-           "Outsider-Art-Art-Brut.html",
-           "Palette-Knife-Painting.html",
-           "Pastel-Painting.html",
-           "pencil.html",
-           "Photomontage.html",
-           "Piet-Mondrian-Style.html",
-           "Pointillism.html",
-           "Prehistoric-Art-Cave-Paintings.html",
-           "Romanticism.html",
-           "Screen-Print.html",
-           "Social-Realism.html",
-           "Sumi-e-Japanese-Ink-Painting.html",
-           "Symbolism.html",
-           "Tingatinga-Painting-Tanzania.html",
-           "Ukiyo-e-Japanese-Woodblock-Prints.html",
-           "Vaporwave.html",
-           "Voxel-Art.html",
-           "Wassily-Kandinsky-Style.html",
-       ];
-       function loadRandomSite() {
-           if (sites.length === 0) return;
-           const randomIndex = Math.floor(Math.random() * sites.length);
-           const randomSiteFile = sites[randomIndex];
-           const sitePath = "sites/" + randomSiteFile;
-           document.getElementById('content-frame').src = sitePath;
-       }
-       loadRandomSite();
-   </script>
+    <div class="container">
+        <h1>🎨 Art Styles Gallery 🎨</h1>
+        <div class="buttons-grid">
+            <a href="sites/80s-Anime-Style.html" class="art-button">80s Anime Style</a> 
+            <a href="sites/Aboriginal-Art-Dot-Painting.html" class="art-button">Aboriginal Art Dot Painting</a> 
+            <a href="sites/African-Art-Masks-Sculptures.html" class="art-button">African Art Masks Sculptures</a> 
+            <a href="sites/Ancient-Roman-Art-Frescoes.html" class="art-button">Ancient Roman Art Frescoes</a> 
+            <a href="sites/Andy-Warhol-Style.html" class="art-button">Andy Warhol Style</a> 
+            <a href="sites/Arte-Povera.html" class="art-button">Arte Povera</a> 
+            <a href="sites/Charcoal-Drawing.html" class="art-button">Charcoal Drawing</a> 
+            <a href="sites/Chibi-Style.html" class="art-button">Chibi Style</a> 
+            <a href="sites/Conceptual-Art.html" class="art-button">Conceptual Art</a> 
+            <a href="sites/Divisionism.html" class="art-button">Divisionism</a> 
+            <a href="sites/Early-Christian-Art.html" class="art-button">Early Christian Art</a> 
+            <a href="sites/Early-Italian-Renaissance.html" class="art-button">Early Italian Renaissance</a> 
+            <a href="sites/Edward-Hopper-Style.html" class="art-button">Edward Hopper Style</a> 
+            <a href="sites/Fashion-Illustration.html" class="art-button">Fashion Illustration</a> 
+            <a href="sites/Francisco-de-Goya-Style.html" class="art-button">Francisco de Goya Style</a> 
+            <a href="sites/Giotto-Style.html" class="art-button">Giotto Style</a> 
+            <a href="sites/Glass-Painting.html" class="art-button">Glass Painting</a> 
+            <a href="sites/Grisaille-Gray-Tones.html" class="art-button">Grisaille Gray Tones</a> 
+            <a href="sites/Henri-Matisse-Style.html" class="art-button">Henri Matisse Style</a> 
+            <a href="sites/Impasto.html" class="art-button">Impasto</a> 
+            <a href="sites/Ink-Drawing.html" class="art-button">Ink Drawing</a> 
+            <a href="sites/Inuit-Art.html" class="art-button">Inuit Art</a> 
+            <a href="sites/Jan-Vermeer-Style.html" class="art-button">Jan Vermeer Style</a> 
+            <a href="sites/Jean-Michel-Basquiat-Style.html" class="art-button">Jean Michel Basquiat Style</a> 
+            <a href="sites/Keith-Haring-Style.html" class="art-button">Keith Haring Style</a> 
+            <a href="sites/Ligne-Claire-Style.html" class="art-button">Ligne Claire Style</a> 
+            <a href="sites/Lomography-Effect.html" class="art-button">Lomography Effect</a> 
+            <a href="sites/Marcel-Duchamp-Style.html" class="art-button">Marcel Duchamp Style</a> 
+            <a href="sites/Mesopotamian-Art.html" class="art-button">Mesopotamian Art</a> 
+            <a href="sites/Neoclassicism.html" class="art-button">Neoclassicism</a> 
+            <a href="sites/Oil-Painting.html" class="art-button">Oil Painting</a> 
+            <a href="sites/Op-Art.html" class="art-button">Op Art</a> 
+            <a href="sites/Outsider-Art-Art-Brut.html" class="art-button">Outsider Art Art Brut</a> 
+            <a href="sites/Palette-Knife-Painting.html" class="art-button">Palette Knife Painting</a> 
+            <a href="sites/Pastel-Painting.html" class="art-button">Pastel Painting</a> 
+            <a href="sites/pencil.html" class="art-button">pencil</a> 
+            <a href="sites/Photomontage.html" class="art-button">Photomontage</a> 
+            <a href="sites/Piet-Mondrian-Style.html" class="art-button">Piet Mondrian Style</a> 
+            <a href="sites/Pointillism.html" class="art-button">Pointillism</a> 
+            <a href="sites/Prehistoric-Art-Cave-Paintings.html" class="art-button">Prehistoric Art Cave Paintings</a> 
+            <a href="sites/Romanticism.html" class="art-button">Romanticism</a> 
+            <a href="sites/Screen-Print.html" class="art-button">Screen Print</a> 
+            <a href="sites/Social-Realism.html" class="art-button">Social Realism</a> 
+            <a href="sites/Sumi-e-Japanese-Ink-Painting.html" class="art-button">Sumi e Japanese Ink Painting</a> 
+            <a href="sites/Symbolism.html" class="art-button">Symbolism</a> 
+            <a href="sites/Tingatinga-Painting-Tanzania.html" class="art-button">Tingatinga Painting Tanzania</a> 
+            <a href="sites/Ukiyo-e-Japanese-Woodblock-Prints.html" class="art-button">Ukiyo e Japanese Woodblock Prints</a> 
+            <a href="sites/Vaporwave.html" class="art-button">Vaporwave</a> 
+            <a href="sites/Voxel-Art.html" class="art-button">Voxel Art</a> 
+            <a href="sites/Wassily-Kandinsky-Style.html" class="art-button">Wassily Kandinsky Style</a> 
+        </div>
+    </div>
 </body>
 </html>
